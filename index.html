@@ -10,7 +10,7 @@
   <link rel="icon" href="../../favicon.ico">
 
 
-  <title>Travel Share</title>
+  <title>Go Travel</title>
 
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -107,46 +107,14 @@ function showUniqueMarker(){
 }
 
 
-
-
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
 
 
 
-
-
 </script>
 
-<script src="http://connect.soundcloud.com/sdk.js"></script>
-<script>
-// initialize client with app credentials
-SC.initialize({
-  client_id: 'YOUR_CLIENT_ID',
-  redirect_uri: 'REDIRECT_URL'
-});
-
-// initiate auth popup
-// SC.connect(function() {
-//   SC.get('/me', function(me) { 
-//     alert('Hello, ' + me.username); 
-//   });
-// });
-
-$(document).ready(function() {
-    SC.stream('/tracks/293', function(sound) {
-  $('#start').click(function(e) {
-    e.preventDefault();
-    sound.start();
-  });
-  $('#stop').click(function(e) {
-    e.preventDefault();
-    sound.stop();
-        });
-    });
-});
-</script>
 
 
 
@@ -173,7 +141,7 @@ $(document).ready(function() {
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><img src="./images/finalProjectTitle.png" style="height:80px; width:400px"></a>
+            <a class="navbar-brand" href="#">Travel Share</a>
           </div>
 
 
@@ -196,19 +164,13 @@ $(document).ready(function() {
   <input onClick="clearMarkers();" type=button value="Hide Markers">
   <input onClick="showMarkers();" type=button value="Show All Markers">
   <input onClick="deleteMarkers();" type=button value="Delete Markers">
-    <input type = "button" id = "button" value = "get pics!"></input>
-           <a href="#" id="start">Start</a>
-        <a href="#" id="stop">Stop</a>
-
 </div>
 </div>
 </nav>
-
 <br />
 <br />
 <br />
-
-<div id="map-canvas" style="width: 100%; height: 80%"></div>
+<div id="map-canvas" style="width: 100%; height: 500px"></div>
 
 <div class="container">
 
@@ -224,40 +186,7 @@ $(document).ready(function() {
 
 </div><!-- /.container -->
 <div class = "footer">
-
-<!-- Start WOWSlider.com BODY section -->
-<!-- <div id="wowslider-container1">
- -->
-  <div class="ws_thumbs">
-    <div class = "img" id = "images"> <!-- pictures added in here --></div> 
-  </div>
-  <div class="ws_script" style="position:absolute;left:-99%"><a href="http://wowslider.com"></a></div>
-  <div class="ws_shadow"></div>
-<!-- </div>  
- --><script type="text/javascript" src="engine1/wowslider.js"></script>
-<script type="text/javascript" src="engine1/script.js"></script>
-<!-- End WOWSlider.com BODY section -->
-
-</div>
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>  
-  <script type="text/javascript" src="./js/ajax.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-  </body>
-  </html>
-
-
-
-
-
-  <!--  <div class="img" id = "cat1">
+<!--  <div class="img" id = "cat1">
   <a target="_blank" href="klematis_big.htm">
     <img src="./images/cat.jpg" alt="Klematis"  width="130" height="130" id = "cat1" onmouseover="deleteMarkers();">
   </a>
@@ -287,3 +216,55 @@ $(document).ready(function() {
     <img src="./images/cat.jpg" alt="Klematis" width="130" height="130" onmouseover="deleteMarkers();">
   </a>
 </div> -->
+
+
+<!-- Start WOWSlider.com BODY section -->
+<div id="wowslider-container1">
+
+  <div class="ws_thumbs">
+    <div>
+      <a href="#wows1_0" title="I'll have you know Spongebob"><img src="data1/tooltips/ill_have_you_know_spongebob.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_1" title="Nightmare "><img src="data1/tooltips/nightmare_.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_2" title="Actual Advice Mallard"><img src="data1/tooltips/actual_advice_mallard.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_3" title="Computer Guy"><img src="data1/tooltips/computer_guy.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_4" title="custom imagedhhs"><img src="data1/tooltips/custom_imagedhhs.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_5" title="custom imagegfflk"><img src="data1/tooltips/custom_imagegfflk.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_6" title="custom imagejhh"><img src="data1/tooltips/custom_imagejhh.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_7" title="Bruce Lee"><img src="data1/tooltips/bruce_lee.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_8" title="custom image "><img src="data1/tooltips/custom_image_.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_9" title="custom image"><img src="data1/tooltips/custom_image.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_10" title="custom imagefiend"><img src="data1/tooltips/custom_imagefiend.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_11" title="custom imagegff"><img src="data1/tooltips/custom_imagegff.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_12" title="custom imagekil"><img src="data1/tooltips/custom_imagekil.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_13" title="custom ImageReady "><img src="data1/tooltips/custom_imageready_.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_14" title="customdjjd image"><img src="data1/tooltips/customdjjd_image.jpg" alt=""onmouseover="deleteMarkers();" /></a>
+      <a href="#wows1_15" title="customdrig image"><img src="data1/tooltips/customdrig_image.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_16" title="Downvoting Romani"><img src="data1/tooltips/downvoting_romani.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_17" title="Grumpy Can't s"><img src="data1/tooltips/grumpy_cant_s.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_18" title="Grumpy Catgg"><img src="data1/tooltips/grumpy_catgg.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_19" title="Jay-Z and Kanye laughing"><img src="data1/tooltips/jayz_and_kanye_laughing.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_20" title="Socially Awesome Awkward Penguin"><img src="data1/tooltips/socially_awesome_awkward_penguin.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_21" title="woody and buzz"><img src="data1/tooltips/woody_and_buzz.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_22" title="woody and buzzunder"><img src="data1/tooltips/woody_and_buzzunder.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+      <a href="#wows1_23" title="You Shall Not Pass"><img src="data1/tooltips/you_shall_not_pass.jpg" alt="" onmouseover="deleteMarkers();"/></a>
+    </div>
+  </div>
+  <div class="ws_script" style="position:absolute;left:-99%"><a href="http://wowslider.com">bootstrap carousel example</a> by WOWSlider.com v7.8m</div>
+  <div class="ws_shadow"></div>
+</div>  
+<script type="text/javascript" src="engine1/wowslider.js"></script>
+<script type="text/javascript" src="engine1/script.js"></script>
+<!-- End WOWSlider.com BODY section -->
+
+</div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+  </html>
