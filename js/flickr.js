@@ -1,9 +1,28 @@
 
 
 
-http://flickr.com/services/auth/?api_key=0fd24d9d0411ede9c4d33d4c531bbc16&perms=write&api_sig=47ddcd2305b095f3be2bc2230f07396c
+// http://flickr.com/services/auth/?api_key=0fd24d9d0411ede9c4d33d4c531bbc16&perms=write&api_sig=47ddcd2305b095f3be2bc2230f07396c
 
-"http://www.flickr.com/services/auth/?api_key=0fd24d9d0411ede9c4d33d4c531bbc16&perms=write&api_sig=c9383302b56102b8"
+// "http://www.flickr.com/services/auth/?api_key=0fd24d9d0411ede9c4d33d4c531bbc16&perms=write&api_sig=c9383302b56102b8"
+
+
+/*
+
+ Use this to get the user's ID to use for other methods
+
+*/
+$(document).ready(function(){
+	$("#getID").click(function(){
+		var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; 
+		var userName = prompt("Please enter your user name");
+
+		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+userName+'&format=json&nojsoncallback=1&auth_token=72157652029604262-c6b720c6caf27458&api_sig=f50405c8f647bcc90f19e7c6cadb4d53',
+			function(data){
+				alert(data.user.id); 
+			})
+	})
+})
+
 
 $(document).ready(function(){
 	$("#sign_in").click(function(){
@@ -36,33 +55,43 @@ $(document).ready(function(){
 
 
 /*
-	We're trying to return the photoset here
+	We're trying to return the photoset
 */
 $(document).ready(function(){
 	$("#photoset").click(function(){
+			jQuery('#a-link').remove();   
+	
+			//jQuery('<img alt="" />').attr('id', 'loader').attr('src', 'ajax-loader.gif').appendTo('#image-container');
+			// var photosetID = prompt("Please Enter PHOTOSET ID", "photoset ID");
+			// if(theID != null){
+			// 	alert("Valid"); 
+			// }
+			var apiKey = '8c07bcd273239811ed3ecb979ca095eb'; // not my real API key
+			var userID = '90085976%40N03';
+			var photosetID = '72157633227782713';
 
-		$.getJSON("https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=8c07bcd273239811ed3ecb979ca095eb&photoset_id=72157633227782713&user_id=90085976%40N03&format=json&nojsoncallback=1&auth_token=72157651625066180-3a808345a23a1133&api_sig=8291a99deafd4287e68e0ec4112e0f01",
-		   {
-			format: "json"}, 
+		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
 
-			function(data){ 
-				//debugger;
-				// if user == success
-				// enter photo set
-				// pull photos
+		/*
+			iterates through the defined photoset and pulls all the images from my account
+		*/	
+		function(data){
+			var i; 
+			var aPhoto = [];
+			for(i = 0; i < data.photoset.photo.length; i++){
 
+				aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
 			
-				alert(data.photoset.photo[0].title);
-			  		$.each(data.items, function(i, item){
+				jQuery('<a href/>').attr('id','photo').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
-			 			$('<img/>').attr("src", item.photoset.photo[i].title).appendTo('#images');
-
-			 		if(i == 5) return false; 
-			 });
+			}
+		
 
 		});
+	
 	});
 });
+
 
 
 // var person = prompt("Please enter your name", "Harry Potter");
