@@ -44,6 +44,14 @@
 
 
 
+<script type="text/javascript" src = "./js/md5.js">
+
+  var myString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16permswrite';
+  var hash = calcMD5(myString); 
+   console.log(hash); 
+</script>
+
+
 
 
 
@@ -102,6 +110,12 @@
 
 <div id = "panel">
 
+<form id="comment">
+
+   <input type="text" value="Comment">
+<!--    <input type="submit" value="Post">
+ -->
+</form>
   <input onClick="clearMarkers();" type=button value="Hide Markers">
   <input onClick="showMarkers();" type=button value="Show All Markers">
   <input onClick="deleteMarkers();" type=button value="Delete Markers">
@@ -109,6 +123,9 @@
   <input id="sign_out" type=button value="Flickr Sign-Out">
   <input id="photoset" type=button value="Enter Photoset">
   <input id="getID" type=button value="get User ID">
+  <input id="testUser" type=button value="testUser">
+
+ 
 
 </div>
 

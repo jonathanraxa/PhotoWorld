@@ -2,14 +2,21 @@
 
 #photo{
     height:300px;
+    min-height: 100%; 
+}
+
+a img{
+    min-height: 100px;
+    min-width: 100px;
+    padding-bottom: 200px;
 }
 
 .footer {
    position:absolute;
    bottom:0;
    width:100%;
-   height:60px;   /* Height of the footer */
-   background:#6cf;
+   height:100px;   /* Height of the footer */
+   background:black;
 }
 
 /*.footer {
