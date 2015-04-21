@@ -1,59 +1,66 @@
 
 
-// $(document).ready(function(){
-// 	$("#photoset").click(function(){
-// 			jQuery('#a-link').remove();   
+$(document).ready(function(){
+	$("#photoset").click(function(){
+			jQuery('#a-link').remove();   
 	
-// 			//jQuery('<img alt="" />').attr('id', 'loader').attr('src', 'ajax-loader.gif').appendTo('#image-container');
+			//jQuery('<img alt="" />').attr('id', 'loader').attr('src', 'ajax-loader.gif').appendTo('#image-container');
 
-// 			var apiKey = '8c07bcd273239811ed3ecb979ca095eb'; // not my real API key
-// 			var userID = '90085976%40N03';
-// 			var photosetID = '72157633227782713';
-// 		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
+			var apiKey = '8c07bcd273239811ed3ecb979ca095eb'; // not my real API key
+			var userID = '90085976%40N03';
+			var photosetID = '72157633227782713';
+		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
 
-// 		function(data){
-// 			//alert('http://farm' + data.photoset.photo[1].farm + '.static.flickr.com/' + data.photoset.photo[1].server + '/' + data.photoset.photo[1].id + '_' + data.photoset.photo[1].secret + '_m.jpg');
-// 			var i; 
-// 			var aPhoto = [];
-// 			for(i = 0; i < data.photoset.photo.length; i++){
-// 				aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
-// 				jQuery('<a/>').attr('id', 'photo').attr('src', aPhoto[i]).appendTo('#pics');
+		function(data){
+			//alert('http://farm' + data.photoset.photo[1].farm + '.static.flickr.com/' + data.photoset.photo[1].server + '/' + data.photoset.photo[1].id + '_' + data.photoset.photo[1].secret + '_m.jpg');
+			var i; 
+			var aPhoto = [];
+			for(i = 0; i < data.photoset.photo.length; i++){
+				aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
+				jQuery('<a/>').attr('id', 'photo').attr('src', aPhoto[i]).appendTo('#pics');
 				
-// 			}
+			}
 		
 
-// 		});
-	
-// 	});
-// });
-
-
-
-
-
-$(document).ready(function(){
-	$("#button").click(function(){
-		$("#images").empty(); // empties all the tags there are inside
-		$.getJSON("https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=e81306643b01d75c37c5e14f3d0ca1ab&user_id=90085976%40N03&format=json&nojsoncallback=1&api_sig=72ec5e99fad9beb9f3d7c4ed30df4c78",
-		   {
-			format: "json"
-			}, 
-
-			function(data){ 
-				//debugger;
-				//console.log(data); 
-
-				//alert(data.photos.photo[4].title);
-			$.each(data.items, function(i, item){
-
-				$('<img/>').attr("src", item.photos.photo.title).appendTo('#images');
-
-				if(i == 5) return false; 
-			});
-
 		});
+	
 	});
 });
+
+
+
+
+//for making sure code is linked to webpage
+// $(document).ready(function(){
+// 	$("#photoset").click(function(){
+// 		//alert("HELLO"); 
+// 		var hi = '<p>hello</p>';
+// 		$(hi).appendTo('#image-container'); 
+// 	})
+// })
+
+// $(document).ready(function(){
+// 	$("#button").click(function(){
+// 		$("#images").empty(); // empties all the tags there are inside
+// 		$.getJSON("https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=433ad000f6c8f565418ae4bc51864f91&user_id=90085976%40N03&format=json&nojsoncallback=1&auth_token=72157649645806663-ada04bff8c9b8a74&api_sig=2d1630adbfdf333df03789de394db87d",
+// 		   {
+// 			format: "json"}, 
+
+// 			function(data){ 
+// 				//debugger;
+// 				//console.log(data); 
+
+// 				alert(data.photos.photo[4].title);
+// 			// $.each(data.items, function(i, item){
+
+// 			// 	$('<img/>').attr("src", item.photos.photo.title).appendTo('#images');
+
+// 			// 	if(i == 5) return false; 
+// 			// });
+
+// 		});
+// 	});
+// });
 
 
 

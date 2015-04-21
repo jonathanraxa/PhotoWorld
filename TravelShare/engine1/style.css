@@ -367,13 +367,13 @@ _:-ms-input-placeholder, :root #wowslider-container1 .ws_playpause:after {line-h
 	width: 100px;
 }
 #wowslider-container1 .ws_thumbs a {
-/*	position:relative;
-*//*	text-indent: -4000px; 
-*/	color:transparent;
+	position:relative;
+	text-indent: -4000px; 
+	color:transparent;
 	opacity:0.85;
 	text-decoration: none;
-/*	display: inline-block;
-*/	border: 0;
+	display: inline-block;
+	border: 0;
 	margin:0.12%;
 	text-indent:0;
 	padding: 0.04%;
@@ -397,7 +397,7 @@ _:-ms-input-placeholder, :root #wowslider-container1 .ws_playpause:after {line-h
     bottom: 0;
     left: 0;
 	width:100%;
-	height: 17.0em;
+	height: 10.0em;
 }
 #wowslider-container1  .ws_thumbs div{
 	position:relative;
@@ -440,7 +440,7 @@ _:-ms-input-placeholder, :root #wowslider-container1 .ws_playpause:after {line-h
 	overflow:hidden;
 	position:relative;
 	width:100px;
-	background-color:black;
+	background-color:#ffffff;
 }
 #wowslider-container1  .ws_bullets .ws_bulframe{
 	display:none;
