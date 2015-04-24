@@ -349,7 +349,7 @@ var oauthT;
 var oauthTS; 
 var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
 
-
+/* Allows users to sign-in and recieve an Oauth token */ 
   $('#sign_in').click(function(){
   OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
   OAuth.popup('flickr').done(function(result) {
@@ -379,8 +379,14 @@ request.onload = function() {
 request.send(data);
   }
 
+var userEmail = prompt("Enter Email"); 
 
-
+$("#getUser").click(function(){
+  $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByEmail&api_key='+apiKey+'&find_email='+userEmail+'&format=json&nojsoncallback=1',
+    function(data){
+      console.log(data.user.id); 
+    })
+})
 
 
 /* Get user ID - Use this to get the user's ID to use for other methods */
@@ -441,7 +447,7 @@ var aPhoto = [];
   
   });
 
-/* on hover, the photo will appear in a container on the side of the*/
+/* on hover, the photo will appear in a container on the side of the page */
 displayPhoto = function(photoNum){
      jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img');
 
