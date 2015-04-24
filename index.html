@@ -13,10 +13,12 @@
     <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
    
+   <!-- Google Maps -->
+<!-- <script type="text/javascript" src="./js/map.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key="></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=" type="text/javascript"></script> -->
 
- 
-
-    <link href="css/style.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
   <title>PhotoWorld</title>
 
   <!-- Bootstrap core CSS -->
@@ -117,19 +119,19 @@ hello.init({
 <!--    <input type="submit" value="Post">
  -->
 </form>
-  <input onClick="clearMarkers();" type=button value="Hide Markers">
-  <input onClick="showMarkers();" type=button value="Show All Markers">
-  <input onClick="deleteMarkers();" type=button value="Delete Markers">
-  <input id="sign_in" type=button value="Flickr Sign-In">
-  <input id="photoset" type=button value="Enter Photoset">
-  <input id="testUser" type=button value="testUser"> 
-  <input id="getPublic" type=button value="Get Public Photos">
-<button onclick="hello( 'flickr' ).login()">flickr</button>
+  <input onClick="clearMarkers();" class="btn btn-info" type=button value="Hide Markers">
+  <input onClick="showMarkers();" class="btn btn-info" type=button value="Show All Markers">
+  <input onClick="deleteMarkers();" class="btn btn-info" type=button value="Delete Markers">
+  <input id="sign_in" type=button class="btn btn-info" value="Flickr Sign-In">
+  <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
+  <input id="testUser" type=button class="btn btn-info" value="testUser"> 
+  <input id="getUser" type=button class="btn btn-info" value="Username">
+<button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
   <br>
     <div style="color:white">
     <div style="clear:both;" id="userinfo"></div>
 
-  <input id="searchPhoto" type=search value="search photos">
+  <input id="searchPhoto" type=search  value="search photos">
   
   Radius (mi)&nbsp;
   <input type="radio" name="radius" value="2 miles"> 2 &nbsp;
