@@ -179,13 +179,428 @@ function calcMD5(str)
 
 
 
+;(function() {
+  'use strict';
+  
+  // Check the existence of module and module.exports to detect node
+  var isNode = (typeof module != 'undefined' && typeof module.exports != 'undefined');
+  
+  function OAuthSignature() {
+  }
+
+  OAuthSignature.prototype.generate = function (httpMethod, url, parameters, consumerSecret, tokenSecret, options) {
+    var signatureBaseString = new SignatureBaseString(httpMethod, url, parameters).generate();
+    var encodeSignature = true;
+    if (options) {
+      encodeSignature = options.encodeSignature;
+    }
+    return new HmacSha1Signature(signatureBaseString, consumerSecret, tokenSecret).generate(encodeSignature);
+  };
+
+  // Specification: http://oauth.net/core/1.0/#anchor14
+  // url: if the scheme is missing, http will be added automatically
+  function SignatureBaseString(httpMethod, url, parameters) {
+    parameters = new ParametersLoader(parameters).get();
+    this._httpMethod = new HttpMethodElement(httpMethod).get();
+    this._url = new UrlElement(url).get();
+    this._parameters = new ParametersElement(parameters).get();
+    this._rfc3986 = new Rfc3986();
+  }
+
+  SignatureBaseString.prototype = {
+    generate : function () {
+      // HTTP_METHOD & url & parameters
+      return this._rfc3986.encode(this._httpMethod) + '&'
+        + this._rfc3986.encode(this._url) + '&'
+        + this._rfc3986.encode(this._parameters);
+    }
+  };
+
+  function HttpMethodElement(httpMethod) {
+    this._httpMethod = httpMethod || '';
+  }
+
+  HttpMethodElement.prototype = {
+    get : function () {
+      return this._httpMethod.toUpperCase();
+    }
+  };
+
+  function UrlElement(url) {
+    this._url = url || '';
+  }
+
+  UrlElement.prototype = {
+    get : function () {
+      // The following is to prevent js-url from loading the window.location
+      if (!this._url) {
+        return this._url;
+      }
+
+      // FIXME: Make this behaviour explicit by returning warnings
+      if (this._url.indexOf('://') == -1) {
+        this._url = 'http://' + this._url;
+      }
+
+      // Handle parsing the url in node or in browser
+      var parsedUrl = isNode ? this.parseInNode() : this.parseInBrowser(),
+        // FIXME: Make this behaviour explicit by returning warnings
+        scheme = (parsedUrl.scheme || 'http').toLowerCase(),
+        // FIXME: Make this behaviour explicit by returning warnings
+        authority = (parsedUrl.authority || '').toLocaleLowerCase(),
+        path = parsedUrl.path || '',
+        port = parsedUrl.port || '';
+
+      // FIXME: Make this behaviour explicit by returning warnings
+      if ((port == 80 && scheme == 'http')
+        || (port == 443 && scheme == 'https'))
+      {
+        port = '';
+      }
+      var baseUrl = scheme + '://' + authority;
+      baseUrl = baseUrl + (!!port ? ':' + port : '');
+      // FIXME: Make this behaviour explicit by returning warnings
+      if (path == '/' && this._url.indexOf(baseUrl + path) === -1) {
+        path = '';
+      }
+      this._url =
+        (scheme ? scheme + '://' : '')
+          + authority
+          + (port ? ':' + port : '')
+          + path;
+      return this._url;
+    },
+    parseInBrowser : function () {
+      return {
+        scheme : url('protocol', this._url).toLowerCase(),
+        authority : url('hostname', this._url).toLocaleLowerCase(),
+        port : url('port', this._url),
+        path :url('path', this._url)
+      };
+    },
+    parseInNode : function () {
+      var url = require('url'),
+        parsedUri = url.parse(this._url),
+        scheme = parsedUri.protocol;
+      // strip the ':' at the end of the scheme added by the url module
+      if (scheme.charAt(scheme.length - 1) == ":") {
+        scheme = scheme.substring(0, scheme.length - 1);
+      }
+      return {
+        scheme : scheme,
+        authority : parsedUri.hostname,
+        port : parsedUri.port,
+        path : parsedUri.pathname
+      };
+    }
+  };
+
+  function ParametersElement (parameters) {
+    // Parameters format: { 'key': ['value 1', 'value 2'] };
+    this._parameters = parameters || {};
+    this._sortedKeys = [];
+    this._normalizedParameters = [];
+    this._rfc3986 = new Rfc3986();
+    this._sortParameters();
+    this._concatenateParameters();
+  }
+
+  ParametersElement.prototype = {
+    _sortParameters : function () {
+      var key,
+        encodedKey;
+      for (key in this._parameters) {
+        if (this._parameters.hasOwnProperty(key)) {
+          encodedKey = this._rfc3986.encode(key);
+          this._sortedKeys.push(encodedKey);
+        }
+      }
+      this._sortedKeys.sort();
+    },
+    _concatenateParameters : function () {
+      var i;
+      for (i = 0; i < this._sortedKeys.length; i++) {
+        this._normalizeParameter(this._sortedKeys[i]);
+      }
+    },
+    _normalizeParameter : function (encodedKey) {
+      var i,
+        key = this._rfc3986.decode(encodedKey),
+        values = this._parameters[key],
+        encodedValue;
+      values.sort();
+      for (i = 0; i < values.length; i++) {
+        encodedValue = this._rfc3986.encode(values[i]);
+        this._normalizedParameters.push(encodedKey + '=' + encodedValue)
+      }
+    },
+    get : function () {
+      return this._normalizedParameters.join('&');
+    }
+  };
+
+  function ParametersLoader (parameters) {
+    // Format: { 'key': ['value 1', 'value 2'] }
+    this._parameters = {};
+    this._loadParameters(parameters || {});
+  }
+
+  ParametersLoader.prototype = {
+    _loadParameters : function (parameters) {
+      if (parameters instanceof Array) {
+        this._loadParametersFromArray(parameters);
+      } else if (typeof parameters === 'object') {
+        this._loadParametersFromObject(parameters);
+      }
+    },
+    _loadParametersFromArray : function (parameters) {
+      var i;
+      for (i = 0; i < parameters.length; i++) {
+        this._loadParametersFromObject(parameters[i]);
+      }
+    },
+    _loadParametersFromObject : function (parameters) {
+      var key;
+      for (key in parameters) {
+        if (parameters.hasOwnProperty(key)) {
+          this._loadParameterValue(key, parameters[key] || '');
+        }
+      }
+    },
+    _loadParameterValue : function (key, value) {
+      var i;
+      if (value instanceof Array) {
+        for (i = 0; i < value.length; i++) {
+          this._addParameter(key, value[i]);
+        }
+        if (value.length == 0) {
+          this._addParameter(key, '');
+        }
+      } else {
+        this._addParameter(key, value);
+      }
+    },
+    _addParameter : function (key, value) {
+      if (!this._parameters[key]) {
+        this._parameters[key] = [];
+      }
+      this._parameters[key].push(value);
+    },
+    get : function () {
+      return this._parameters;
+    }
+  };
+
+  function Rfc3986() {
+
+  }
+
+  Rfc3986.prototype = {
+    encode : function (decoded) {
+      if (!decoded) {
+        return '';
+      }
+      // using implementation from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FencodeURIComponent
+      return encodeURIComponent(decoded)
+        .replace(/[!'()]/g, escape)
+        .replace(/\*/g, "%2A");
+    },
+    decode : function (encoded) {
+      if (!encoded) {
+        return '';
+      }
+      return decodeURIComponent(encoded);
+    }
+  };
+
+  function HmacSha1Signature(signatureBaseString, consumerSecret, tokenSecret) {
+    this._rfc3986 = new Rfc3986();
+    this._text = signatureBaseString;
+    this._key = this._rfc3986.encode(consumerSecret) + '&' + this._rfc3986.encode(tokenSecret);
+    this._base64EncodedHash = new HmacSha1(this._text, this._key).getBase64EncodedHash();
+  }
+
+  HmacSha1Signature.prototype = {
+    generate : function (encode) {
+      return encode === false ?
+          this._base64EncodedHash :
+          this._rfc3986.encode(this._base64EncodedHash);
+    }
+  };
+
+  function HmacSha1(text, key) {
+    // load CryptoJs in the browser or in node
+    this._cryptoJS = isNode ? require('crypto-js') : CryptoJS;
+    this._text = text || '';
+    this._key = key || '';
+    this._hash = this._cryptoJS.HmacSHA1(this._text, this._key);
+  }
+
+  HmacSha1.prototype = {
+    getBase64EncodedHash : function () {
+      return this._hash.toString(this._cryptoJS.enc.Base64);
+    }
+  };
+
+  var oauthSignature = new OAuthSignature();
+  oauthSignature.SignatureBaseString = SignatureBaseString;
+  oauthSignature.HttpMethodElement = HttpMethodElement;
+  oauthSignature.UrlElement = UrlElement;
+  oauthSignature.ParametersElement = ParametersElement;
+  oauthSignature.ParametersLoader = ParametersLoader;
+  oauthSignature.Rfc3986 = Rfc3986;
+  oauthSignature.HmacSha1Signature = HmacSha1Signature;
+  oauthSignature.HmacSha1 = HmacSha1;
+
+  // support for the browser and nodejs
+  if (isNode) {
+    module.exports = oauthSignature;
+  } else {
+    window.oauthSignature = oauthSignature;
+  }
+})();
 
 
 
 
 
+/**
+*  Secure Hash Algorithm (SHA1)
+*  http://www.webtoolkit.info/
+**/
+function SHA1(msg) {
+  function rotate_left(n,s) {
+    var t4 = ( n<<s ) | (n>>>(32-s));
+    return t4;
+  };
+  function lsb_hex(val) {
+    var str="";
+    var i;
+    var vh;
+    var vl;
+    for( i=0; i<=6; i+=2 ) {
+      vh = (val>>>(i*4+4))&0x0f;
+      vl = (val>>>(i*4))&0x0f;
+      str += vh.toString(16) + vl.toString(16);
+    }
+    return str;
+  };
+  function cvt_hex(val) {
+    var str="";
+    var i;
+    var v;
+    for( i=7; i>=0; i-- ) {
+      v = (val>>>(i*4))&0x0f;
+      str += v.toString(16);
+    }
+    return str;
+  };
+  function Utf8Encode(string) {
+    string = string.replace(/\r\n/g,"\n");
+    var utftext = "";
+    for (var n = 0; n < string.length; n++) {
+      var c = string.charCodeAt(n);
+      if (c < 128) {
+        utftext += String.fromCharCode(c);
+      }
+      else if((c > 127) && (c < 2048)) {
+        utftext += String.fromCharCode((c >> 6) | 192);
+        utftext += String.fromCharCode((c & 63) | 128);
+      }
+      else {
+        utftext += String.fromCharCode((c >> 12) | 224);
+        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+        utftext += String.fromCharCode((c & 63) | 128);
+      }
+    }
+    return utftext;
+  };
+  var blockstart;
+  var i, j;
+  var W = new Array(80);
+  var H0 = 0x67452301;
+  var H1 = 0xEFCDAB89;
+  var H2 = 0x98BADCFE;
+  var H3 = 0x10325476;
+  var H4 = 0xC3D2E1F0;
+  var A, B, C, D, E;
+  var temp;
+  msg = Utf8Encode(msg);
+  var msg_len = msg.length;
+  var word_array = new Array();
+  for( i=0; i<msg_len-3; i+=4 ) {
+    j = msg.charCodeAt(i)<<24 | msg.charCodeAt(i+1)<<16 |
+    msg.charCodeAt(i+2)<<8 | msg.charCodeAt(i+3);
+    word_array.push( j );
+  }
+  switch( msg_len % 4 ) {
+    case 0:
+      i = 0x080000000;
+    break;
+    case 1:
+      i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
+    break;
+    case 2:
+      i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
+    break;
+    case 3:
+      i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8  | 0x80;
+    break;
+  }
+  word_array.push( i );
+  while( (word_array.length % 16) != 14 ) word_array.push( 0 );
+  word_array.push( msg_len>>>29 );
+  word_array.push( (msg_len<<3)&0x0ffffffff );
+  for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
+    for( i=0; i<16; i++ ) W[i] = word_array[blockstart+i];
+    for( i=16; i<=79; i++ ) W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1);
+    A = H0;
+    B = H1;
+    C = H2;
+    D = H3;
+    E = H4;
+    for( i= 0; i<=19; i++ ) {
+      temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+      E = D;
+      D = C;
+      C = rotate_left(B,30);
+      B = A;
+      A = temp;
+    }
+    for( i=20; i<=39; i++ ) {
+      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+      E = D;
+      D = C;
+      C = rotate_left(B,30);
+      B = A;
+      A = temp;
+    }
+    for( i=40; i<=59; i++ ) {
+      temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+      E = D;
+      D = C;
+      C = rotate_left(B,30);
+      B = A;
+      A = temp;
+    }
+    for( i=60; i<=79; i++ ) {
+      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+      E = D;
+      D = C;
+      C = rotate_left(B,30);
+      B = A;
+      A = temp;
+    }
+    H0 = (H0 + A) & 0x0ffffffff;
+    H1 = (H1 + B) & 0x0ffffffff;
+    H2 = (H2 + C) & 0x0ffffffff;
+    H3 = (H3 + D) & 0x0ffffffff;
+    H4 = (H4 + E) & 0x0ffffffff;
+  }
+  var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
 
-
+  return temp.toLowerCase();
+}
 
 
 
@@ -224,177 +639,176 @@ function calcMD5(str)
 
 
 /* Global variables used across application */
-var userID; 
-var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
-var myString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16permswrite';
-var apiSig = calcMD5(myString); 
+// var userID; 
+// var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
+// var myString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16permswrite';
+// //var apiSig = calcMD5(myString); 
 
-var FROB;
-var anotherString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16frob'+FROB+'methodflickr.auth.getToken';
-var api_sig = calcMD5(anotherString);
+// var FROB;
+// // var anotherString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16frob'+FROB+'methodflickr.auth.getToken';
+// //var api_sig = SHA1(anotherString);
+// var api_sig; 
+
+// // /* We need to get the FROB here */
+// $(document).ready(function(){
+//   $("#testUser").click(function(){
+//     var url = window.location.href; 
+//     FROB = url.slice(28, url.length);  
+     
+//    // alert("FROB: "+ FROB); 
+//     convertFROB(FROB);
+//     alert("api_sig: "+ api_sig); 
+
+//     //debugger;
+//     //window.history.replaceState('object or string', 'Title', 'http://localhost:8888');
+    
+//     //runAjax(); 
+//     // $.ajax('http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&format=json&nojsoncallback=?&api_sig='+api_sig+'',
+    
+//     //  //$.getJSON('https://api.flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&format=json&nojsoncallback=1&api_sig='+api_sig+'',
+//     //  function(data){
+//     //    console.log(data); 
+//     //  }); 
+// $.ajax({
+//     url: 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'',
+//     dataType: 'jsonp',
+//     success: function(results){
+//       console.log(results);
+//         // var title = results.response.oneforty;
+//         // var numTweets = results.response.trackback_total;
+//         // $('#results').append(title + ' has ' + numTweets + ' tweets.');
+//     }
+// });
+
+//     });
+
+
+//   // });
+
+// // /*  Convert FROB into a token */
+// function convertFROB(FROB){
+//   alert("FROB TOKEN: " + FROB); 
+//   var stringToConvert = 'c9383302b56102b8api_key'+apiKey+'frob'+FROB+'methodflickr.auth.getToken';
+//   api_sig = SHA1(stringToConvert); 
+
+//   // this needs a different ENCODING - SHA1!!!
+  
+//   //return api_sig;
+//   }
+// }); // end testUser
 
 
 
 /* User Authentication Methods */
-
+$(document).ready(function(){
 
 /* Takes user to USER LOGIN at the FLICKR YAHOO page - if NOT already logged in */
-$(document).ready(function(){
-	$('#sign_in').click(function(){
-		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.test.login&api_key='+apiKey+'&format=json&nojsoncallback=1&api_sig='+apiSig+'',
-			function(data){
-				console.log(data.stat); 
-				if(data.stat == "fail"){
-						   window.location='http://flickr.com/services/auth/?api_key='+apiKey+'&perms=write&api_sig='+apiSig+'';
-
-				} else if (data.stat == "ok"){
-					alert("already logged on");
-				}
-			}) 
-	})
-})
+	//$('#sign_in').click(function(){
+  //   $.getJSON('https://api.flickr.com/services/rest/?method=flickr.auth.oauth.getAccessToken&api_key='+apiKey+'&format=json&nojsoncallback=1&auth_token='+FROB+'&api_sig='+api_sig+'',
+  // function(data){
+  //   console.log(data); 
+  // });
 
 
 
+$('#sign_in').click(function(){
+      OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
 
-/* We need to get the FROB here */
-$(document).ready(function(){
-	$("#testUser").click(function(){
-		var url = window.location.href; 
-		FROB = url.slice(28, url.length);  
-		 
-		alert(api_sig); 
-		//convertFROB(FROB);
-		//debugger;
-		//window.history.replaceState('object or string', 'Title', 'http://localhost:8888');
-		
-		//runAjax(); 
-		// $.ajax('http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&format=json&nojsoncallback=?&api_sig='+api_sig+'',
-		
-		// 	//$.getJSON('https://api.flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&format=json&nojsoncallback=1&api_sig='+api_sig+'',
-		// 	function(data){
-		// 		console.log(data); 
-		// 	}); 
-$.ajax({
-    url: 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'',
-    dataType: 'jsonp',
-    success: function(results){
-    	console.log(results);
-        // var title = results.response.oneforty;
-        // var numTweets = results.response.trackback_total;
-        // $('#results').append(title + ' has ' + numTweets + ' tweets.');
-    }
+  $('#sign_in').click(function(){
+  OAuth.popup('flickr').done(function(result) {
+    console.log(result)
+    // do some stuff with result
+  });
+  })
 });
 
-		});
-
-
-	// });
-
-/*  Convert FROB into a token */
-function convertFROB(FROB){
-	alert("Here's the Fing FROB: " + FROB); 
-	var stringToConvert = 'c9383302b56102b8api_key'+apiKey+'frob'+FROB+'methodflickr.auth.getToken';
-
-
-	api_sig = calcMD5(stringToConvert);
-
-	console.log("API SIG: "+api_sig);
-	
-	//return api_sig;
-}
-
-// function createCORSRequest(method, url) {
-//   var xhr = new XMLHttpRequest();
-//   if ("withCredentials" in xhr) {
-
-//     // Check if the XMLHttpRequest object has a "withCredentials" property.
-//     // "withCredentials" only exists on XMLHTTPRequest2 objects.
-//     xhr.open(method, url, true);
-
-//   } else if (typeof XDomainRequest != "undefined") {
-
-//     // Otherwise, check if XDomainRequest.
-//     // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-//     xhr = new XDomainRequest();
-//     xhr.open(method, url);
-
-//   } else {
-
-//     // Otherwise, CORS is not supported by the browser.
-//     xhr = null;
-
-//   }
-//   return xhr;
-// }
-
-// var xhr = createCORSRequest('GET', url);
-// if (!xhr) {
-//   throw new Error('CORS not supported');
-// }
-
-// xhr.onload = function() {
-//  var responseText = xhr.responseText;
-//  console.log(responseText);
-//  // process the response.
-// };
-
-// xhr.onerror = function() {
-//   console.log('There was an error!');
-// };
-
-// function runAjax(){
-
-
-
-// // var url = 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'';
-// // var xhr = createCORSRequest('GET', url);
-// // xhr.setRequestHeader(
-// //     'Access-Control-Allow-Origin', 'GET');
-
-// // xhr.send();
-
-// 			$.ajax({
-// 			type:'GET',
-// 			url: 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'',
-// 			contentType: 'json',
-// 			xhrFields:{
-// 				withCredentials: false
-// 			},
-// 			headers: {
-
-
-// 			},
-// 			success: function(){
-// 				console.log("FINALLY!"); 
-// 			},
-// 			error: function(){
-// 				console.log("I hate programming"); 
-// 			}
-// 			});
-
-
-// 	} // end runAjax(); 
-
- }); // end testUser
 
 
 
 
 
 
-/* Testing USER LOGIN */
-$(document).ready(function(){
-	$("").click(function(){
-		//$("#sign_in").empty(); // empties all the tags there are inside
+/* Get user ID - Use this to get the user's ID to use for other methods */
+  $("#getID").click(function(){
+    //var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; 
+    userName = prompt("Please enter your user name");
 
-		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.test.login&api_key='+apiKey+'&format=json&nojsoncallback=1&auth_token=72157652053303902-5878d3c4131e4235&api_sig=b736b172694a8fab23cb68851c505287',
-		function(data){
-			alert(data.stat); 
-			
-		});
-	});
-});
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+userName+'&format=json&nojsoncallback=1&auth_token=72157652029604262-c6b720c6caf27458&api_sig=f50405c8f647bcc90f19e7c6cadb4d53',
+      function(data){
+        userID = (data.user.id); 
+        alert(userID); 
+      })
+  })
+
+
+
+/* Testing USER LOGIN - currently NOT in production  */
+    $("").click(function(){
+    //$("#sign_in").empty(); // empties all the tags there are inside
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.test.login&api_key='+apiKey+'&format=json&nojsoncallback=1&auth_token=72157652053303902-5878d3c4131e4235&api_sig=b736b172694a8fab23cb68851c505287',
+    function(data){
+      alert(data.stat); 
+      
+    });
+  });
+
+
+
+
+/*
+  Return the images from the photoset - user has to know the ID of the photoset prior to using
+*/
+  $("#photoset").click(function(){
+      jQuery('#a-link').remove();   
+  
+      //jQuery('<img alt="" />').attr('id', 'loader').attr('src', 'ajax-loader.gif').appendTo('#image-container');
+      // var photosetID = prompt("Please Enter PHOTOSET ID", "photoset ID");
+      // if(theID != null){
+      //  alert("Valid"); 
+      // }
+      //var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; // not my real API key
+      //var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16'
+      var userID = '90085976%40N03';
+      var photosetID = '72157651980228016';
+
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
+
+
+    /*
+      iterates through the defined photoset and pulls all the images from my account
+    */  
+    function(data){
+      var i; 
+      var aPhoto = [];
+      for(i = 0; i < data.photoset.photo.length; i++){
+
+        aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
+      
+        jQuery('<a href/>').attr('id','photo'+i+'').attr('onClick','showMarkers()').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
+
+      }
+    
+
+    });
+  
+  });
+
+
+
+}); // END DOCUMENT READY FUNCTIONS 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* END - User Authentication Methods */
 
@@ -403,63 +817,9 @@ $(document).ready(function(){
 
 
 
-/* Get user ID - Use this to get the user's ID to use for other methods */
-$(document).ready(function(){
-	$("#getID").click(function(){
-		//var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; 
-		userName = prompt("Please enter your user name");
-
-		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+userName+'&format=json&nojsoncallback=1&auth_token=72157652029604262-c6b720c6caf27458&api_sig=f50405c8f647bcc90f19e7c6cadb4d53',
-			function(data){
-				userID = (data.user.id); 
-				alert(userID); 
-			})
-	})
-})
 
 
 
-
-
-/*
-	Return the images from the photoset - user has to know the ID of the photoset prior to using
-*/
-$(document).ready(function(){
-	$("#photoset").click(function(){
-			jQuery('#a-link').remove();   
-	
-			//jQuery('<img alt="" />').attr('id', 'loader').attr('src', 'ajax-loader.gif').appendTo('#image-container');
-			// var photosetID = prompt("Please Enter PHOTOSET ID", "photoset ID");
-			// if(theID != null){
-			// 	alert("Valid"); 
-			// }
-			//var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; // not my real API key
-			//var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16'
-			var userID = '90085976%40N03';
-			var photosetID = '72157651980228016';
-
-		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
-
-
-		/*
-			iterates through the defined photoset and pulls all the images from my account
-		*/	
-		function(data){
-			var i; 
-			var aPhoto = [];
-			for(i = 0; i < data.photoset.photo.length; i++){
-
-				aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
-			
-				jQuery('<a href/>').attr('id','photo'+i+'').attr('onClick','showMarkers()').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
-
-			}
-		
-
-		});
-	
-	});
-});
 
 
 /* Uploads one photo so we can comment on it - this will be for testing purposes */
@@ -662,4 +1022,75 @@ $(document).ready(function(){
 
 // }
 
+// function createCORSRequest(method, url) {
+//   var xhr = new XMLHttpRequest();
+//   if ("withCredentials" in xhr) {
+
+//     // Check if the XMLHttpRequest object has a "withCredentials" property.
+//     // "withCredentials" only exists on XMLHTTPRequest2 objects.
+//     xhr.open(method, url, true);
+
+//   } else if (typeof XDomainRequest != "undefined") {
+
+//     // Otherwise, check if XDomainRequest.
+//     // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+//     xhr = new XDomainRequest();
+//     xhr.open(method, url);
+
+//   } else {
+
+//     // Otherwise, CORS is not supported by the browser.
+//     xhr = null;
+
+//   }
+//   return xhr;
+// }
+
+// var xhr = createCORSRequest('GET', url);
+// if (!xhr) {
+//   throw new Error('CORS not supported');
+// }
+
+// xhr.onload = function() {
+//  var responseText = xhr.responseText;
+//  console.log(responseText);
+//  // process the response.
+// };
+
+// xhr.onerror = function() {
+//   console.log('There was an error!');
+// };
+
+// function runAjax(){
+
+
+
+// // var url = 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'';
+// // var xhr = createCORSRequest('GET', url);
+// // xhr.setRequestHeader(
+// //     'Access-Control-Allow-Origin', 'GET');
+
+// // xhr.send();
+
+//      $.ajax({
+//      type:'GET',
+//      url: 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'',
+//      contentType: 'json',
+//      xhrFields:{
+//        withCredentials: false
+//      },
+//      headers: {
+
+
+//      },
+//      success: function(){
+//        console.log("FINALLY!"); 
+//      },
+//      error: function(){
+//        console.log("I hate programming"); 
+//      }
+//      });
+
+
+//  } // end runAjax(); 
 
