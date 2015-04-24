@@ -331,6 +331,7 @@ function SHA1(msg) {
 
 
 var displayPhoto;
+var getGeoLocation;
 
 /* User Authentication Methods */
 $(document).ready(function(){
@@ -428,20 +429,33 @@ var aPhoto = [];
 
         aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
       
-        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
-
+        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
+        
       }
     
 
     });
+
+  
+
   
   });
 
 /* on hover, the photo will appear in a container on the side of the*/
 displayPhoto = function(photoNum){
      jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img');
+
     
 }
+
+getGeoLocation = function(photoID){
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
+      function(data){
+        console.log(data.photo.location.latitude);
+        console.log(data.photo.location.longitude);
+      });
+}
+
 
 
 }); // END
