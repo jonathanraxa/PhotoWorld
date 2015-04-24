@@ -430,7 +430,7 @@ request.send(data);
 
         aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
       
-        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onClick','comment('+data.photoset.photo[i].id+','+data.photoset.photo[i].title+','+data.photoset.ownername+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
+        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','getID('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
       }
     
@@ -443,24 +443,15 @@ request.send(data);
 
 }); // END
 
-/* When clicked, the photo will appear in a container on the side */
-function comment(photoID, title, ownerName){
 
-  alert("Photo ID: " + photoID); 
+/* When clicked, the photo will appear in a container on the side of the*/
+function getID(photoID){
 
-  // console.log("Title: " + title); 
-  // console.log("Owner: " + ownername); 
-
+    aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
+    jQuery('<a href/>').attr('id',data.photoset.photo[i].id).html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
 
 }
-
-
-
-
-
-
-
 
 
 
