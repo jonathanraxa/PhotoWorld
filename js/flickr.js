@@ -441,13 +441,32 @@ var aPhoto = [];
   
   });
 
+$('.EXIF').hide(); 
+
 /* on hover, the photo will appear in a container on the side of the*/
+
+//TODO: What should happen here is this method is called on hover 
+// and then it appends to the div tag
 displayPhoto = function(photoNum){
+
      jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img');
 
-    
 }
 
+
+
+// //When the Image is hovered upon, show the hidden div using Mouseover
+// $('#picture1').mouseover(function() {
+// $('.pic1desc').show();
+// });
+
+// //When the Image is hovered away from, hide the div using Mouseout
+// $('#picture1').mouseout(function() {
+// $('.pic1desc').hide();
+// });
+
+
+/* display the geo coordinates when you click on a photo */
 getGeoLocation = function(photoID){
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
       function(data){
