@@ -178,292 +178,6 @@ function calcMD5(str)
 /* END MD5 */
 
 
-
-;(function() {
-  'use strict';
-  
-  // Check the existence of module and module.exports to detect node
-  var isNode = (typeof module != 'undefined' && typeof module.exports != 'undefined');
-  
-  function OAuthSignature() {
-  }
-
-  OAuthSignature.prototype.generate = function (httpMethod, url, parameters, consumerSecret, tokenSecret, options) {
-    var signatureBaseString = new SignatureBaseString(httpMethod, url, parameters).generate();
-    var encodeSignature = true;
-    if (options) {
-      encodeSignature = options.encodeSignature;
-    }
-    return new HmacSha1Signature(signatureBaseString, consumerSecret, tokenSecret).generate(encodeSignature);
-  };
-
-  // Specification: http://oauth.net/core/1.0/#anchor14
-  // url: if the scheme is missing, http will be added automatically
-  function SignatureBaseString(httpMethod, url, parameters) {
-    parameters = new ParametersLoader(parameters).get();
-    this._httpMethod = new HttpMethodElement(httpMethod).get();
-    this._url = new UrlElement(url).get();
-    this._parameters = new ParametersElement(parameters).get();
-    this._rfc3986 = new Rfc3986();
-  }
-
-  SignatureBaseString.prototype = {
-    generate : function () {
-      // HTTP_METHOD & url & parameters
-      return this._rfc3986.encode(this._httpMethod) + '&'
-        + this._rfc3986.encode(this._url) + '&'
-        + this._rfc3986.encode(this._parameters);
-    }
-  };
-
-  function HttpMethodElement(httpMethod) {
-    this._httpMethod = httpMethod || '';
-  }
-
-  HttpMethodElement.prototype = {
-    get : function () {
-      return this._httpMethod.toUpperCase();
-    }
-  };
-
-  function UrlElement(url) {
-    this._url = url || '';
-  }
-
-  UrlElement.prototype = {
-    get : function () {
-      // The following is to prevent js-url from loading the window.location
-      if (!this._url) {
-        return this._url;
-      }
-
-      // FIXME: Make this behaviour explicit by returning warnings
-      if (this._url.indexOf('://') == -1) {
-        this._url = 'http://' + this._url;
-      }
-
-      // Handle parsing the url in node or in browser
-      var parsedUrl = isNode ? this.parseInNode() : this.parseInBrowser(),
-        // FIXME: Make this behaviour explicit by returning warnings
-        scheme = (parsedUrl.scheme || 'http').toLowerCase(),
-        // FIXME: Make this behaviour explicit by returning warnings
-        authority = (parsedUrl.authority || '').toLocaleLowerCase(),
-        path = parsedUrl.path || '',
-        port = parsedUrl.port || '';
-
-      // FIXME: Make this behaviour explicit by returning warnings
-      if ((port == 80 && scheme == 'http')
-        || (port == 443 && scheme == 'https'))
-      {
-        port = '';
-      }
-      var baseUrl = scheme + '://' + authority;
-      baseUrl = baseUrl + (!!port ? ':' + port : '');
-      // FIXME: Make this behaviour explicit by returning warnings
-      if (path == '/' && this._url.indexOf(baseUrl + path) === -1) {
-        path = '';
-      }
-      this._url =
-        (scheme ? scheme + '://' : '')
-          + authority
-          + (port ? ':' + port : '')
-          + path;
-      return this._url;
-    },
-    parseInBrowser : function () {
-      return {
-        scheme : url('protocol', this._url).toLowerCase(),
-        authority : url('hostname', this._url).toLocaleLowerCase(),
-        port : url('port', this._url),
-        path :url('path', this._url)
-      };
-    },
-    parseInNode : function () {
-      var url = require('url'),
-        parsedUri = url.parse(this._url),
-        scheme = parsedUri.protocol;
-      // strip the ':' at the end of the scheme added by the url module
-      if (scheme.charAt(scheme.length - 1) == ":") {
-        scheme = scheme.substring(0, scheme.length - 1);
-      }
-      return {
-        scheme : scheme,
-        authority : parsedUri.hostname,
-        port : parsedUri.port,
-        path : parsedUri.pathname
-      };
-    }
-  };
-
-  function ParametersElement (parameters) {
-    // Parameters format: { 'key': ['value 1', 'value 2'] };
-    this._parameters = parameters || {};
-    this._sortedKeys = [];
-    this._normalizedParameters = [];
-    this._rfc3986 = new Rfc3986();
-    this._sortParameters();
-    this._concatenateParameters();
-  }
-
-  ParametersElement.prototype = {
-    _sortParameters : function () {
-      var key,
-        encodedKey;
-      for (key in this._parameters) {
-        if (this._parameters.hasOwnProperty(key)) {
-          encodedKey = this._rfc3986.encode(key);
-          this._sortedKeys.push(encodedKey);
-        }
-      }
-      this._sortedKeys.sort();
-    },
-    _concatenateParameters : function () {
-      var i;
-      for (i = 0; i < this._sortedKeys.length; i++) {
-        this._normalizeParameter(this._sortedKeys[i]);
-      }
-    },
-    _normalizeParameter : function (encodedKey) {
-      var i,
-        key = this._rfc3986.decode(encodedKey),
-        values = this._parameters[key],
-        encodedValue;
-      values.sort();
-      for (i = 0; i < values.length; i++) {
-        encodedValue = this._rfc3986.encode(values[i]);
-        this._normalizedParameters.push(encodedKey + '=' + encodedValue)
-      }
-    },
-    get : function () {
-      return this._normalizedParameters.join('&');
-    }
-  };
-
-  function ParametersLoader (parameters) {
-    // Format: { 'key': ['value 1', 'value 2'] }
-    this._parameters = {};
-    this._loadParameters(parameters || {});
-  }
-
-  ParametersLoader.prototype = {
-    _loadParameters : function (parameters) {
-      if (parameters instanceof Array) {
-        this._loadParametersFromArray(parameters);
-      } else if (typeof parameters === 'object') {
-        this._loadParametersFromObject(parameters);
-      }
-    },
-    _loadParametersFromArray : function (parameters) {
-      var i;
-      for (i = 0; i < parameters.length; i++) {
-        this._loadParametersFromObject(parameters[i]);
-      }
-    },
-    _loadParametersFromObject : function (parameters) {
-      var key;
-      for (key in parameters) {
-        if (parameters.hasOwnProperty(key)) {
-          this._loadParameterValue(key, parameters[key] || '');
-        }
-      }
-    },
-    _loadParameterValue : function (key, value) {
-      var i;
-      if (value instanceof Array) {
-        for (i = 0; i < value.length; i++) {
-          this._addParameter(key, value[i]);
-        }
-        if (value.length == 0) {
-          this._addParameter(key, '');
-        }
-      } else {
-        this._addParameter(key, value);
-      }
-    },
-    _addParameter : function (key, value) {
-      if (!this._parameters[key]) {
-        this._parameters[key] = [];
-      }
-      this._parameters[key].push(value);
-    },
-    get : function () {
-      return this._parameters;
-    }
-  };
-
-  function Rfc3986() {
-
-  }
-
-  Rfc3986.prototype = {
-    encode : function (decoded) {
-      if (!decoded) {
-        return '';
-      }
-      // using implementation from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FencodeURIComponent
-      return encodeURIComponent(decoded)
-        .replace(/[!'()]/g, escape)
-        .replace(/\*/g, "%2A");
-    },
-    decode : function (encoded) {
-      if (!encoded) {
-        return '';
-      }
-      return decodeURIComponent(encoded);
-    }
-  };
-
-  function HmacSha1Signature(signatureBaseString, consumerSecret, tokenSecret) {
-    this._rfc3986 = new Rfc3986();
-    this._text = signatureBaseString;
-    this._key = this._rfc3986.encode(consumerSecret) + '&' + this._rfc3986.encode(tokenSecret);
-    this._base64EncodedHash = new HmacSha1(this._text, this._key).getBase64EncodedHash();
-  }
-
-  HmacSha1Signature.prototype = {
-    generate : function (encode) {
-      return encode === false ?
-          this._base64EncodedHash :
-          this._rfc3986.encode(this._base64EncodedHash);
-    }
-  };
-
-  function HmacSha1(text, key) {
-    // load CryptoJs in the browser or in node
-    this._cryptoJS = isNode ? require('crypto-js') : CryptoJS;
-    this._text = text || '';
-    this._key = key || '';
-    this._hash = this._cryptoJS.HmacSHA1(this._text, this._key);
-  }
-
-  HmacSha1.prototype = {
-    getBase64EncodedHash : function () {
-      return this._hash.toString(this._cryptoJS.enc.Base64);
-    }
-  };
-
-  var oauthSignature = new OAuthSignature();
-  oauthSignature.SignatureBaseString = SignatureBaseString;
-  oauthSignature.HttpMethodElement = HttpMethodElement;
-  oauthSignature.UrlElement = UrlElement;
-  oauthSignature.ParametersElement = ParametersElement;
-  oauthSignature.ParametersLoader = ParametersLoader;
-  oauthSignature.Rfc3986 = Rfc3986;
-  oauthSignature.HmacSha1Signature = HmacSha1Signature;
-  oauthSignature.HmacSha1 = HmacSha1;
-
-  // support for the browser and nodejs
-  if (isNode) {
-    module.exports = oauthSignature;
-  } else {
-    window.oauthSignature = oauthSignature;
-  }
-})();
-
-
-
-
-
 /**
 *  Secure Hash Algorithm (SHA1)
 *  http://www.webtoolkit.info/
@@ -618,89 +332,11 @@ function SHA1(msg) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// http://flickr.com/services/auth/?api_key=0fd24d9d0411ede9c4d33d4c531bbc16&perms=write&api_sig=47ddcd2305b095f3be2bc2230f07396c
-
-// "http://www.flickr.com/services/auth/?api_key=0fd24d9d0411ede9c4d33d4c531bbc16&perms=write&api_sig=c9383302b56102b8"
-
-
-/* Global variables used across application */
-// var userID; 
-// var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
-// var myString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16permswrite';
-// //var apiSig = calcMD5(myString); 
-
-// var FROB;
-// // var anotherString = 'c9383302b56102b8api_key0fd24d9d0411ede9c4d33d4c531bbc16frob'+FROB+'methodflickr.auth.getToken';
-// //var api_sig = SHA1(anotherString);
-// var api_sig; 
-
-// // /* We need to get the FROB here */
-// $(document).ready(function(){
-//   $("#testUser").click(function(){
-//     var url = window.location.href; 
-//     FROB = url.slice(28, url.length);  
-     
-//    // alert("FROB: "+ FROB); 
-//     convertFROB(FROB);
-//     alert("api_sig: "+ api_sig); 
-
-//     //debugger;
-//     //window.history.replaceState('object or string', 'Title', 'http://localhost:8888');
-    
-//     //runAjax(); 
-//     // $.ajax('http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&format=json&nojsoncallback=?&api_sig='+api_sig+'',
-    
-//     //  //$.getJSON('https://api.flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&format=json&nojsoncallback=1&api_sig='+api_sig+'',
-//     //  function(data){
-//     //    console.log(data); 
-//     //  }); 
-// $.ajax({
-//     url: 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'',
-//     dataType: 'jsonp',
-//     success: function(results){
-//       console.log(results);
-//         // var title = results.response.oneforty;
-//         // var numTweets = results.response.trackback_total;
-//         // $('#results').append(title + ' has ' + numTweets + ' tweets.');
-//     }
-// });
-
-//     });
-
-
-//   // });
-
-// // /*  Convert FROB into a token */
-// function convertFROB(FROB){
-//   alert("FROB TOKEN: " + FROB); 
-//   var stringToConvert = 'c9383302b56102b8api_key'+apiKey+'frob'+FROB+'methodflickr.auth.getToken';
-//   api_sig = SHA1(stringToConvert); 
-
-//   // this needs a different ENCODING - SHA1!!!
-  
-//   //return api_sig;
-//   }
-// }); // end testUser
-
-
-
 /* User Authentication Methods */
 $(document).ready(function(){
+
+      document.domain = document.domain;
+
 
 /* Takes user to USER LOGIN at the FLICKR YAHOO page - if NOT already logged in */
 	//$('#sign_in').click(function(){
@@ -709,20 +345,38 @@ $(document).ready(function(){
   //   console.log(data); 
   // });
 
-
-
-$('#sign_in').click(function(){
-      OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
+var oauthT; 
+var oauthTS; 
+var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
 
   $('#sign_in').click(function(){
+  OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
   OAuth.popup('flickr').done(function(result) {
-    console.log(result)
-    // do some stuff with result
-  });
-  })
-});
+
+    console.log(result);
 
 
+    oauthT =  result.oauth_token;
+    oauthTS = result.oauth_token_secret; 
+
+    api_sig = SHA1('api_key'+apiKey+'oauth_token='+oauthT);
+
+    alert(api_sig); 
+
+     getAccessToken(); 
+
+    }); // end .done
+  }); // end '#sign_in'
+
+  function getAccessToken(){
+    var url = 'https://www.flickr.com/services/oauth/authorize?oauth_token='+oauthT+'';
+request = new XDomainRequest();
+request.open('GET', url);
+request.onload = function() {
+  callback(req.responseText);
+};
+request.send(data);
+  }
 
 
 
@@ -730,8 +384,6 @@ $('#sign_in').click(function(){
 
 /* Get user ID - Use this to get the user's ID to use for other methods */
   $("#getID").click(function(){
-    //var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; 
-    userName = prompt("Please enter your user name");
 
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+userName+'&format=json&nojsoncallback=1&auth_token=72157652029604262-c6b720c6caf27458&api_sig=f50405c8f647bcc90f19e7c6cadb4d53',
       function(data){
@@ -761,13 +413,7 @@ $('#sign_in').click(function(){
   $("#photoset").click(function(){
       jQuery('#a-link').remove();   
   
-      //jQuery('<img alt="" />').attr('id', 'loader').attr('src', 'ajax-loader.gif').appendTo('#image-container');
-      // var photosetID = prompt("Please Enter PHOTOSET ID", "photoset ID");
-      // if(theID != null){
-      //  alert("Valid"); 
-      // }
-      //var apiKey = '0ecf0a0d645ad3b39ec60d137ebb75a5'; // not my real API key
-      //var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16'
+  
       var userID = '90085976%40N03';
       var photosetID = '72157651980228016';
 
@@ -784,7 +430,7 @@ $('#sign_in').click(function(){
 
         aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
       
-        jQuery('<a href/>').attr('id','photo'+i+'').attr('onClick','showMarkers()').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
+        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onClick','comment('+data.photoset.photo[i].id+','+data.photoset.photo[i].title+','+data.photoset.ownername+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
       }
     
@@ -795,13 +441,19 @@ $('#sign_in').click(function(){
 
 
 
-}); // END DOCUMENT READY FUNCTIONS 
+}); // END
 
+/* When clicked, the photo will appear in a container on the side */
+function comment(photoID, title, ownerName){
 
+  alert("Photo ID: " + photoID); 
 
+  // console.log("Title: " + title); 
+  // console.log("Owner: " + ownername); 
 
 
 
+}
 
 
 
@@ -810,7 +462,6 @@ $('#sign_in').click(function(){
 
 
 
-/* END - User Authentication Methods */
 
 
 
@@ -822,275 +473,6 @@ $('#sign_in').click(function(){
 
 
 
-/* Uploads one photo so we can comment on it - this will be for testing purposes */
-// $(document).ready(function(){
-// 	$('#getPublic').click(function(){
-// 		var i; 
-// 		var publicPhoto = []; 
-// 		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=e81306643b01d75c37c5e14f3d0ca1ab&user_id=90085976%40N03&format=json&nojsoncallback=1&api_sig=72ec5e99fad9beb9f3d7c4ed30df4c78',
-// 			function(data){
 
-// 				//alert(data.photos.photo[0].farm); 
-// 			    for(i = 0; i < data.photos.photo.length; i++){
 
-// 					publicPhoto[i] = 'http://farm' + data.photos.photo[i].farm + '.static.flickr.com/' + data.photos.photo[i].server + '/' + data.photos.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
-					
-// 				jQuery('<a href/>').attr('id','photo').html($('<img/>').attr('src',publicPhoto[i])).appendTo('#pics');
-
-// 			}
-
-// 			})
-// 	})
-// })
-
-
-
-/* User makes a comment on the photo */
-// $(document).ready(function(){
-// 	$("#comment").click(function(){
-
-// 		var comment = prompt("Please enter your comment"); 
-// 		var photoID = '17170293906';
-// 		// &auth_token=72157652053303902-5878d3c4131e4235
-// 		$.post('https://api.flickr.com/services/rest/?method=flickr.photos.comments.addComment&api_key='+apiKey+'&photo_id='+photoID+'&comment_text='+comment+'&format=json&nojsoncallback=1&api_sig='+apiSig'',
-
-// 			function(data){
-// 				alert(data.stat); 
-// 			});
-// 	});
-// });
-
-
-
-
-
-/*
-	Will check if the user signed in, this will 
-	be done in the background process.
-*/
-// $(document).ready(function(){
-// 	$("#sign_in").click(function(){
-// 			$.getJSON("https://api.flickr.com/services/rest/?method=flickr.test.login&api_key=e8ccf1cc1cbbae254459539e1cbf049c&format=json&nojsoncallback=1&auth_token=72157649673760944-12f9842b056ca8e9&api_sig=cd1a1aaf7895f9ed0e71505c2467d23e",
-// 	{
-// 		format: "json",
-// 		function(data){
-// 			alert("data.user.username.content");
-// 		}
-// 	});
-// 	});
-// });
-
-
-// function checkSignin(){
-// 	$.getJSON("https://api.flickr.com/services/rest/?method=flickr.test.login&api_key=e8ccf1cc1cbbae254459539e1cbf049c&format=json&nojsoncallback=1&auth_token=72157649673760944-12f9842b056ca8e9&api_sig=cd1a1aaf7895f9ed0e71505c2467d23e",
-// 	{
-// 		format: "json",
-// 		function(data){
-// 			alert(data.user.username.content);
-// 		}
-// 	});
-// }
-
-
-/*
-	Checks if the user has signed in or not. If not, then
-	the function will ask for credentials and then download the 
-	photos from his library. 
-*/
-// boolean ready = true; 
-// $(document).ready(function(){
-// 	$("#sign_in").click(function(){
-
-// 		if(ready = false){
-// 		var username = prompt("Username", "username");
-// 		var password = prompt("Password", "password");
-// 		alert("Downloading " + username +"'s"+ " photos");
-// 		} else if (ready = true){
-// 			checkSignin(); 
-// 		}
-	
-// 	});
-
-// });
-
-
-	
-
-
-
-
-
-// $(document).ready(function() {
-// SC.get('/tracks/293', function(track) {
-//   SC.oEmbed(track.permalink_url, document.getElementById('player'));
-// });
-// });
-
-// $(document).ready(function(){
-// 	$("#button").click(function(){
-// 		var xhr = new XMLHttpRequest(); 
-// 		xhr.open("GET", 
-// 			"https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=433ad000f6c8f565418ae4bc51864f91&user_id=90085976%40N03&format=json&nojsoncallback=1&auth_token=72157649645806663-ada04bff8c9b8a74&api_sig=2d1630adbfdf333df03789de394db87d", 
-// 			false); 
-
-// 		xhr.send(); 
-
-// 		console.log(xhr.status); 
-// 		console.log(xhr.statusText + " good, you're logged on!!!"); 
-
-// 		alert()
-
-
-
-// 	});
-// });
-
-
-
-
-// $(document).ready(function(){
-// 	$("#button").click(function(){
-// 		var info = $flickr.photos.getInfo("16324929259");
-// 		console.log(info); 
-// 	})
-// })
-
-// $('#button').click(function() {
-// 	var string = $('#string').val(); //taking value of string
-
-// 	$.get('./php/reverse.php', { input: string }, function(data) {
-// 		$('#feedback').text(data); 
-// 	});
-
-// });
-
-// $(function () {
-// 	$.ajax({
-// 		type: 'GET',
-// 		url: '/api/orders',
-// 		sucess: function(orders){
-// 			$.each(orders, function(i,order){
-// 				$orders.append('<li>myorder</li>'); 
-// 			});
-// 		}
-// 	});
-// });
-
-// $('#button').click(function(data){
-
-// 	var string = $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=7bdc0a857bd273658f68d9dddfd22079&photo_id=16324929259&format=json&nojsoncallback=1&auth_token=72157651529668479-53f7076fcde493ff&api_sig=727174b0132d14d963930ff6882bb6af');
-
-// 	alert($_GET); 
-// });
-
-
-// var demo = '{"pets": { "name": "Jeffrey", "species": "Giraffe"}}';
-// var xhr = new XMLHttpRequest();
-// xhr.open("GET", "http://www.codecademy.com/", false);
-// // Add your code below!
-// xhr.send(); 
-// alert(xhr.status + " " +xhr.statusText);
-// console.log(xhr.statusText); 
-
-
-// var json = JSON.parse(demo);
-// alert(json.name);
-
-
-
-// function(data){
-
-// //loop through the results with the following function
-// $.each(data.photoset.photo, function(i,item){
-
-//     //build the url of the photo in order to link to it
-//    // var photoURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg'
-
-//     //turn the photo id into a variable
-//     var photoID = item.id;
-
-//     //use another ajax request to get the geo location data for the image
-//     $.getJSON('http://api.flickr.com/services/rest/?&amp;method=flickr.photos.geo.getLocation&amp;api_key=' + 0fd24d9d0411ede9c4d33d4c531bbc16 + '&amp;photo_id=' + 16324929259 + '&amp;format=json&amp;jsoncallback=?',
-//     function(data){
-
-//         //if the image has a location, build an html snippet containing the data
-//         if(data.stat != 'fail') {
-//             pLocation = '<a href="http://www.flickr.com/map?fLat=' + data.photo.location.latitude + '&amp;fLon=' + data.photo.location.longitude + '&amp;zl=1" target="_blank">' + data.photo.location.locality._content + ', ' + data.photo.location.region._content + ' (Click for Map)</a>';
-//         }
-
-//     });
-
-// }
-
-// function createCORSRequest(method, url) {
-//   var xhr = new XMLHttpRequest();
-//   if ("withCredentials" in xhr) {
-
-//     // Check if the XMLHttpRequest object has a "withCredentials" property.
-//     // "withCredentials" only exists on XMLHTTPRequest2 objects.
-//     xhr.open(method, url, true);
-
-//   } else if (typeof XDomainRequest != "undefined") {
-
-//     // Otherwise, check if XDomainRequest.
-//     // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-//     xhr = new XDomainRequest();
-//     xhr.open(method, url);
-
-//   } else {
-
-//     // Otherwise, CORS is not supported by the browser.
-//     xhr = null;
-
-//   }
-//   return xhr;
-// }
-
-// var xhr = createCORSRequest('GET', url);
-// if (!xhr) {
-//   throw new Error('CORS not supported');
-// }
-
-// xhr.onload = function() {
-//  var responseText = xhr.responseText;
-//  console.log(responseText);
-//  // process the response.
-// };
-
-// xhr.onerror = function() {
-//   console.log('There was an error!');
-// };
-
-// function runAjax(){
-
-
-
-// // var url = 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'';
-// // var xhr = createCORSRequest('GET', url);
-// // xhr.setRequestHeader(
-// //     'Access-Control-Allow-Origin', 'GET');
-
-// // xhr.send();
-
-//      $.ajax({
-//      type:'GET',
-//      url: 'http://flickr.com/services/rest/?method=flickr.auth.getToken&api_key='+apiKey+'&frob='+FROB+'&api_sig='+api_sig+'',
-//      contentType: 'json',
-//      xhrFields:{
-//        withCredentials: false
-//      },
-//      headers: {
-
-
-//      },
-//      success: function(){
-//        console.log("FINALLY!"); 
-//      },
-//      error: function(){
-//        console.log("I hate programming"); 
-//      }
-//      });
-
-
-//  } // end runAjax(); 
 

@@ -43,35 +43,43 @@
 
 <script type="text/javascript" src="./js/flickr.js"></script>
 
+<script src="./js/oauth.js"></script>
 
 
-<script src="./js/oauth.js">
 
-$(document).ready(function(){
 
-      alert("you good");
+ <script src="./dist/hello.all.js">
 
-     OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
 
-  $('#sign_in').click(function(){
-  OAuth.popup('flickr').done(function(result) {
-    console.log(result)
-    // do some stuff with result
+
+    hello.on('auth.login', function(auth){
+  
+  // Call user information, for the given network
+  hello( auth.network ).api( '/me' ).then( function(r){
+    // Inject it into the container
+    var label = document.getElementById( 'profile_' + auth.network );
+    if (!label){
+      label = document.createElement('div');
+      label.id = 'profile_' + auth.network;
+      document.getElementById('profile').appendChild(label);
+    }
+    label.innerHTML = '<img src="' + r.thumbnail + '" /> Hey ' + r.name;
   });
-  })
- 
 });
 
 
 
-</script>
 
- 
+ </script>
+
+ <script type="text/javascript">
+
+hello.init({ 
+  flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
+}, { redirect_uri: 'http://localhost:8888' });
 
 
-
-
-
+ </script>
 
 
 
@@ -113,12 +121,10 @@ $(document).ready(function(){
   <input onClick="showMarkers();" type=button value="Show All Markers">
   <input onClick="deleteMarkers();" type=button value="Delete Markers">
   <input id="sign_in" type=button value="Flickr Sign-In">
-  <input id="sign_out" type=button value="Flickr Sign-Out">
   <input id="photoset" type=button value="Enter Photoset">
-  <input id="getID" type=button value="get User ID">
   <input id="testUser" type=button value="testUser"> 
   <input id="getPublic" type=button value="Get Public Photos">
-
+<button onclick="hello( 'flickr' ).login()">flickr</button>
   <br>
     <div style="color:white">
     <div style="clear:both;" id="userinfo"></div>
@@ -130,75 +136,37 @@ $(document).ready(function(){
     <input type="radio" name="radius" value="2 miles"> 4 &nbsp;
         <input type="radio" name="radius" value="2 miles"> 6 &nbsp;
 </div>
-
-
-
-
-  <div class="loginDiv">
-        <div id="fbLogin" onclick="">Facebook</div>
-        <div id="twitterlogin">Twitter</div>
-        <div id="googlelogin">Google</div>
-    </div>
-
-
-
-
-<!-- 
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-
-
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#"><img src="./images/finalProjectTitle.png" style="height:80px; width:400px"></a> -->
-
-
           </div>
-
-
 
           <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-<!--               <li class="active"><a href="#">Home</a></li>
--->              
-<!-- 
- <input onclick="showMarkers();" type=button value="Show All Markers">
-      <input onclick="deleteMarkers();" type=button value="Delete Markers">
-      <input onclick="clearMarkers();" type=button value="Hide Markers"> -->
-
-<!-- <li><a href="#addPhotos">Add Photos</a></li>
-  <li><a href="#addMusic">Add Music</a></li> -->
-
 </ul>
-
-</div><!--/.nav-collapse -->
-
-
-<!-- <div id = "panel">
-
-
-
-
-</div> -->
-
-
+</div>
+</div>
 </nav>
+</div>
+
+
+<br />
+<br />
+
+
+
+<div id="map-canvas" style="width: 100%; height: 100%">
+
+<div>HERE IS THE IMAGE</div> 
 
 </div>
-<br />
-<br />
-
-
-<div id="map-canvas" style="width: 100%; height: 100%"></div>
 
 
 <div class = "footer">
 <!-- Start WOWSlider.com BODY section -->
   <div id="wowslider-container1">
     <div class="ws_thumbs">
+      <!-- Where the images will appear -->
       <div id="pics"> </div>
+
+
     </div>
   </div>
   <!-- <div class="ws_script" style="position:absolute;left:-99%"></div>
