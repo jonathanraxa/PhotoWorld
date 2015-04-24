@@ -330,12 +330,11 @@ function SHA1(msg) {
 
 
 
-
+var displayPhoto;
 
 /* User Authentication Methods */
 $(document).ready(function(){
 
-      document.domain = document.domain;
 
 
 /* Takes user to USER LOGIN at the FLICKR YAHOO page - if NOT already logged in */
@@ -348,6 +347,7 @@ $(document).ready(function(){
 var oauthT; 
 var oauthTS; 
 var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
+
 
   $('#sign_in').click(function(){
   OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
@@ -405,7 +405,7 @@ request.send(data);
   });
 
 
-
+var aPhoto = [];
 
 /*
   Return the images from the photoset - user has to know the ID of the photoset prior to using
@@ -416,21 +416,19 @@ request.send(data);
   
       var userID = '90085976%40N03';
       var photosetID = '72157651980228016';
-
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
 
-
     /*
-      iterates through the defined photoset and pulls all the images from my account
+      iterates through the defined photoset and pulls all the images from account
     */  
     function(data){
       var i; 
-      var aPhoto = [];
+      
       for(i = 0; i < data.photoset.photo.length; i++){
 
         aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
       
-        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','getID('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
+        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
       }
     
@@ -439,19 +437,17 @@ request.send(data);
   
   });
 
+/* on hover, the photo will appear in a container on the side of the*/
+displayPhoto = function(photoNum){
+     jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img');
+    
+}
 
 
 }); // END
 
 
-/* When clicked, the photo will appear in a container on the side of the*/
-function getID(photoID){
 
-    aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
-    jQuery('<a href/>').attr('id',data.photoset.photo[i].id).html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
-
-
-}
 
 
 

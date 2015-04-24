@@ -30,3 +30,10 @@
     width:30%;
     height:10%;
 }
+
+#img {
+    
+    background-color: black; 
+    height: 100px; 
+    width: 100px; 
+}
