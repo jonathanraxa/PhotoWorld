@@ -11,13 +11,13 @@
 /*
  * Convert a 32-bit number to a hex string with ls-byte first
  */
-var hex_chr = "0123456789abcdef";
-function rhex(num)
-{
+ var hex_chr = "0123456789abcdef";
+ function rhex(num)
+ {
   str = "";
   for(j = 0; j <= 3; j++)
     str += hex_chr.charAt((num >> (j * 8 + 4)) & 0x0F) +
-           hex_chr.charAt((num >> (j * 8)) & 0x0F);
+  hex_chr.charAt((num >> (j * 8)) & 0x0F);
   return str;
 }
 
@@ -25,24 +25,24 @@ function rhex(num)
  * Convert a string to a sequence of 16-word blocks, stored as an array.
  * Append padding bits and the length, as described in the MD5 standard.
  */
-function str2blks_MD5(str)
-{
+ function str2blks_MD5(str)
+ {
   nblk = ((str.length + 8) >> 6) + 1;
   blks = new Array(nblk * 16);
   for(i = 0; i < nblk * 16; i++) blks[i] = 0;
-  for(i = 0; i < str.length; i++)
-    blks[i >> 2] |= str.charCodeAt(i) << ((i % 4) * 8);
-  blks[i >> 2] |= 0x80 << ((i % 4) * 8);
-  blks[nblk * 16 - 2] = str.length * 8;
-  return blks;
-}
+    for(i = 0; i < str.length; i++)
+      blks[i >> 2] |= str.charCodeAt(i) << ((i % 4) * 8);
+    blks[i >> 2] |= 0x80 << ((i % 4) * 8);
+    blks[nblk * 16 - 2] = str.length * 8;
+    return blks;
+  }
 
 /*
  * Add integers, wrapping at 2^32. This uses 16-bit operations internally 
  * to work around bugs in some JS interpreters.
  */
-function add(x, y)
-{
+ function add(x, y)
+ {
   var lsw = (x & 0xFFFF) + (y & 0xFFFF);
   var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
   return (msw << 16) | (lsw & 0xFFFF);
@@ -51,8 +51,8 @@ function add(x, y)
 /*
  * Bitwise rotate a 32-bit number to the left
  */
-function rol(num, cnt)
-{
+ function rol(num, cnt)
+ {
   return (num << cnt) | (num >>> (32 - cnt));
 }
 
@@ -60,8 +60,8 @@ function rol(num, cnt)
  * These functions implement the basic operation for each round of the
  * algorithm.
  */
-function cmn(q, a, b, x, s, t)
-{
+ function cmn(q, a, b, x, s, t)
+ {
   return add(rol(add(add(a, q), add(x, t)), s), b);
 }
 function ff(a, b, c, d, x, s, t)
@@ -84,8 +84,8 @@ function ii(a, b, c, d, x, s, t)
 /*
  * Take a string and return the hex representation of its MD5.
  */
-function calcMD5(str)
-{
+ function calcMD5(str)
+ {
   x = str2blks_MD5(str);
   a =  1732584193;
   b = -271733879;
@@ -249,16 +249,16 @@ function SHA1(msg) {
   }
   switch( msg_len % 4 ) {
     case 0:
-      i = 0x080000000;
+    i = 0x080000000;
     break;
     case 1:
-      i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
+    i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
     break;
     case 2:
-      i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
+    i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
     break;
     case 3:
-      i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8  | 0x80;
+    i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8  | 0x80;
     break;
   }
   word_array.push( i );
@@ -267,54 +267,54 @@ function SHA1(msg) {
   word_array.push( (msg_len<<3)&0x0ffffffff );
   for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
     for( i=0; i<16; i++ ) W[i] = word_array[blockstart+i];
-    for( i=16; i<=79; i++ ) W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1);
-    A = H0;
-    B = H1;
-    C = H2;
-    D = H3;
-    E = H4;
-    for( i= 0; i<=19; i++ ) {
-      temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
-      E = D;
-      D = C;
-      C = rotate_left(B,30);
-      B = A;
-      A = temp;
+      for( i=16; i<=79; i++ ) W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1);
+        A = H0;
+      B = H1;
+      C = H2;
+      D = H3;
+      E = H4;
+      for( i= 0; i<=19; i++ ) {
+        temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+        E = D;
+        D = C;
+        C = rotate_left(B,30);
+        B = A;
+        A = temp;
+      }
+      for( i=20; i<=39; i++ ) {
+        temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+        E = D;
+        D = C;
+        C = rotate_left(B,30);
+        B = A;
+        A = temp;
+      }
+      for( i=40; i<=59; i++ ) {
+        temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+        E = D;
+        D = C;
+        C = rotate_left(B,30);
+        B = A;
+        A = temp;
+      }
+      for( i=60; i<=79; i++ ) {
+        temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+        E = D;
+        D = C;
+        C = rotate_left(B,30);
+        B = A;
+        A = temp;
+      }
+      H0 = (H0 + A) & 0x0ffffffff;
+      H1 = (H1 + B) & 0x0ffffffff;
+      H2 = (H2 + C) & 0x0ffffffff;
+      H3 = (H3 + D) & 0x0ffffffff;
+      H4 = (H4 + E) & 0x0ffffffff;
     }
-    for( i=20; i<=39; i++ ) {
-      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
-      E = D;
-      D = C;
-      C = rotate_left(B,30);
-      B = A;
-      A = temp;
-    }
-    for( i=40; i<=59; i++ ) {
-      temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
-      E = D;
-      D = C;
-      C = rotate_left(B,30);
-      B = A;
-      A = temp;
-    }
-    for( i=60; i<=79; i++ ) {
-      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
-      E = D;
-      D = C;
-      C = rotate_left(B,30);
-      B = A;
-      A = temp;
-    }
-    H0 = (H0 + A) & 0x0ffffffff;
-    H1 = (H1 + B) & 0x0ffffffff;
-    H2 = (H2 + C) & 0x0ffffffff;
-    H3 = (H3 + D) & 0x0ffffffff;
-    H4 = (H4 + E) & 0x0ffffffff;
+    var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
+
+    return temp.toLowerCase();
   }
-  var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
-
-  return temp.toLowerCase();
-}
 
 
 
@@ -330,15 +330,20 @@ function SHA1(msg) {
 
 
 
-var displayPhoto;
-var getGeoLocation;
+  var displayPhoto;
+  var getGeoLocation;
+  var newLat;
+  var newLon;
+  var locality;
+  var region; 
+  var getPhotoInfo; 
 
-/* User Authentication Methods */
-$(document).ready(function(){
+  /* User Authentication Methods */
+  $(document).ready(function(){
 
 
 
-/* Takes user to USER LOGIN at the FLICKR YAHOO page - if NOT already logged in */
+    /* Takes user to USER LOGIN at the FLICKR YAHOO page - if NOT already logged in */
 	//$('#sign_in').click(function(){
   //   $.getJSON('https://api.flickr.com/services/rest/?method=flickr.auth.oauth.getAccessToken&api_key='+apiKey+'&format=json&nojsoncallback=1&auth_token='+FROB+'&api_sig='+api_sig+'',
   // function(data){
@@ -350,7 +355,7 @@ var oauthTS;
 var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
 
 /* Allows users to sign-in and recieve an Oauth token */ 
-  $('#sign_in').click(function(){
+$('#sign_in').click(function(){
   OAuth.initialize('xNHSTIsum9Yfyk4bLHAvkO983Pg');
   OAuth.popup('flickr').done(function(result) {
 
@@ -364,87 +369,85 @@ var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
 
     alert(api_sig); 
 
-     getAccessToken(); 
+    getAccessToken(); 
 
     }); // end .done
   }); // end '#sign_in'
 
-  function getAccessToken(){
-    var url = 'https://www.flickr.com/services/oauth/authorize?oauth_token='+oauthT+'';
-request = new XDomainRequest();
-request.open('GET', url);
-request.onload = function() {
-  callback(req.responseText);
-};
-request.send(data);
-  }
+function getAccessToken(){
+  var url = 'https://www.flickr.com/services/oauth/authorize?oauth_token='+oauthT+'';
+  request = new XDomainRequest();
+  request.open('GET', url);
+  request.onload = function() {
+    callback(req.responseText);
+  };
+  request.send(data);
+}
 
-var userEmail = prompt("Enter Email"); 
-
-$("#getUser").click(function(){
-  $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByEmail&api_key='+apiKey+'&find_email='+userEmail+'&format=json&nojsoncallback=1',
+//var userEmail = prompt("Enter Email"); 
+$("").click(function(){
+  $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByEmail&api_key='+apiKey+'&find_email=jonathan_raxa%40yahoo.com&format=json&nojsoncallback=1',
     function(data){
-      console.log(data.user.id); 
+      console.log(data); 
+    });
+});
+
+/* Get user ID - Use this to get the user's ID to use for other methods */
+$("#getUser").click(function(){
+  var userName = prompt ("Enter username"); 
+  $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=8911b089b2a9217b376848b350b6af6d&username=paulnomnom&format=json&nojsoncallback=1&api_sig=08ab0fbd2428b434d4ff9b0cbfaefb49',
+    function(data){
+      console.log(data); 
     })
 })
 
-
-/* Get user ID - Use this to get the user's ID to use for other methods */
-  $("#getID").click(function(){
-
-    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+userName+'&format=json&nojsoncallback=1&auth_token=72157652029604262-c6b720c6caf27458&api_sig=f50405c8f647bcc90f19e7c6cadb4d53',
-      function(data){
-        userID = (data.user.id); 
-        alert(userID); 
-      })
-  })
+    // $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+userName+'&format=json&nojsoncallback=1',
 
 
-
-/* Testing USER LOGIN - currently NOT in production  */
-    $("").click(function(){
+      /* Testing USER LOGIN - currently NOT in production  */
+      $("").click(function(){
     //$("#sign_in").empty(); // empties all the tags there are inside
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.test.login&api_key='+apiKey+'&format=json&nojsoncallback=1&auth_token=72157652053303902-5878d3c4131e4235&api_sig=b736b172694a8fab23cb68851c505287',
-    function(data){
-      alert(data.stat); 
-      
-    });
+      function(data){
+        alert(data.stat); 
+
+      });
   });
 
 
-var aPhoto = [];
+      var aPhoto = [];
 
 /*
   Return the images from the photoset - user has to know the ID of the photoset prior to using
-*/
+  */
   $("#photoset").click(function(){
-      jQuery('#a-link').remove();   
-  
-  
-      var userID = '90085976%40N03';
-      var photosetID = '72157651980228016';
+    jQuery('#a-link').remove();   
+
+
+    var userID = '90085976%40N03';
+    var photosetID = '72157651980228016';
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key='+apiKey+'&photoset_id='+photosetID+'&user_id='+userID+'&format=json&nojsoncallback=1',
 
     /*
       iterates through the defined photoset and pulls all the images from account
-    */  
-    function(data){
-      var i; 
-      
-      for(i = 0; i < data.photoset.photo.length; i++){
+      */  
+      function(data){
+        var i; 
 
-        aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
-      
-        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
-        
-      }
-    
+        for(i = 0; i < data.photoset.photo.length; i++){
 
-    });
+          aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
 
-  
+          jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
-  
+        }
+
+
+      });
+
+
+
+
   });
 
 
@@ -455,31 +458,191 @@ var aPhoto = [];
 /* on hover, the photo will appear in a container on the side of the page */
 displayPhoto = function(photoNum){
 
-     jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img');
+ jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img').hide();
 
 }
 
 
-
-// //When the Image is hovered upon, show the hidden div using Mouseover
-// $('#picture1').mouseover(function() {
-// $('.pic1desc').show();
-// });
-
-// //When the Image is hovered away from, hide the div using Mouseout
-// $('#picture1').mouseout(function() {
-// $('.pic1desc').hide();
-// });
 
 
 /* display the geo coordinates when you click on a photo */
 getGeoLocation = function(photoID){
-    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
-      function(data){
-        console.log(data.photo.location.latitude);
-        console.log(data.photo.location.longitude);
-      });
+  $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
+    function(data){
+
+     newLat = data.photo.location.latitude;
+     newLng = data.photo.location.longitude;
+
+     locality = data.photo.location.locality._content;
+     region = data.photo.location.region._content; 
+
+         // console.log(data.photo.location.locality._content); 
+         // console.log(data.photo.location.region._content); 
+        // console.log(newLat); 
+        // console.log(newLon); 
+
+
+        var myLatlng = new google.maps.LatLng(newLat,newLng);
+
+        addMarker(myLatlng);
+
+
+        getPhotoInfo(photoID);
+
+      }); // end getJSON
+} // end getGeoLocation
+
+  getPhotoInfo = function(photoID){
+  $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
+    function(data){
+      // console.log(data.photo.owner.username);
+      // console.log(data.photo.title._content); 
+      // console.log(data.photo.description._content); 
+      // console.log(data.photo.dates.taken); 
+      //console.log(data.photo.urls.url[1]._content);
+
+      var username = data.photo.owner.username;
+      var title = data.photo.title._content;
+      var description = data.photo.description._content; 
+      var dateTaken = data.photo.dates.taken;
+
+
+    })
+  }
+
+
+
+
+
+var map;
+var markers = [];
+
+
+function initialize() {
+     var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
+     var mapOptions = {
+      zoom: 11,
+      center: startLatLng,
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+
+  // The map object
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+    mapOptions);
+
+
+  // This event listener will call addMarker() when the map is clicked.
+  google.maps.event.addListener(map, 'click', function(event) {
+    addMarker(event.latLng);
+  });
+
+  // Adds a marker at the center of the map.
+  //addMarker(myLatlng);
 }
+
+
+
+
+// Add a marker to the map and push to the array while panning to it
+function addMarker(location) {
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map,
+    title: 'Click for more details'
+  });
+
+  markers.push(marker);
+  map.panTo(location); 
+
+  showInfoWindow(marker); 
+
+}
+
+function showInfoWindow(marker){
+
+  // Instantiate the InfoWindow 
+  // TODO: populate content with EXIF data!
+  var infoWindow = new google.maps.InfoWindow({
+    content: contentString
+  });
+
+  // event handler for our InfoWindow 
+  google.maps.event.addListener(marker, 'click', function(){
+    infoWindow.open(map, marker); 
+  });
+
+}
+
+
+
+
+
+
+
+
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+  setAllMap(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}
+
+
+function showUniqueMarker(){
+  //setMap(map); 
+  markers[2];
+}
+
+
+
+var marker = new google.maps.Marker({
+    // The below line is equivalent to writing:
+    // position: new google.maps.LatLng(-34.397, 150.644)
+    position: {lat: -34.397, lng: 150.644},
+    map: map
+  });
+
+  // You can use a LatLng literal in place of a google.maps.LatLng object when
+  // creating the Marker object. Once the Marker object is instantiated, its
+  // position will be available as a google.maps.LatLng object. In this case,
+  // we retrieve the marker's position using the
+  // google.maps.LatLng.getPosition() method.
+  var infowindow = new google.maps.InfoWindow({
+    content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map, marker);
+  });
+
+
+
+
+
+
+
+  google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+
 
 
 
@@ -488,7 +651,26 @@ getGeoLocation = function(photoID){
 
 
 
-
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+      'sandstone rock formation in the southern part of the '+
+      'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+      'south west of the nearest large town, Alice Springs; 450&#160;km '+
+      '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+      'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+      'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+      'Aboriginal people of the area. It has many springs, waterholes, '+
+      'rock caves and ancient paintings. Uluru is listed as a World '+
+      'Heritage Site.</p>'+
+      '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+      'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+      '(last visited June 22, 2009).</p>'+
+      '</div>'+
+      '</div>';
 
 
 
