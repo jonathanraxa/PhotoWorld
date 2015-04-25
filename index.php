@@ -31,9 +31,20 @@
         <div id="image-container">
 <!--             <img src="http://farm9.static.flickr.com/8118/8608239293_200bc13df5_m.jpg">
  -->        </div>
+<br />
+<br />
+<br />
+<br />
+<br />
 
-
- 
+<h2>Title<h2>
+ <ul>
+   <li>Title: </li>
+   <li>Username: </li>
+   <li>Date: </li>
+   <li>Description: </li>
+   <li>Location: </li>
+</ul>
 
 
 
