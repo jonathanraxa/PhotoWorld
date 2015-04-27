@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html class="easy-sidebar-active" lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="icon" href="../../favicon.ico">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
 
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
@@ -16,22 +16,22 @@
 <script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>  
 
 
-  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
-    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
-   
-   <!-- Google Maps -->
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
+  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+ 
+ <!-- Google Maps -->
 
 
 
 </script>
 
-  <link href="css/style.css" rel="stylesheet" />
-  <title>PhotoWorld</title>
+<link href="css/style.css" rel="stylesheet" />
+<title>PhotoWorld</title>
 
 <!-- Bootstrap core CSS -->
 <link href="./css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom styles for this template -->
+<!-- Custom styles for this template -->
 <link href="./starter-template.css" rel="stylesheet">
 <link rel="script" href="bootstrap.min.js"/>
 <link href="./css/style.css" rel="stylesheet">
@@ -44,32 +44,32 @@
 <script src="./dist/hello.all.js">
 
 
-    hello.on('auth.login', function(auth){
-  
-  // Call user information, for the given network
-  hello( auth.network ).api( '/me' ).then( function(r){
-    // Inject it into the container
-    var label = document.getElementById( 'profile_' + auth.network );
-    if (!label){
-      label = document.createElement('div');
-      label.id = 'profile_' + auth.network;
-      document.getElementById('profile').appendChild(label);
-    }
-    label.innerHTML = '<img src="' + r.thumbnail + '" /> Hey ' + r.name;
-  });
+  hello.on('auth.login', function(auth){
+
+// Call user information, for the given network
+hello( auth.network ).api( '/me' ).then( function(r){
+  // Inject it into the container
+  var label = document.getElementById( 'profile_' + auth.network );
+  if (!label){
+    label = document.createElement('div');
+    label.id = 'profile_' + auth.network;
+    document.getElementById('profile').appendChild(label);
+  }
+  label.innerHTML = '<img src="' + r.thumbnail + '" /> Hey ' + r.name;
+});
 });
 
 
- </script>
+</script>
 
- <script type="text/javascript">
+<script type="text/javascript">
 
 hello.init({ 
-  flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
+flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 }, { redirect_uri: 'http://localhost:8888' });
 
 
- </script>
+</script>
 
 <!-- Start WOWSlider.com HEAD section -->
 <link rel="stylesheet" type="text/css" href="./engine1/style.css" />
@@ -81,12 +81,12 @@ hello.init({
 
 
 <!-- GOOGLE MAPS API -->
-    <style type="text/css">
-      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
-    </style>
-    <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=">
-    </script>
+  <style type="text/css">
+    html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+  </style>
+  <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=">
+  </script>
 
 
 <link rel="stylesheet" href="./side-menu/stylesheets/jquery.sidemenu.css">
@@ -100,138 +100,84 @@ hello.init({
 
 
 
-    </head>
-
-<div id="sidemenu" data-role="sidemenu">
-  <ul>
-    <li><a href="#">Home</a></li>
-    <li> </li>
-
-    <li> </li>
-
-    <li class="divider"></li>
-
-    <li> </li>
-
-    <li>  </li>
-
-    <li class="divider"></li>
-
-
-
-    <li><a href="#sidemenu" data-role="sidemenu-toggle">Close</a></li>
-  </ul>
-</div>
+  </head>
 
 
 
 
 
-
-
-
-
-
-
-
-
-    <body>
+<body>
 
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
 <script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>
 
 
+
 <nav class="navbar navbar-inverse easy-sidebar">
-  <div class="container-fluid"> 
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-      <a class="navbar-brand" href="#">PhotoWorld</a> </div>
-      <ul class="nav navbar-nav">
+<div class="container-fluid"> 
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+    <a class="navbar-brand" href="#">PhotoWorld</a> </div>
+    <ul class="nav navbar-nav">
 
-        <li><input onClick="showMarkers();" class="btn btn-info" type=button value="Show All Markers"></li>
+      <li><input onClick="showMarkers();" class="btn btn-info" type=button value="Show All Markers"></li>
+      <li><input onClick="clearMarkers();" class="btn btn-info" type=button value="Hide Markers"></li>
+      <li> <input onClick="deleteMarkers();" class="btn btn-info" type=button value="Delete Markers"> </li>
+      <li> <input id="sign_in" type=button class="btn btn-info" value="Flickr Sign-In"> </li>
 
-        <li><input onClick="clearMarkers();" class="btn btn-info" type=button value="Hide Markers"></li>
-
-        <li> <input onClick="deleteMarkers();" class="btn btn-info" type=button value="Delete Markers"> </li>
-
-        <li> <input id="sign_in" type=button class="btn btn-info" value="Flickr Sign-In"> </li>
-
-    <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
-  <input id="testUser" type=button class="btn btn-info" value="testUser"> 
-  <input id="getUser" type=button class="btn btn-info" value="Username">
+  <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
+<input id="testUser" type=button class="btn btn-info" value="testUser"> 
+<input id="getUser" type=button class="btn btn-info" value="Username">
 <button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
-  <br>
-    <div style="color:white">
-    <div style="clear:both;" id="userinfo"></div>
+<br>
+  <div style="color:white">
+  <div style="clear:both;" id="userinfo"></div>
 
-  <input id="search" style="color:black;">
-  <input id="submit" type="button" onclick="getTag()" value="Submit">
- 
-  
-  Radius (mi)&nbsp;
-  <input type="radio" name="radius" value="2 miles"> 2 &nbsp;
-    <input type="radio" name="radius" value="2 miles"> 4 &nbsp;
-        <input type="radio" name="radius" value="2 miles"> 6 &nbsp;
+<!-- <input id="search" style="color:black;">
+<input id="submit" type="button" onclick="getTag()" value="Submit">
+ -->
+
+Radius (mi)&nbsp;
+<input type="radio" name="radius" value="2 miles"> 2 &nbsp;
+  <input type="radio" name="radius" value="2 miles"> 4 &nbsp;
+      <input type="radio" name="radius" value="2 miles"> 6 &nbsp;
 </div>
 
-        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-            <li class="divider"></li>
-            <li><a href="#">One more separated link</a></li>
-          </ul>
-        </li>
-      </ul>
-      <form class="navbar-form navbar-left" role="search">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-      </form>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Link</a></li>
-        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <!-- /.container-fluid --> 
-  </nav>
+      <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Action</a></li>
+          <li class="divider"></li>
+      
+        </ul>
+      </li>
+    </ul>
+
+<!-- User may search for a tag here  -->
+    <form class="navbar-form navbar-left" role="search">
+      <div class="form-group">
+        <input id="search" type="text" class="form-control" placeholder="Search">
+      </div>
+      <button id="submit" type="submit" onclick="getTag()" class="btn btn-default">Submit</button>
+    </form>
+
+
+  </div>
+  <!-- /.container-fluid --> 
+</nav>
 <button class="btn easy-sidebar-toggle">Toggle Sidebar</button>
 
 
 <div id="map-canvas" style="width: 100%; height: 100%"> 
-<a href="#sidemenu" 
-   data-role="sidemenu-toggle">
-   Open/Close
-</a>
-
-
-</div>
-
-
 
 
 <!-- <div id="info_container">
-  <div class="EXIF">
-    <div id="img"></div>
-    <div id="img-title"></div>
-   
-  </div>
+<div class="EXIF">
+  <div id="img"></div>
+  <div id="img-title"></div>
+ 
+</div>
 </div> -->
 
 
@@ -240,17 +186,17 @@ hello.init({
 
 <div class = "footer">
 <!-- Start WOWSlider.com BODY section -->
-  <div id="wowslider-container1">
-    <div class="ws_thumbs">
-      <!-- Where the images will appear -->
-      <div id="pics"> </div>
+<div id="wowslider-container1">
+  <div class="ws_thumbs">
+    <!-- Where the images will appear -->
+    <div id="pics"> </div>
 
 
-    </div>
   </div>
-  <!-- <div class="ws_script" style="position:absolute;left:-99%"></div>
-  <div class="ws_shadow"></div> -->
-  
+</div>
+<!-- <div class="ws_script" style="position:absolute;left:-99%"></div>
+<div class="ws_shadow"></div> -->
+
 <script type="text/javascript" src="engine1/wowslider.js"></script>
 <script type="text/javascript" src="engine1/script.js"></script>
 <!-- End WOWSlider.com BODY section -->
@@ -261,23 +207,23 @@ hello.init({
 <script type="text/javascript">
 
 $('.easy-sidebar-toggle').click(function(e) {
-  e.preventDefault();
-  $('body').toggleClass('toggled');
-  $('.navbar.easy-sidebar').removeClass('toggled');
+e.preventDefault();
+$('body').toggleClass('toggled');
+$('.navbar.easy-sidebar').removeClass('toggled');
 });
 $('html').on('swiperight', function(){
-  $('body').addClass('toggled');
+$('body').addClass('toggled');
 });
 $('html').on('swipeleft', function(){
-  $('body').removeClass('toggled');
+$('body').removeClass('toggled');
 });
 
 
 </script>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
 
-  </body>
-  </html>
+</body>
+</html>

@@ -459,7 +459,7 @@ clearPhoto = function(){
 
 /* returns the tag of a type of photo we want to look for */ 
 getTag = function(){
-  clearPhoto(); 
+  //clearPhoto(); 
   tag = document.getElementById("search").value;
   //console.log(document.getElementById("search").value); 
 
