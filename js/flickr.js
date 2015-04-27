@@ -338,6 +338,7 @@ var locality;
 var region; 
 var getPhotoInfo; 
 var contentString;
+var getTag;
 
 /* Photo information */ 
 var username;
@@ -428,7 +429,60 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUser
 });
 
 
-    var aPhoto = [];
+var publicPhotos = []; 
+var aPhoto = [];
+var tag; 
+var clearPhoto; 
+var setAllMap;
+var deleteMarkers;
+
+// Sets the map on all markers in the array.
+setAllMap = function(map) {
+for (var i = 0; i < markers.length; i++) {
+  markers[i].setMap(map);
+}
+}
+
+// Deletes all markers in the array by removing references to them.
+deleteMarkers = function() {
+ clearMarkers();
+ markers = [];
+}
+
+
+/* clears out the array so that we can add in a new set */ 
+clearPhoto = function(){
+  publicPhotos = [];
+
+}
+
+
+/* returns the tag of a type of photo we want to look for */ 
+getTag = function(){
+  clearPhoto(); 
+  tag = document.getElementById("search").value;
+  //console.log(document.getElementById("search").value); 
+
+}
+
+
+/* searches public photos with Geo data */ 
+$("#submit").click(function(){
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+apiKey+'&tags='+tag+'&has_geo=1&page=20&format=json&nojsoncallback=1',
+      function(data){
+      var i; 
+
+      for(i = 0; i < data.photos.photo.length; i++){
+
+        publicPhotos[i] = 'http://farm' + data.photos.photo[i].farm + '.static.flickr.com/' + data.photos.photo[i].server + '/' + data.photos.photo[i].id + '_' + data.photos.photo[i].secret + '_m.jpg';
+
+        jQuery('<a href/>').attr('id',data.photos.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photos.photo[i].id+')').html($('<img/>').attr('src',publicPhotos[i])).appendTo('#pics');
+
+      }
+      })
+
+})
+
 
 /*
 Return the images from the photoset - user has to know the ID of the photoset prior to using
@@ -513,10 +567,12 @@ var map;
 var markers = [];
 
 
+
 function initialize() {
-   var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
+   // var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
+   var startLatLng = new google.maps.LatLng(0,0); 
    var mapOptions = {
-    zoom: 11,
+    zoom: 2,
     center: startLatLng,
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
@@ -536,7 +592,7 @@ google.maps.event.addListener(map, 'click', function(event) {
 }
 
 
-
+/* Photo ID gets passed in and information is then displayed */ 
 getPhotoInfo = function(photoID){
 $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
   function(data){
@@ -561,8 +617,10 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&ap
     '<div id="content">'+
     '<h4 id="firstHeading" class="firstHeading">'+title+'</h4>'+
     '<div id="bodyContent">'+
+     '<img src='+url+' style="float: left">'+
     '<ul style="list-style: none;"> ' +
-      '<li>Username: '+username+'</li>'+
+
+      '<li>User: '+username+'</li>'+
       '<li>Date/Time: '+dateTaken+'</li>'+
       '<li>Description: '+description+'</li>'+
       '<li>Location: '+locality+', '+region+'</li>'+
@@ -578,6 +636,7 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&ap
   })
 }
 
+/* distinguishes content inside info window */ 
 function setInfoWindow(contentString){
 
 // Instantiate the InfoWindow 
@@ -606,39 +665,29 @@ google.maps.event.addListener(marker, 'click', function(){
   infoWindow.open(map, marker); 
 });
 
-
+  // var georssLayer = new google.maps.KmlLayer({
+  //   url: 'http://api.flickr.com/services/feeds/geo/?g=322338@N20&lang=en-us&format=feed-georss'
+  // });
+  // georssLayer.setMap(map);
 
 }
 
 
 
 
-
-
-
-
-
-
-var marker = new google.maps.Marker({
-  // The below line is equivalent to writing:
-  // position: new google.maps.LatLng(-34.397, 150.644)
-  position: {lat: -34.397, lng: 150.644},
-  map: map
-});
-
 // You can use a LatLng literal in place of a google.maps.LatLng object when
 // creating the Marker object. Once the Marker object is instantiated, its
 // position will be available as a google.maps.LatLng object. In this case,
 // we retrieve the marker's position using the
 // google.maps.LatLng.getPosition() method.
-var infowindow = new google.maps.InfoWindow({
-  content: '<p>Marker Location:' + marker.getPosition() + '</p>'
-});
 
-google.maps.event.addListener(marker, 'click', function() {
-  infowindow.open(map, marker);
-});
+// var infowindow = new google.maps.InfoWindow({
+//   content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+// });
 
+// google.maps.event.addListener(marker, 'click', function() {
+//   infowindow.open(map, marker);
+// });
 
 
 
@@ -655,28 +704,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 }); // END
 
-// Sets the map on all markers in the array.
-function setAllMap(map) {
-for (var i = 0; i < markers.length; i++) {
-  markers[i].setMap(map);
-}
-}
 
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
- setAllMap(null);
-}
+
 
 // Shows any markers currently in the array.
 function showMarkers() {
  setAllMap(map);
 }
 
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
- clearMarkers();
- markers = [];
-}
+
 
 
 function showUniqueMarker(){
