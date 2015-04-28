@@ -408,8 +408,9 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByEmai
 
 /* Get user ID - Use this to get the user's ID to use for other methods */
 $("#getUser").click(function(){
-var userName = prompt ("Enter username"); 
-$.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=8911b089b2a9217b376848b350b6af6d&username=paulnomnom&format=json&nojsoncallback=1&api_sig=08ab0fbd2428b434d4ff9b0cbfaefb49',
+// var userName = prompt ("Enter username");
+var userName = 'jonathan_raxa';  
+$.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username=jonathan_raxa&format=json&nojsoncallback=1',
   function(data){
     console.log(data); 
   })
@@ -436,18 +437,18 @@ var clearPhoto;
 var setAllMap;
 var deleteMarkers;
 
-// Sets the map on all markers in the array.
-setAllMap = function(map) {
-for (var i = 0; i < markers.length; i++) {
-  markers[i].setMap(map);
-}
-}
+// // Sets the map on all markers in the array.
+// setAllMap = function(map) {
+// for (var i = 0; i < markers.length; i++) {
+//   markers[i].setMap(map);
+// }
+// }
 
-// Deletes all markers in the array by removing references to them.
-deleteMarkers = function() {
- clearMarkers();
- markers = [];
-}
+// // Deletes all markers in the array by removing references to them.
+// deleteMarkers = function() {
+//  clearMarkers();
+//  markers = [];
+// }
 
 
 /* clears out the array so that we can add in a new set */ 

@@ -19,6 +19,9 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
   <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./font-awesome-4.3.0/css/font-awesome.min.css">
  
  <!-- Google Maps -->
 
@@ -118,8 +121,16 @@ flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 <div class="container-fluid"> 
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
-    <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-    <a class="navbar-brand" href="#">PhotoWorld</a> </div>
+
+    <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false"> 
+    <span class="sr-only">Toggle navigation</span> 
+    <span class="icon-bar"></span> 
+    <span class="icon-bar"></span> 
+    <span class="icon-bar"></span> 
+  </button>
+    <a class="navbar-brand" href="#">PhotoWorld</a> 
+  </div>
+
     <ul class="nav navbar-nav">
 
       <li><input onClick="showMarkers();" class="btn btn-info" type=button value="Show All Markers"></li>
@@ -166,7 +177,7 @@ Radius (mi)&nbsp;
   </div>
   <!-- /.container-fluid --> 
 </nav>
-<button class="btn easy-sidebar-toggle">Toggle Sidebar</button>
+<button class="btn easy-sidebar-toggle"><i class="fa fa-bars"></i></button>
 
 
 <div id="map-canvas" style="width: 100%; height: 100%"> 
