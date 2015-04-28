@@ -391,7 +391,7 @@ _:-ms-input-placeholder, :root #wowslider-container1 .ws_playpause:after {line-h
 	margin-bottom: 12.3em;
 }
 #wowslider-container1  .ws_thumbs {
-    position: absolute;
+    /*position: absolute;*/
     text-align: left;
 
     bottom: 0;

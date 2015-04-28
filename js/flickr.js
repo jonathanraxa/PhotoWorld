@@ -436,6 +436,7 @@ var tag;
 var clearPhoto; 
 var setAllMap;
 var deleteMarkers;
+var i; 
 
 // // Sets the map on all markers in the array.
 // setAllMap = function(map) {
@@ -500,12 +501,14 @@ $("#photoset").click(function(){
     iterates through the defined photoset and pulls all the images from account
     */  
     function(data){
-      var i; 
+      
 
       for(i = 0; i < data.photoset.photo.length; i++){
 
         aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
 
+
+        
         jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
       }
@@ -538,11 +541,16 @@ getGeoLocation = function(photoID){
 $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
   function(data){
 
+   try{ 
    newLat = data.photo.location.latitude;
    newLng = data.photo.location.longitude;
-
+}catch(err){
+  console.log("cannot find geolocation");
+}
    locality = data.photo.location.locality._content;
    region = data.photo.location.region._content; 
+
+   
 
        // console.log(data.photo.location.locality._content); 
        // console.log(data.photo.location.region._content); 
@@ -612,15 +620,15 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&ap
     var dateTaken = data.photo.dates.taken;
     var url = data.photo.urls.url[0]._content;
 
-
+    var thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
+    
     contentString = 
 
     '<div id="content">'+
     '<h4 id="firstHeading" class="firstHeading">'+title+'</h4>'+
     '<div id="bodyContent">'+
-     '<img src='+url+' style="float: left">'+
-    '<ul style="list-style: none;"> ' +
-
+    '<img src="'+thePhoto+'"style="height:17.0em; width:"100px; float:left; padding-right:10px;">'+
+    '<ul style="list-style: none; "> ' +
       '<li>User: '+username+'</li>'+
       '<li>Date/Time: '+dateTaken+'</li>'+
       '<li>Description: '+description+'</li>'+

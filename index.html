@@ -143,33 +143,29 @@ flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 <input id="getUser" type=button class="btn btn-info" value="Username">
 <button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
 <br>
+
+
+    </ul>
+
+
+
+<!-- User may search for a tag here  -->
+  <div class="form-group">
+        <input id="search" type="text" class="form-control" placeholder="Search">
+      </div>
+
   <div style="color:white">
   <div style="clear:both;" id="userinfo"></div>
 
-<!-- <input id="search" style="color:black;">
-<input id="submit" type="button" onclick="getTag()" value="Submit">
- -->
 
 Radius (mi)&nbsp;
 <input type="radio" name="radius" value="2 miles"> 2 &nbsp;
   <input type="radio" name="radius" value="2 miles"> 4 &nbsp;
-      <input type="radio" name="radius" value="2 miles"> 6 &nbsp;
+      <input type="radio" name="radius" value="2 miles"> 6 
+            <input type="radio" name="radius" value="2 miles"> N/A 
+
 </div>
 
-      <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
-          <li><a href="#">Action</a></li>
-          <li class="divider"></li>
-      
-        </ul>
-      </li>
-    </ul>
-
-<!-- User may search for a tag here  -->
-<!--     <form class="navbar-form navbar-left" role="search">
- -->  <div class="form-group">
-        <input id="search" type="text" class="form-control" placeholder="Search">
-      </div>
       <button id="submit" type="submit" onclick="getTag()" class="btn btn-default">Submit</button>
    <!--  </form> -->
 
