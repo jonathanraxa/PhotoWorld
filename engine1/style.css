@@ -13,6 +13,38 @@
 	font-style: normal;
 }
 
+/*Cusom CSS*/
+.ID{
+	float:right;
+	width: 140px;
+    margin: 15px;
+}
+#markerButtons{
+	 width: 220px;
+  margin-left: 15px;
+}
+.titles{
+	float:left;
+	padding-top: 23px;
+}
+#navP {
+    color: white;
+    text-align: center;
+    
+}
+
+#idSubmit{
+  width: 220px;
+  margin-left: 15px;
+ }
+#userID{
+	
+}
+#photosetID{
+}
+
+/* END Cusom CSS*/
+
 #wowslider-container1 { 
 	zoom: 1; 
 	width: 100%;

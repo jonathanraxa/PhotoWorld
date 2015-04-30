@@ -573,7 +573,6 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLoc
 
       addMarker(myLatlng);
 
-
       getPhotoInfo(photoID);
 
     }); // end getJSON
@@ -667,7 +666,7 @@ function setInfoWindow(contentString){
 // TODO: populate content with EXIF data!
  infoWindow = new google.maps.InfoWindow({
   content: contentString
-  
+
 });
 
 

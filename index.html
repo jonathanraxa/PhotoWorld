@@ -1,35 +1,28 @@
 <!DOCTYPE html>
 <html class="easy-sidebar-active" lang="en">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="icon" href="../../favicon.ico">
-
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-
-<link href="./canvas-sidebar/easy-sidebar.css" rel="stylesheet">
-
-<script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>  
-
-
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link href="./canvas-sidebar/easy-sidebar.css" rel="stylesheet">
+  <script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>  
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
   <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./font-awesome-4.3.0/css/font-awesome.min.css">
- 
- <!-- Google Maps -->
 
+  <!-- Google Maps -->
 
-
-</script>
 
 <link href="css/style.css" rel="stylesheet" />
+
 <title>PhotoWorld</title>
 
 <!-- Bootstrap core CSS -->
@@ -47,7 +40,7 @@
 <script src="./dist/hello.all.js">
 
 
-  hello.on('auth.login', function(auth){
+hello.on('auth.login', function(auth){
 
 // Call user information, for the given network
 hello( auth.network ).api( '/me' ).then( function(r){
@@ -68,7 +61,7 @@ hello( auth.network ).api( '/me' ).then( function(r){
 <script type="text/javascript">
 
 hello.init({ 
-flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
+  flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 }, { redirect_uri: 'http://localhost:8888' });
 
 
@@ -84,12 +77,12 @@ flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 
 
 <!-- GOOGLE MAPS API -->
-  <style type="text/css">
-    html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
-  </style>
-  <script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?key=">
-  </script>
+<style type="text/css">
+html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+</style>
+<script type="text/javascript"
+src="https://maps.googleapis.com/maps/api/js?key=">
+</script>
 
 
 <link rel="stylesheet" href="./side-menu/stylesheets/jquery.sidemenu.css">
@@ -103,7 +96,7 @@ flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 
 
 
-  </head>
+</head>
 
 
 
@@ -111,76 +104,116 @@ flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
 
 <body>
 
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>
 
 
 
-<nav class="navbar navbar-inverse easy-sidebar">
-<div class="container-fluid"> 
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
+  <nav class="navbar navbar-inverse easy-sidebar">
+    <div class="container-fluid"> 
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
 
-    <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false"> 
-    <span class="sr-only">Toggle navigation</span> 
-    <span class="icon-bar"></span> 
-    <span class="icon-bar"></span> 
-    <span class="icon-bar"></span> 
-  </button>
-    <a class="navbar-brand" href="#">PhotoWorld</a> 
-  </div>
-
-    <ul class="nav navbar-nav">
-
-      <li><input onClick="showMarkers();" class="btn btn-info" type=button value="Show All Markers"></li>
-      <li><input onClick="clearMarkers();" class="btn btn-info" type=button value="Hide Markers"></li>
-      <li> <input onClick="deleteMarkers();" class="btn btn-info" type=button value="Delete Markers"> </li>
-      <li> <input id="sign_in" type=button class="btn btn-info" value="Flickr Sign-In"> </li>
-
-  <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
-<input id="testUser" type=button class="btn btn-info" value="testUser"> 
-<input id="getUser" type=button class="btn btn-info" value="Username">
-<button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
-<br>
-
-
-    </ul>
+     <!--    <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false"> 
+          <span class="sr-only">Toggle navigation</span> 
+          <span class="icon-bar"></span> 
+          <span class="icon-bar"></span> 
+          <span class="icon-bar"></span> 
+        </button> -->
 
 
 
-<!-- User may search for a tag here  -->
-  <div class="form-group">
+        <a class="navbar-brand" href="#">PhotoWorld</a> 
+      </div>
+
+
+  
+
+      <ul class="nav navbar-nav">
+        <div id = "markerButtons">
+        <!-- User changes the marker settings -->
+        <li><input ionClick="showMarkers();" class="btn btn-default" type=button value="Show All Markers"></li>
+        <br>
+        <li><input onClick="clearMarkers();" class="btn btn-default" type=button value="Hide Markers"></li>
+        <br>
+        <li> <input onClick="deleteMarkers();" class="btn btn-default" type=button value="Delete Markers"> </li>
+        <br>
+        <li> <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
+</div>
+        <br />
+        <br />
+
+        <!-- User enters their own ID and photoset -->
+        <p id="navP">Enter a specific user ID and photoset</p>
+
+        <div class = "titles">
+            <p id="navP">User ID</p>
+            <p id="navP">Photoset ID</p>
+        </div>
+        
+
+        <div class="ID">
+          <input id="userID" type="text" class="form-control" placeholder="Enter ID">
+          <input id="photosetID" type="text" class="form-control" placeholder="Enter Photoset ID">
+        </div>
+        <br>
+<button id="idSubmit" type="#" onclick="#" class="btn btn-default">Submit Photoset</button>
+
+
+<!--         <input id="enterUser" type=button class="btn btn-info" value="User ID">
+ -->        
+
+<!--         <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
+ -->        
+
+       
+        <!-- TEST FUNCTIONS - TO BE DELETED -->
+        <!-- <input id="testUser" type=button class="btn btn-info" value="testUser"> 
+        <input id="getUser" type=button class="btn btn-info" value="Username">
+        <button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
+        <br> -->
+      </ul>
+      <br />
+      <br />
+
+
+      <!-- User may search for a tag here  -->
+      <p id="navP">Search for public photo by TAG</p>
+      <div class="form-group">
         <input id="search" type="text" class="form-control" placeholder="Search">
       </div>
 
-  <div style="color:white">
-  <div style="clear:both;" id="userinfo"></div>
+      <div style="color:white">
+        <div style="clear:both;" id="userinfo"></div>
+        Radius (mi)&nbsp;
+        <input type="radio" name="radius" value="2 miles"> 2 
+        <input type="radio" name="radius" value="4 miles"> 4 
+        <input type="radio" name="radius" value="6 miles"> 6 
+        <input type="radio" name="radius" value="" checked="checked"> N/A 
+
+      </div>
+
+      <button id="submit" type="submit" onclick="getTag()" class="btn btn-default">Submit Tag</button>
+      <!--  </form> -->
 
 
-Radius (mi)&nbsp;
-<input type="radio" name="radius" value="2 miles"> 2 &nbsp;
-  <input type="radio" name="radius" value="2 miles"> 4 &nbsp;
-      <input type="radio" name="radius" value="2 miles"> 6 
-            <input type="radio" name="radius" value="2 miles"> N/A 
-
-</div>
-
-      <button id="submit" type="submit" onclick="getTag()" class="btn btn-default">Submit</button>
-   <!--  </form> -->
+    </div>
+    <!-- /.container-fluid --> 
+  </nav>
 
 
-  </div>
-  <!-- /.container-fluid --> 
-</nav>
-<button class="btn easy-sidebar-toggle"><i class="fa fa-bars"></i></button>
+  
+  <button class="btn easy-sidebar-toggle">
+    <i class="fa fa-bars"></i></button>
 
-
-<div id="map-canvas" style="width: 100%; height: 100%"> 
-
+  <!-- Google Map canvas -->
+  <div id="map-canvas" style="width: 100%; height: 100%"> 
+<!-- Toggle Icon -->
 
 <!-- <div id="info_container">
 <div class="EXIF">
+
   <div id="img"></div>
   <div id="img-title"></div>
  
@@ -192,21 +225,21 @@ Radius (mi)&nbsp;
 
 
 <div class = "footer">
-<!-- Start WOWSlider.com BODY section -->
-<div id="wowslider-container1">
-  <div class="ws_thumbs">
-    <!-- Where the images will appear -->
-    <div id="pics"> </div>
+  <!-- Start WOWSlider.com BODY section -->
+  <div id="wowslider-container1">
+    <div class="ws_thumbs">
+      <!-- Where the images will appear -->
+      <div id="pics"> </div>
 
 
+    </div>
   </div>
-</div>
 <!-- <div class="ws_script" style="position:absolute;left:-99%"></div>
-<div class="ws_shadow"></div> -->
+  <div class="ws_shadow"></div> -->
 
-<script type="text/javascript" src="engine1/wowslider.js"></script>
-<script type="text/javascript" src="engine1/script.js"></script>
-<!-- End WOWSlider.com BODY section -->
+  <script type="text/javascript" src="engine1/wowslider.js"></script>
+  <script type="text/javascript" src="engine1/script.js"></script>
+  <!-- End WOWSlider.com BODY section -->
 
 
 
@@ -214,15 +247,15 @@ Radius (mi)&nbsp;
 <script type="text/javascript">
 
 $('.easy-sidebar-toggle').click(function(e) {
-e.preventDefault();
-$('body').toggleClass('toggled');
-$('.navbar.easy-sidebar').removeClass('toggled');
+  e.preventDefault();
+  $('body').toggleClass('toggled');
+  $('.navbar.easy-sidebar').removeClass('toggled');
 });
 $('html').on('swiperight', function(){
-$('body').addClass('toggled');
+  $('body').addClass('toggled');
 });
 $('html').on('swipeleft', function(){
-$('body').removeClass('toggled');
+  $('body').removeClass('toggled');
 });
 
 
