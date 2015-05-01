@@ -438,6 +438,7 @@ var clearPhoto;
 var setAllMap;
 var deleteMarkers;
 var i; 
+var addToSlide;
 
 // // Sets the map on all markers in the array.
 // setAllMap = function(map) {
@@ -484,17 +485,40 @@ $("#submit").click(function(){
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+apiKey+'&tags='+tag+'&has_geo=1&page=20&format=json&nojsoncallback=1',
       function(data){
       var i; 
-
+      var addToSlide; 
       for(i = 0; i < data.photos.photo.length; i++){
+
+        var tempID = data.photos.photo[i].id;
 
         publicPhotos[i] = 'http://farm' + data.photos.photo[i].farm + '.static.flickr.com/' + data.photos.photo[i].server + '/' + data.photos.photo[i].id + '_' + data.photos.photo[i].secret + '_m.jpg';
 
-        jQuery('<a href/>').attr('id',data.photos.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photos.photo[i].id+')').html($('<img/>').attr('src',publicPhotos[i])).appendTo('#pics');
+        jQuery('<a href/>').attr('id',tempID).attr('dblclick','addToSlide('+tempID+')').attr('onClick','getGeoLocation('+data.photos.photo[i].id+')').html($('<img/>').attr('src',publicPhotos[i])).appendTo('#pics');
+
+
 
       }
+// .attr('dblclick','addToSlide('+i+')')
+
+
+
       })
 
+
 })
+// attr('ondblclick','addToSlide('+i+')')
+
+$( "#photo" ).dblclick(function() {
+                alert( "Handler for .dblclick() called." );
+                
+          });
+
+
+addToSlide = function(photoNum){
+  console.log("hello"); 
+  console.log("Photo: " + photoNum + " added to slideshow"); 
+
+}
+
 
 
 /*
@@ -517,20 +541,17 @@ $("#photoset").click(function(){
       for(i = 0; i < data.photoset.photo.length; i++){
 
         aPhoto[i] = 'http://farm' + data.photoset.photo[i].farm + '.static.flickr.com/' + data.photoset.photo[i].server + '/' + data.photoset.photo[i].id + '_' + data.photoset.photo[i].secret + '_m.jpg';
-
-
         
-        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('onmouseover','displayPhoto('+i+')').attr('onClick','getGeoLocation('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
+        jQuery('<a href/>').attr('id',data.photoset.photo[i].id).attr('dblclick','addToSlide('+i+')').attr('onClick','getGeoLocation('+data.photoset.photo[i].id+')').html($('<img/>').attr('src',aPhoto[i])).appendTo('#pics');
 
       }
 
 
     });
 
-
-
-
 });
+
+
 
 
 /* on hover, the photo will appear in a container on the side of the*/
@@ -547,34 +568,27 @@ jQuery('<img/>').attr('src', aPhoto[photoNum]).appendTo('#img').hide();
 
 
 
-/* display the geo coordinates when you click on a photo */
+/* display the geo coordinates when you click on a photo - the Start of displaying on map*/
 getGeoLocation = function(photoID){
 $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
   function(data){
 
    try{ 
-   newLat = data.photo.location.latitude;
-   newLng = data.photo.location.longitude;
-}catch(err){
-  console.log("cannot find geolocation");
-}
-   locality = data.photo.location.locality._content;
-   region = data.photo.location.region._content; 
+      newLat = data.photo.location.latitude;
+      newLng = data.photo.location.longitude;
+      locality = data.photo.location.locality._content;
+      region = data.photo.location.region._content; 
+  }catch(err){
+      alert("geolocation data unavailable");
+  }
+  
+  
 
-   
-
-       // console.log(data.photo.location.locality._content); 
-       // console.log(data.photo.location.region._content); 
-      // console.log(newLat); 
-      // console.log(newLon); 
-
-
+      // create a google maps marker object with new location coordinates
       var myLatlng = new google.maps.LatLng(newLat,newLng);
-
       addMarker(myLatlng);
+      setPhoto(photoID);
 
-
-      getPhotoInfo(photoID);
 
     }); // end getJSON
 } // end getGeoLocation
@@ -585,8 +599,6 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLoc
 
 var map;
 var markers = [];
-
-
 
 function initialize() {
    // var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
@@ -611,9 +623,9 @@ google.maps.event.addListener(map, 'click', function(event) {
 //addMarker(myLatlng);
 }
 
-
+ var comment = [];
 /* Photo ID gets passed in and information is then displayed */ 
-getPhotoInfo = function(photoID){
+setPhoto = function(photoID){
 $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key='+apiKey+'&photo_id='+photoID+'&format=json&nojsoncallback=1',
   function(data){
     // console.log(data.photo.owner.username);
@@ -633,18 +645,47 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&ap
 
     var thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
     
+
+  // Checks for local storage   
+   if (localStorage) {
+      console.log("LOCALSTORAGE OKAY"); 
+    } else {
+      console.log("LOCALSTORAGE FAIL"); 
+    }
+
+
+    var userComment = prompt("Enter a comment");
+
+    var comment = {
+        comment:userComment
+    }
+
+    localStorage.comment=JSON.stringify(comment);
+
+    var commentObj = JSON.parse(localStorage.comment);
+
+
+    // stores the comment for that particular photo
+    localStorage.setItem(photoID, userComment);
+
+    //comment[photoID] = window.localStorage.getItem(photoID); 
+    
+    // clear the Local storage
+    //localStorage.clear(); 
+
     contentString = 
 
    '<div id="content">'+
     '<h4 id="firstHeading" class="firstHeading">'+title+'</h4>'+
     '<div id="bodyContent">'+
     '<img src="'+thePhoto+'"style="height:17.0em; width:"100px; float:left; padding-right:10px;">'+
-    '<ul style="list-style: none; "> ' +
-      '<li>User: '+username+'</li>'+
-      '<li>Date/Time: '+dateTaken+'</li>'+
-      '<li>Description: '+description+'</li>'+
-      '<li>Location: '+locality+', '+region+'</li>'+
+    '<ul style="list-style: none; color:black; float:left;"> ' +
+      '<li><b>User:</b> '+username+'</li>'+
+      '<li><b>Date/Time:</b> '+dateTaken+'</li>'+
+      '<li><b>Description:</b> '+description+'</li>'+
+      '<li><b>Location:</b> '+locality+', '+region+'</li>'+
       '<li><textarea style="width:200px;">comment</textarea></li>'+
+      '<li><b>Comment:</b> '+comment.comment+'</li>'
     '</ul>'+
     '<p>Photo URL: <a href="'+url+'">'+
     ''+url+'</a> '+
@@ -652,13 +693,28 @@ $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&ap
     '</div>'+
     '</div>';
 
+
     setInfoWindow(contentString);
 
   })
 }
 
-
+// probably WILL delete
+//    '<li><form name="myform">'+
+// '<table border="0" cellspacing="0" cellpadding="5"><tr>'+
+// '<td><textarea name="inputtext"></textarea></td>'+
+// '<input type="radio" name="placement" value="append" checked> Add to Existing Text<br>'+
+// '<input type="button" value="Add New Text" onClick="addtext();"></p>'+
+// '</td>'+
+// '<td><textarea name="outputtext"></textarea></td>'+
+// '</tr></table>'+
+// '</form></li>'+
  
+ /* Clears the local storage object*/ 
+function clearLocalStorage(){
+  localStorage.clear(); 
+}
+
 
 /* distinguishes content inside info window */ 
 function setInfoWindow(contentString){
@@ -667,7 +723,7 @@ function setInfoWindow(contentString){
 // TODO: populate content with EXIF data!
  infoWindow = new google.maps.InfoWindow({
   content: contentString
-  
+
 });
 
 
