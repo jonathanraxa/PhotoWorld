@@ -445,8 +445,8 @@ _:-ms-input-placeholder, :root #wowslider-container1 .ws_playpause:after {line-h
 
 #wowslider-container1 .ws_thumbs  a{
 	opacity:0.6;
-	background-color: #ffffff;
-}
+/*	background-color: #ffffff;
+*/}
 
 #wowslider-container1 .ws_bullets  a img{
 	text-indent:0;
