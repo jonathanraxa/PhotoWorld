@@ -37,16 +37,32 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="./js/flickr.js"></script>
     <script src="./js/oauth.js"></script>
-<!-- MOST SLIDER -->
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="/resources/scripts/modernizr-2.6.2.min.js"></script>
-        <script src="mostslider.js" type="text/javascript"></script>
 
 
-<!-- MOST SLIDER -->
-   <link  rel="stylesheet" type="text/css" href="themes/default/default.css" />
-   <link  rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" />
-       
+
+    <script type="text/javascript">
+        var script = '<script type="text/javascript" src="http://google-maps-' +
+            'utility-library-v3.googlecode.com/svn/trunk/infobubble/src/infobubble';
+        if (document.location.search.indexOf('compiled') !== -1) {
+            script += '-compiled';
+        }
+        script += '.js"><' + '/script>';
+        document.write(script);
+    </script>
+
+
+
+
+    <!-- MOST SLIDER -->
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/resources/scripts/modernizr-2.6.2.min.js"></script>
+    <script src="mostslider.js" type="text/javascript"></script>
+
+
+    <!-- MOST SLIDER -->
+    <link rel="stylesheet" type="text/css" href="themes/default/default.css" />
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" />
+
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
@@ -55,24 +71,11 @@
     <link rel="stylesheet" href="css/bootstrap-image-gallery.min.css">
     <script src="http://aslamise.googlecode.com/files/prettyPhoto.js"></script>
 
-     <link  rel="stylesheet" type="text/css" href="../../themes/default/default.css" />
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-        
+    <link rel="stylesheet" type="text/css" href="../../themes/default/default.css" />
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/prettyphoto/3.1.5/css/prettyPhoto.css" />
-<style type="text/css">
-       .slider-wrapper{
-            margin: auto;
-            max-width: 700px;
-            height: auto;
-          }
-          h1,h2,h3,h4{
-            display: inline-block;
-            font-family: Tahoma, Arial;
-            padding: 1% 2%;
-            background-color: #444 !important;
-            color: #fff !important;
-          }
-        </style>
+
 
     <script src="./dist/hello.all.js">
         hello.on('auth.login', function(auth) {
@@ -187,21 +190,29 @@
                 <div id="markerButtons">
                     <!-- User changes the marker settings -->
                     <li>
+                        <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
+                    <br>
+                    <li>
+                        <input id="add" class="btn btn-default" type=button value="Save Slideshow">
+                    </li>
+                    <br>
+                    <li>
                         <input onClick="showMarkers();" class="btn btn-default" type=button value="Show All Markers">
                     </li>
                     <br>
+
                     <li>
-                        <input onClick="clearMarkers();" class="btn btn-default" type=button value="Hide Markers">
+                        <input onClick="deleteMarkers();" class="btn btn-default" type=button value="Delete ALL"> </li>
+
+
+                    <br>
+                    <li>
+                        <input id="deleteComments" type=button class="btn btn-default" value="Clear Local Storage"> </li>
+                    <br>
+
+                    <li>
+                        <input id="playSaved" type=button class="btn btn-default" value="Get Selected Photos">
                     </li>
-                    <br>
-                    <li>
-                        <input onClick="deleteMarkers();" class="btn btn-default" type=button value="Delete Markers"> </li>
-                    <br>
-                    <li>
-                        <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
-                        <br>
-                    <li>
-                        <input id="deleteComments" type=button class="btn btn-default" value="Clear Comment Data"> </li>
                 </div>
                 <br />
                 <br />
@@ -243,9 +254,9 @@
 
 
             <!-- User may search for a tag here  -->
-            <p id="navP">Search for public photo by TAG</p>
+            <p id="navP">Search for public photo</p>
             <div class="form-group">
-                <input id="search" type="text" class="form-control" placeholder="Search by TAG">
+                <input id="search" type="text" class="form-control" placeholder="Search by TEXT">
             </div>
 
             <div style="color:white">
@@ -258,20 +269,66 @@
 
             </div>
 
-            <button id="submit" type="submit" onclick="getTag()" class="btn btn-default">Submit Tag</button>
-            <!--  </form> -->
+        <p id="navP">Tags</p>
+          <div class="form-group">
+             <input id="tags" type="text" class="form-control" placeholder="Search by TAG">
+        </div>
+     
+            <p id="navP">Min Upload Date</p>
+            <div class="form-group">
+                <input id="min_upload_date" type="text" class="form-control" placeholder="YYYY-MM-DD">
+            </div>
+
+            <p id="navP">Max Upload Date</p>
+             <div class="form-group">
+                <input id="max_upload_date" type="text" class="form-control" placeholder="YYYY-MM-DD">
+        </div>
+     
+
+        <p id="navP">Display # of Photos</p>
+        <div class="form-group">
+            <input id="number" type="text" class="form-control" placeholder="# of photos" value="20">
+        </div>
+
+        <p id="navP">Sort: date-'posted/taken'-asc/desc</p>
+        <p id="navP">Sort: interestingness-asc/desc</p>
+        <p id="navP">Sort: revalance</p>
+        <div class="form-group">
+            <input id="sort" type="text" class="form-control" placeholder="" >
+        </div>
 
 
-            <br />
-            <br />
-            <br />
-            <p id="navP">Double-Click on photo to add to slide show. Button will appear once images have been created.</p>
+<!-- 
+        <p id="navP">bbox - defines the range of photos </p>
+        <div class="form-group">
+            <input id="bbox" type="text" class="form-control" placeholder="Search by bbox">
+        </div>
+         -->
+        <!-- <p id="navP">place_id - add in a place</p>
+        <div class="form-group">
+            <input id="place_id" type="text" class="form-control" placeholder="Search by place_id">
+        </div> -->
 
-            <button id="playSlide" class="navbar-toggle easy-sidebar-toggle" style="color:white; text-align:center; margin-right:50px;">
-                <div id="imgHere"></div>
-            </button>
-            <div id="play"></div>
-            <br />
+        <p id="navP">Indoor: 1, Outdoor: 2</p>
+        <div class="form-group">
+            <input id="geo_context" type="text" class="form-control" placeholder="Search by geo_context">
+        </div>
+
+
+        <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">Submit Search</button>
+        <!--  </form> -->
+
+
+        <br />
+        <br />
+        <br />
+        <p id="navP">Double-Click on photo to add to slide show. Button will appear once images have been created.</p>
+
+        <button id="playSlide" class="navbar-toggle easy-sidebar-toggle" style="color:white; text-align:center; margin-right:50px;">
+            <div id="imgHere"></div>
+        </button>
+        <div id="play"></div>
+        <br />
 
 
         </div>
@@ -295,7 +352,9 @@
         <i class="fa fa-bars"></i></button>
 
     <!-- Google Map canvas -->
+
     <div id="map-canvas" style="width: 100%; height: 110%">
+
         <!-- Toggle Icon -->
 
         <!-- <div id="info_container">
@@ -320,6 +379,8 @@
 
 
             </div>
+
+
         </div>
         <!-- <div class="ws_script" style="position:absolute;left:-99%"></div>
   <div class="ws_shadow"></div> -->
@@ -362,30 +423,18 @@
     </script>
 
 
-  
+    <!-- INFO BUBBLE -->
+    <script type="text/javascript" src="./js/infobubble.js"></script>
+
 
     <script type="text/javascript" src="./js/markercluster"></script>
     <script type="text/javascript" src="./js/List.js"></script>
     <script type="text/javascript" src="./js/Mapster.js"></script>
     <script type="text/javascript" src="./js/map-options.js"></script>
 
-        
-        // <script>
-        //   $(document).ready(function(){
-        //     var slider = $("#slider").mostSlider({
-        //       aniSpeed: 1000,
-        //             pauseTime: 6000,
-        //             transparancy: true,
-        //             metrics: {
-        //                     width: 940,
-        //                     height: 450
-        //             },
-        //             contentClass: "content",
-        //             sbsContent: true,
-        //             contentAniDelay: 300,
-        //     });
-        //   });
-        // </script>
+
+
+
 
     <!-- Bootstrap core JavaScript
   ================================================== -->

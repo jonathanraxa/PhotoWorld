@@ -41,3 +41,8 @@
 #search{
     font-color: black;
 }
+
+.easy-sidebar-toggle{
+position: absolute;
+z-index: 99999999;
+}
