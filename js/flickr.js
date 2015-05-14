@@ -18,7 +18,7 @@ var dateTaken;
 var newLat;
 var newLon;
 
-var infoWindow;
+//var infoWindow;
 var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
 var icon = 'https://9fbb502ccc8fe4116684f9d3b089fdf4cafd13d4-www.googledrive.com/host/0BxKqQx16djZ6fl9hYTAyYVhQRzc3dWMzZ3NzWmZpcmtXU3BON0JhLWQxNHg0b2did09KWnc/photo.png';
 
@@ -26,6 +26,7 @@ var publicPhotos = [];
 var aPhoto = [];
 var clearPhoto;
 var setAllMap;
+var showTags;
 var deleteMarkers;
 var i;
 var addToSlide;
@@ -42,10 +43,11 @@ var setPlace;
 var allLatlng = []; //returned from the API
 var allMarkers = []; //returned from the API
 var marketName = []; //returned from the API
-var infowindow = null;
+var infoWindow = null;
 var pos;
 var userCords;
 var tempMarkerHolder = [];
+var tagArray = [];
 var addComment;
 var playSlidePhotoset;
 var infoBubble;
@@ -171,6 +173,50 @@ var placeID;
 
     } 
 
+     showTags = function(numberOfTags, photoID){
+        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
+            function(data){
+
+
+
+            for(var i = 0; i < numberOfTags; i++){
+                    tagArray[i] = data.photo.tags.tag[i]._content;
+                }
+
+    var index;
+    var text = "<div>";
+    //var fruits = ["Banana", "Orange", "Apple", "Mango"];
+    for (index = 0; index < tagArray.length; index++) {
+        if(index == tagArray.length-1){
+            text +=  tagArray[index];
+        }
+
+        text +=  tagArray[index] + ", ";
+
+
+    }
+    text += "</div>";
+    document.getElementById("theTags").innerHTML = text;
+
+
+
+                // var tag = "<ul>";
+
+                // for(var i = 0; i < numberOfTags; i++){
+                //     tagArray[i] = data.photo.tags.tag[i]._content;
+                //     tags += "<li>" + tagArray[i] + "</li>";
+                // }
+
+                // tag += "</ul>";
+                // document.getElementById("theTags").innerHTML = tag;
+
+                
+
+            });
+
+           
+        }
+
 
     /* display the geo coordinates when you click on a photo - the Start of displaying on map*/
     createMarker = function(photoID) {
@@ -219,7 +265,7 @@ var placeID;
 
 
                                  //console.log("# of tags: " + data.photo.tags.tag.length);
-                                      // data.photo.tags.tag[k]._content
+                                // data.photo.tags.tag[k]._content
                                     
                                 contentString =
 
@@ -233,7 +279,12 @@ var placeID;
                                     '<p><b>Date/Time:</b> ' + dateTaken + '</p>' +
                                     '<p><b>Description:</b> ' + description + '</p>' +
                                     '<p><b>Location:</b> ' + locality + ', ' + region + '</p>' +
-                                    '<p><b># Tags:</b> '+ data.photo.tags.tag.length +'</p>'+                                
+                                    '<p><b># Tags:</b> '+ data.photo.tags.tag.length +'</p>'+
+                                    '<p><b>Tags:</b><div id="theTags"></div>'+   
+                                    '<br />'+
+                                    '<button id="showTags" onClick="showTags('+data.photo.tags.tag.length+','+photoID+')">Show Tags</button>'+ 
+                                    '<br />'+   
+                                    '<br />'+                          
                                     '<p><textarea id="textarea" placeholder="comment" style="width:200px;"></textarea></p>' +
                                     '<button id="addComment" onClick="addComment(' + photoID + ')">Add Comment</button>' +
                                     '<br />' +
@@ -244,7 +295,7 @@ var placeID;
                                     '</div>' +
                                     '</div>' +
                                     '</div>';
-                                        
+                                       
 
                                  allMarkers = new google.maps.Marker({
                                     position: myLatlng,
@@ -371,12 +422,11 @@ var placeID;
 
     
  
-
-
     /*
     Return the images from the photoset - user has to know the ID of the photoset prior to using
     */
     $("#photosetSubmit").click(function() {
+        $("#pics").empty();
         jQuery('#a-link').remove();
 
         // example userID and photosetID
@@ -449,7 +499,7 @@ var sort = '';
 
 $("#submit").click(function(){
     $("#pics").empty();
-    
+
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+apiKey+'&has_geo=1&format=json&nojsoncallback=1',
         {   
 
@@ -641,7 +691,7 @@ $("#submit").click(function(){
                                 tempMarkerHolder.push(allMarkers);
 
     
-                                var infoWindow = new google.maps.InfoWindow({
+                             infoWindow = new google.maps.InfoWindow({
                                     content: contentString,
                                     maxWidth: 400,
                                     maxHeight: 300,
