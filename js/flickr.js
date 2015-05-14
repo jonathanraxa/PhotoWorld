@@ -160,12 +160,12 @@ addToSlide = function(photoID) {
       
     }
 
-var aPlace; 
+var placeID; 
     setPlace = function(place){
 
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.places.find&api_key='+apiKey+'&query='+place+'&format=json&nojsoncallback=1',
             function(data){
-                console.log(data.places.query); 
+                placeID = data.places.place[0].place_id; 
             })
             
 
@@ -262,7 +262,7 @@ var aPlace;
                                 //Put the marketrs in an array
                                 tempMarkerHolder.push(allMarkers);
 
-                                console.link("tempMarker: " +tempMarkerHolder.length);
+                                console.log("tempMarker: " +tempMarkerHolder.length);
                           
       var infoWindow = new google.maps.InfoWindow({
                                     content: contentString,
@@ -322,26 +322,26 @@ var aPlace;
         } 
 
 
-toggleBounce = function() {
+// toggleBounce = function() {
 
-  if (allMarkers.getAnimation() != null) {
+//   if (allMarkers.getAnimation() != null) {
 
-    allMarkers.setAnimation(null);
+//     allMarkers.setAnimation(null);
 
-  } else {
-    allMarkers.setAnimation(google.maps.Animation.BOUNCE);
+//   } else {
+//     allMarkers.setAnimation(google.maps.Animation.BOUNCE);
 
-    //  window.setTimeout(function() {
-    //   addMarker(allMarkers[i]);
-    // }, i * 200);
-  }
+//     //  window.setTimeout(function() {
+//     //   addMarker(allMarkers[i]);
+//     // }, i * 200);
+//   }
 
-}
-toggleBounceOff = function(){
-    if (allMarkers.getAnimation()){
-        allMarkers.setAnimation(null);
-    }
-}
+// }
+// toggleBounceOff = function(){
+//     if (allMarkers.getAnimation()){
+//         allMarkers.setAnimation(null);
+//     }
+// }
     // function addTab() {
     //     var title = document.getElementById('tab-title').value;
     //     var content = document.getElementById('tab-content').value;
@@ -427,7 +427,8 @@ toggleBounceOff = function(){
         //tag = document.getElementById("tag").value;
         tags = document.getElementById("tags").value;
         //bbox = document.getElementById("bbox").value;
-       // place_id = document.getElementById("place_id").value;
+        place_id = placeID;
+        console.log(place_id);
         geo_context = document.getElementById("geo_context").value;
         number = document.getElementById("number").value; 
         sort = document.getElementById("sort").value; 
@@ -445,22 +446,33 @@ var bbox = null;
 var place_id = '';
 var geo_context = '';
 var sort = '';
+
 $("#submit").click(function(){
+    $("#pics").empty();
+    
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+apiKey+'&has_geo=1&format=json&nojsoncallback=1',
         {   
-            
+
+          
             text: ''+search+'',
             tags: ''+tags+'',
             min_upload_date: ''+min_upload_date+'', 
             max_upload_date: ''+max_upload_date+'', 
-            //place_id: ''+place_id+'', 
-            //bbox:''+bbox+'',
+         
+            //bbox: 2,
             geo_context: ''+geo_context+'',
             sort:''+sort+'',
             per_page:''+number+''
             
 
         },function(data){
+
+              // if(place_id === undefined){
+              //   place_id == null
+              //   } else {
+              //   place_id == placeID;
+              //   }
+            
 
                  var i;
                 for (i = 0; i < data.photos.photo.length; i++) {
@@ -476,13 +488,13 @@ $("#submit").click(function(){
 
                     console.log("# of photos: " + data.photos.photo.length); 
                     publicPhotos[i] = 'http://farm' + tempFarm + '.static.flickr.com/' + tempServer + '/' + tempID + '_' + tempSecret + '_m.jpg';
-                    jQuery('<a href/>').attr('id', tempID).attr('onClick', 'createMarker(' + tempID + ')').attr('onmouseover','toggleBounce()').attr('onmouseleave','toggleBounceOff()').html($('<img/>').attr('src', publicPhotos[i])).appendTo('#pics');
+                    jQuery('<a href/>').attr('id', tempID).attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', publicPhotos[i])).appendTo('#pics');
                     populateSlideShow(tempID, tempFarm, tempServer, tempSecret);
                 }
 
                 playSlide();
 
-
+// .attr('onmouseover','toggleBounce()').attr('onmouseleave','toggleBounceOff()')
         });
 });
     
@@ -609,8 +621,9 @@ $("#submit").click(function(){
                                 // console.log("allLatlng: " + allLatlng); 
                                 // console.log("newLatLng: " + newLatLng); 
 
-                                console.log(allLatlng[i].A);
-                                console.log(allLatlng[i].F)
+                                // console.log(allLatlng[i].A);
+                                // console.log(allLatlng[i].F)
+
                                // console.log(allLatlng[i-1]);
 
                                 if(allLatlng[i] == allLatlng[i-1]){
@@ -628,7 +641,7 @@ $("#submit").click(function(){
                                 tempMarkerHolder.push(allMarkers);
 
     
-                                var infoBubble = new google.maps.InfoWindow({
+                                var infoWindow = new google.maps.InfoWindow({
                                     content: contentString,
                                     maxWidth: 400,
                                     maxHeight: 300,
@@ -642,10 +655,10 @@ $("#submit").click(function(){
                              
 
                                 google.maps.event.addListener(allMarkers, 'click', function() {
-                                    //infowindow.setContent(contentString);
+                                    //infoWindow.setContent(contentString);
                                     //if (infoBubble) infoBubble.close();
-                                    //infoBubble = new google.maps.InfoBubble({content: contentString});
-                                    infoBubble.open(map, this);
+                                    //infoWindow = new google.maps.InfoBubble({content: contentString});
+                                    infoWindow.open(map, this);
 
                                 });
 
