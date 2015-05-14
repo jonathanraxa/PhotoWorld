@@ -349,8 +349,13 @@
 
 
     <button class="btn easy-sidebar-toggle">
-        <i class="fa fa-bars"></i></button>
+      <!--   <i class="fa fa-bars"> -->
+<div id="toggleButton">PhotoWorld</div>
+        </i></button>
 
+
+<input id="pac-input" class="controls" type="text"
+        placeholder="Enter a location">
     <!-- Google Map canvas -->
 
     <div id="map-canvas" style="width: 100%; height: 110%">
@@ -416,6 +421,11 @@
             height: 100%;
             margin: 0;
             padding: 0;
+                  background: url(images/star1.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
         }
     </style>
 
@@ -434,7 +444,7 @@
 
 
 
-
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&signed_in=true"></script>
 
     <!-- Bootstrap core JavaScript
   ================================================== -->

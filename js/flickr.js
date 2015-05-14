@@ -35,6 +35,7 @@ var populateSlideShow;
 var photoArray = [];
 var playSlide;
 var getTitle;
+var setPlace;
 
 
 
@@ -159,6 +160,18 @@ addToSlide = function(photoID) {
       
     }
 
+var aPlace; 
+    setPlace = function(place){
+
+        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.places.find&api_key='+apiKey+'&query='+place+'&format=json&nojsoncallback=1',
+            function(data){
+                console.log(data.places.query); 
+            })
+            
+
+    } 
+
+
     /* display the geo coordinates when you click on a photo - the Start of displaying on map*/
     createMarker = function(photoID) {
 
@@ -249,12 +262,12 @@ addToSlide = function(photoID) {
                                 //Put the marketrs in an array
                                 tempMarkerHolder.push(allMarkers);
 
-    
+                                console.link("tempMarker: " +tempMarkerHolder.length);
                           
-      var infoBubble = new google.maps.InfoWindow({
+      var infoWindow = new google.maps.InfoWindow({
                                     content: contentString,
                                     maxWidth: 400,
-                                    maxHeight: 200,
+                                    maxHeight: 150,
                                     arrowStyle: 2,
                                     borderRadius: 4,
                                     disableAutoPan: true,
@@ -269,33 +282,20 @@ addToSlide = function(photoID) {
 // });
                                 google.maps.event.addListener(allMarkers, 'click', function() {
 
-                                    if (infoBubble) {
-                                        infoBubble.close();
-                                    }
-                                    //infowindow.setContent(contentString);
+                                    // if (infoBubble) {
+                                    //     infoBubble.close();
+                                    // }
+                                  //  infowindow.setContent(contentString);
                                     //if (infoBubble) infoBubble.close();
                                     //infoBubble = new google.maps.InfoBubble({content: contentString});
                                   // infoBubble.close(map); 
-                                  infoBubble = new google.maps.InfoWindow();
-                                    infoBubble.open(map, this);
+                                    infoWindow.open(map, this);
                                     map.panTo(myLatlng,this);
 
 
                                 });
 
 
-                                
-                                 // var div = document.createElement('DIV');
-                                 // div.innerHTML = contentString;
-
-                                 // infoBubble.addTab('MAIN', contentString);
-                                 // infoBubble.addTab('ANOTHER', div);
-
-
-
-                                // google.maps.event.addListener(allMarkers,'click',function(){
-                                //     infowindow.close();
-                                // })
                             } catch (err) {
                                 console.log(err);
                             }
@@ -337,12 +337,11 @@ toggleBounce = function() {
   }
 
 }
-// toggleBounceOff = function(){
-//     if (allMarkers.getAnimation() == true){
-
-//         allMarkers.setAnimation(null);
-//     }
-// }
+toggleBounceOff = function(){
+    if (allMarkers.getAnimation()){
+        allMarkers.setAnimation(null);
+    }
+}
     // function addTab() {
     //     var title = document.getElementById('tab-title').value;
     //     var content = document.getElementById('tab-content').value;
@@ -709,6 +708,51 @@ $("#submit").click(function(){
             mapOptions);
 
 
+
+  var input = /** @type {HTMLInputElement} */(
+      document.getElementById('pac-input'));
+
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+  var infowindow = new google.maps.InfoWindow();
+  var marker = new google.maps.Marker({
+    map: map
+  });
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map, marker);
+  });
+
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    infowindow.close();
+    var place = autocomplete.getPlace();
+      setPlace(place.formatted_address); 
+
+    if (!place.geometry) {
+      return;
+    }
+
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);
+    }
+
+    // Set the position of the marker using the place ID and location
+    marker.setPlace({
+      placeId: place.place_id,
+      location: place.geometry.location
+    });
+    marker.setVisible(true);
+
+    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+        'Place ID: ' + place.place_id + '<br>' +
+        place.formatted_address);
+    infowindow.open(map, marker);
+  });
 
 
 
