@@ -177,8 +177,6 @@ var placeID;
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
             function(data){
 
-
-
             for(var i = 0; i < numberOfTags; i++){
                     tagArray[i] = data.photo.tags.tag[i]._content;
                 }
@@ -427,6 +425,7 @@ var placeID;
     */
     $("#photosetSubmit").click(function() {
         $("#pics").empty();
+        $("#imgHere").empty();
         jQuery('#a-link').remove();
 
         // example userID and photosetID
@@ -477,8 +476,8 @@ var placeID;
         //tag = document.getElementById("tag").value;
         tags = document.getElementById("tags").value;
         //bbox = document.getElementById("bbox").value;
-        place_id = placeID;
-        console.log(place_id);
+        // place_id = placeID;
+        // console.log(place_id);
         geo_context = document.getElementById("geo_context").value;
         number = document.getElementById("number").value; 
         sort = document.getElementById("sort").value; 
@@ -498,7 +497,9 @@ var geo_context = '';
 var sort = '';
 
 $("#submit").click(function(){
+    $("#imgHere").empty();
     $("#pics").empty();
+    $("#links").empty();
 
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+apiKey+'&has_geo=1&format=json&nojsoncallback=1',
         {   
@@ -555,7 +556,7 @@ $("#submit").click(function(){
     */
     //var saveCount = 0; 
     populateSavedSlides = function() {
-
+       
 
         photo = 'http://farm' + photoFarm + '.static.flickr.com/' + photoServer + '/' + photoID + '_' + photoSecret + '_m.jpg';
         for(var j = 0; j < photoArray.length; j++){
@@ -570,7 +571,7 @@ $("#submit").click(function(){
    
     var count = 0;
     populateSlideShow = function(photoID, photoFarm, photoServer, photoSecret) {
-
+       
         photo = 'http://farm' + photoFarm + '.static.flickr.com/' + photoServer + '/' + photoID + '_' + photoSecret + '_m.jpg';
 
         if (photoID !== -1) {
@@ -588,11 +589,14 @@ $("#submit").click(function(){
 */
     /* plays the slideshow of the photoset - link is hidden */
     playSlidePhotoset = function() {
+        //$("#imgHere").empty();
+
         jQuery('<a href=' + aPhoto[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
 
     }
     /* plays the slideshow of the searched tag - link is hidden */
     playSlide = function() {
+       // $("#imgHere").empty();
         jQuery('<a href=' + photoArray[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
     }
     /* plays the slideshow of the saved images - link is hidden */
@@ -645,77 +649,152 @@ $("#submit").click(function(){
                         
             for(var i = 0; i < publicPhotoIDs.length; i++){
                
-                $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + publicPhotoIDs[i] + '&format=json&nojsoncallback=1',
-                    function(data){
+                         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + publicPhotoIDs[i] + '&format=json&nojsoncallback=1',
+                        function(data) {
+                            try{
+                                
 
-                        lat = data.photo.location.latitude;
-                        lng = data.photo.location.longitude; 
+                                newLat = data.photo.location.latitude;
+                                newLng = data.photo.location.longitude; 
+
+                               
+                                var myLatlng = new google.maps.LatLng(newLat, newLng);
+
+                            } catch(err){
+
+                                console.log("Some location not available");
+                            }
+
+                            console.log(data);
+                          
+                            try {
+
+                                username = data.photo.owner.username;
+                                title = data.photo.title._content;
+                                description = data.photo.description._content;
+
+                            try{
+
+                                region = data.photo.location.country._content;
+                                locality = data.photo.location.region._content;
+
+                            } catch(err) {
+                                console.log("Region or Locality unavailable"); 
+                            }
+
+                                if (description == '') {
+                                    description = 'N/A';
+                                }
+                                dateTaken = data.photo.dates.taken;
+                                url = data.photo.urls.url[0]._content;
+
+                                thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
 
 
-                        var newLatLng = new google.maps.LatLng(lat, lng);
+                                 //console.log("# of tags: " + data.photo.tags.tag.length);
+                                // data.photo.tags.tag[k]._content
+                                    
+                                contentString =
 
+                                    '<div id="content">' +
+                                    '<h4 id="firstHeading" class="firstHeading">' + title + '</h4>' +
+                                    '<div id="bodyContent">' +
+                                    '<img src="' + thePhoto + '"style="height:17.0em; width:"100px; float:left; padding-right:10px;">' +
+                                    '<br />' +
+                                    '<div style="list-style: none; color:black; float:left;"> ' +
+                                    '<p><b>User:</b> ' + username + '</p>' +
+                                    '<p><b>Date/Time:</b> ' + dateTaken + '</p>' +
+                                    '<p><b>Description:</b> ' + description + '</p>' +
+                                    '<p><b>Location:</b> ' + locality + ', ' + region + '</p>' +
+                                    '<p><b># Tags:</b> '+ data.photo.tags.tag.length +'</p>'+
+                                    '<p><b>Tags:</b><div id="theTags"></div>'+   
+                                    '<br />'+
+                                    '<button id="showTags" onClick="showTags('+data.photo.tags.tag.length+','+publicPhotoIDs[i]+')">Show Tags</button>'+ 
+                                    '<br />'+   
+                                    '<br />'+                          
+                                    '<p><textarea id="textarea" placeholder="comment" style="width:200px;"></textarea></p>' +
+                                    '<button id="addComment" onClick="addComment(' + publicPhotoIDs[i] + ')">Add Comment</button>' +
+                                    '<br />' +
+                                    '<p><b>Comment:</b><div id="theComment"></div> "' + localStorage.getItem(publicPhotoIDs[i]) + '"</p>' +
+                                    '<p>Photo URL: <a href="' + url + '">' +
+                                    '' + url + '</a></p> ' +
+                                    '<button onClick="addToSlide('+publicPhotoIDs[i]+')">Add to slideshow</button>'+
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                       
 
+                                 allMarkers = new google.maps.Marker({
+                                    position: myLatlng,
+                                    map: map,
+                                    animation: google.maps.Animation.DROP,
+                                    icon: icon,
+                                    html: contentString
+                                });
 
-                        allMarkers = new google.maps.Marker({
-                            position: newLatLng,
-                            map: map,
-                            icon: icon
-                           // html: contentString
-                        });
-
-
+                           
 
                                 //put all lat long in array
-                                allLatlng.push(newLatLng);
-
-                                // console.log("allLatlng: " + allLatlng); 
-                                // console.log("newLatLng: " + newLatLng); 
-
-                                // console.log(allLatlng[i].A);
-                                // console.log(allLatlng[i].F)
-
-                               // console.log(allLatlng[i-1]);
-
-                                if(allLatlng[i] == allLatlng[i-1]){
-                                    console.log("OMG"); 
-                                }
-
-                                // console.log("Lat: " + allLatlng[0].A);
-                                // console.log("Lng: " + allLatlng[0].F);
-
-                     
-                                // console.log(allLatlng[i].A);
-                                // console.log(allLatlng[i].F);
+                                allLatlng.push(myLatlng);
 
                                 //Put the marketrs in an array
                                 tempMarkerHolder.push(allMarkers);
 
-    
-                             infoWindow = new google.maps.InfoWindow({
+                                console.log("tempMarker: " +tempMarkerHolder.length);
+                          
+      var infoWindow = new google.maps.InfoWindow({
                                     content: contentString,
                                     maxWidth: 400,
-                                    maxHeight: 300,
+                                    maxHeight: 150,
                                     arrowStyle: 2,
                                     borderRadius: 4,
                                     disableAutoPan: true,
                                     scrollwheel: true,
                                     borderColor: '#2c2c2c'
                                 });
-
                              
-
+// google.maps.event.addListener(marker, 'click', function() {
+    
+//     infoBubble = new google.maps.InfoWindow();
+    
+// });
                                 google.maps.event.addListener(allMarkers, 'click', function() {
-                                    //infoWindow.setContent(contentString);
+
+                                    // if (infoBubble) {
+                                    //     infoBubble.close();
+                                    // }
+                                  //  infowindow.setContent(contentString);
                                     //if (infoBubble) infoBubble.close();
-                                    //infoWindow = new google.maps.InfoBubble({content: contentString});
+                                    //infoBubble = new google.maps.InfoBubble({content: contentString});
+                                  // infoBubble.close(map); 
                                     infoWindow.open(map, this);
+
 
                                 });
 
-                                
+
+                            } catch (err) {
+                                console.log(err);
+                            }
+
+                            //var markerCluster = new MarkerClusterer(map, markers);
 
 
-                    });
+                            console.log(allLatlng);
+                            //  Make an array of the LatLng's of the markers you want to show
+                            //  Create a new viewpoint bound
+                            var bounds = new google.maps.LatLngBounds();
+                            //  Go through each...
+                            for (var i = 0, LtLgLen = allLatlng.length; i < LtLgLen; i++) {
+                                //  And increase the bounds to take this point
+                                bounds.extend(allLatlng[i]);
+                            }
+                            //  Fit these bounds to the map
+                            map.fitBounds(bounds);
+                        });
+
+
+
 
                 
             }

@@ -126,7 +126,20 @@
 
 
 <body>
-
+<!-- set up the modal to start hidden and fade in and out -->
+<div id="myModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- dialog body -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        Hello world!
+      </div>
+      <!-- dialog buttons -->
+      <div class="modal-footer"><button type="button" class="btn btn-primary">OK</button></div>
+    </div>
+  </div>
+</div>
 
     <div id="links"></div>
 
@@ -284,7 +297,7 @@
                 <input id="search" type="text" class="form-control" placeholder="Search by TEXT">
             </div>
 
-            <div style="color:white">
+           <!--  <div style="color:white">
                 <div style="clear:both;" id="userinfo"></div>
                 Radius (mi)&nbsp;
                 <input type="radio" name="radius" value="2 miles"> 2
@@ -292,12 +305,12 @@
                 <input type="radio" name="radius" value="6 miles"> 6
                 <input type="radio" name="radius" value="" checked="checked"> N/A
 
-            </div>
+            </div> -->
 
-        <p id="navP">Tags</p>
+       <!--  <p id="navP">Tags</p>
           <div class="form-group">
              <input id="tags" type="text" class="form-control" placeholder="Search by TAG">
-        </div>
+        </div> -->
      
             <p id="navP">Min Upload Date</p>
             <div class="form-group">
