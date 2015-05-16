@@ -50,8 +50,14 @@
         document.write(script);
     </script>
 
+<!-- LIGHTBOX - Javascript -->
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script type="text/javascript" src="/fancybox/jquery.easing-1.4.pack.js"></script>
+<script type="text/javascript" src="/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 
 
+<!-- LIGHTBOX - Javascript -->
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 
     <!-- MOST SLIDER -->
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -145,6 +151,15 @@
 
 
 
+
+<!-- message panel for multiple images in one location -->
+<div id = "panel"></div>
+
+
+
+
+
+
     <div id="blueimp-gallery" class="blueimp-gallery" data-use-bootstrap-modal="false">
         <!-- The container for the modal slides -->
         <div class="slides"></div>
@@ -225,20 +240,25 @@
 
                 <div id="markerButtons">
                     <!-- User changes the marker settings -->
-                    <li>
+
+                     <li>
                         <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
                     <br>
+
                     <li>
+                        <input id="check" type=button class="btn btn-default" value="Check Same Location"> </li>
+                    <br>
+                  <!--   <li>
                         <input id="add" class="btn btn-default" type=button value="Save Slideshow">
                     </li>
-                    <br>
+                    <br> -->
                     <li>
                         <input onClick="showMarkers();" class="btn btn-default" type=button value="Show All Markers">
                     </li>
                     <br>
 
                     <li>
-                        <input onClick="deleteMarkers();" class="btn btn-default" type=button value="Delete ALL"> </li>
+                        <input id="deleteAll" class="btn btn-default" type=button value="Clear ALL"> </li>
 
 
                     <br>
@@ -294,7 +314,7 @@
             <!-- User may search for a tag here  -->
             <p id="navP">Search for public photo</p>
             <div class="form-group">
-                <input id="search" type="text" class="form-control" placeholder="Search by TEXT">
+                <input id="search" type="text" class="form-control" placeholder="Search">
             </div>
 
            <!--  <div style="color:white">
@@ -325,7 +345,7 @@
 
         <p id="navP">Display # of Photos</p>
         <div class="form-group">
-            <input id="number" type="text" class="form-control" placeholder="# of photos" value="20">
+            <input id="number" type="text" class="form-control" placeholder="# of photos" value="5">
         </div>
 
         <p id="navP">Sort: date-'posted/taken'-asc/desc</p>
@@ -460,11 +480,12 @@
             height: 100%;
             margin: 0;
             padding: 0;
-                  background: url(images/star1.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+            background: url(images/star1.jpg) repeat center center fixed; 
+
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
         }
     </style>
 
