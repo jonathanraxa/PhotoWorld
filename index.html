@@ -50,14 +50,14 @@
         document.write(script);
     </script>
 
-<!-- LIGHTBOX - Javascript -->
-<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-<script type="text/javascript" src="/fancybox/jquery.easing-1.4.pack.js"></script>
-<script type="text/javascript" src="/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+    <!-- LIGHTBOX - Javascript -->
+    <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+    <script type="text/javascript" src="/fancybox/jquery.easing-1.4.pack.js"></script>
+    <script type="text/javascript" src="/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 
 
-<!-- LIGHTBOX - Javascript -->
-<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+    <!-- LIGHTBOX - Javascript -->
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 
     <!-- MOST SLIDER -->
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -132,29 +132,30 @@
 
 
 <body>
-<!-- set up the modal to start hidden and fade in and out -->
-<div id="myModal" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!-- dialog body -->
-      <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        Hello world!
-      </div>
-      <!-- dialog buttons -->
-      <div class="modal-footer"><button type="button" class="btn btn-primary">OK</button></div>
+    <!-- set up the modal to start hidden and fade in and out -->
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- dialog body -->
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    Hello world!
+                </div>
+                <!-- dialog buttons -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
     <div id="links"></div>
 
 
 
 
-<!-- message panel for multiple images in one location -->
-<div id = "panel"></div>
-
+    <!-- message panel for multiple images in one location -->
+    <div id="panel"></div>
 
 
 
@@ -194,130 +195,129 @@
     </div>
 
 
-<div class="accordion">
+    <div class="accordion">
 
-    <nav class="navbar navbar-inverse easy-sidebar">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
+        <nav class="navbar navbar-inverse easy-sidebar">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
 
-                <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-
-
-                <a class="navbar-brand" href="#">PhotoWorld</a>
-            </div>
+                    <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
 
 
 
-       
-
-
-            <ul class="nav navbar-nav">
-
-
-              <div class="accordion" id="accordion2">
-                <div class="accordion-group">
-                    <div class="accordion-heading">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                                Collapsible Group Item #1
-                         </a>                   
-                     </div>
-
-                     <div id = "collapseOne" class="accordion-body collapse in">
-                        <div class="accordion-inner">
-                            Animp adslfajsdfadf alsdfja sdf
-                        </div>
-                     </div>
-
+                    <a class="navbar-brand" href="#">PhotoWorld</a>
                 </div>
-              </div>
 
-                <div id="markerButtons">
-                    <!-- User changes the marker settings -->
 
-                     <li>
-                        <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
-                    <br>
 
-                    <li>
-                        <input id="check" type=button class="btn btn-default" value="Check Same Location"> </li>
-                    <br>
-                  <!--   <li>
+
+
+                <ul class="nav navbar-nav">
+
+
+                    <div class="accordion" id="accordion2">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                Collapsible Group Item #1
+                         </a>
+                            </div>
+
+                            <div id="collapseOne" class="accordion-body collapse in">
+                                <div class="accordion-inner">
+                                    Animp adslfajsdfadf alsdfja sdf
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div id="markerButtons">
+                        <!-- User changes the marker settings -->
+
+                        <li>
+                            <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
+                        <br>
+
+                        <li>
+                            <input id="check" type=button class="btn btn-default" value="Check Same Location"> </li>
+                        <br>
+                        <!--   <li>
                         <input id="add" class="btn btn-default" type=button value="Save Slideshow">
                     </li>
                     <br> -->
-                    <li>
-                        <input onClick="showMarkers();" class="btn btn-default" type=button value="Show All Markers">
-                    </li>
+                        <li>
+                            <input onClick="showMarkers();" class="btn btn-default" type=button value="Show All Markers">
+                        </li>
+                        <br>
+
+                        <li>
+                            <input id="deleteAll" class="btn btn-default" type=button value="Clear ALL"> </li>
+
+
+                        <br>
+                        <li>
+                            <input id="deleteComments" type=button class="btn btn-default" value="Clear Local Storage"> </li>
+                        <br>
+
+                        <li>
+                            <input id="playSaved" type=button class="btn btn-default" value="Get Selected Photos">
+                        </li>
+                    </div>
+                    <br />
+                    <br />
+
+
+                    <!-- User enters their own ID and photoset -->
+                    <p id="navP">Enter a specific user ID and photoset</p>
+
+                    <div class="titles">
+                        <p id="navP">User ID</p>
+                        <p id="navP">Photoset ID</p>
+                    </div>
+
+
+                    <div class="ID">
+                        <input id="userID" type="text" class="form-control" placeholder="Enter Flickr ID">
+                        <input id="photosetID" type="text" class="form-control" placeholder="Enter Photoset ID">
+                    </div>
                     <br>
-
-                    <li>
-                        <input id="deleteAll" class="btn btn-default" type=button value="Clear ALL"> </li>
-
-
-                    <br>
-                    <li>
-                        <input id="deleteComments" type=button class="btn btn-default" value="Clear Local Storage"> </li>
-                    <br>
-
-                    <li>
-                        <input id="playSaved" type=button class="btn btn-default" value="Get Selected Photos">
-                    </li>
-                </div>
-                <br />
-                <br />
-
-
-                <!-- User enters their own ID and photoset -->
-                <p id="navP">Enter a specific user ID and photoset</p>
-
-                <div class="titles">
-                    <p id="navP">User ID</p>
-                    <p id="navP">Photoset ID</p>
-                </div>
-
-
-                <div class="ID">
-                    <input id="userID" type="text" class="form-control" placeholder="Enter Flickr ID">
-                    <input id="photosetID" type="text" class="form-control" placeholder="Enter Photoset ID">
-                </div>
-                <br>
-                <button id="photosetSubmit" type="submit" class="btn btn-default">Submit Photoset</button>
+                    <button id="photosetSubmit" type="submit" class="btn btn-default">Submit Photoset</button>
 
 
 
 
-                <!--         <input id="enterUser" type=button class="btn btn-info" value="User ID">
+                    <!--         <input id="enterUser" type=button class="btn btn-info" value="User ID">
  -->
 
-                <!--         <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
+                    <!--         <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
  -->
 
 
-                <!-- TEST FUNCTIONS - TO BE DELETED -->
-                <!-- <input id="testUser" type=button class="btn btn-info" value="testUser"> 
+                    <!-- TEST FUNCTIONS - TO BE DELETED -->
+                    <!-- <input id="testUser" type=button class="btn btn-info" value="testUser"> 
         <input id="getUser" type=button class="btn btn-info" value="Username">
         <button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
         <br> -->
-            </ul>
+                </ul>
 
-            <br />
-            <br />
+                <br />
+                <br />
 
 
-            <!-- User may search for a tag here  -->
-            <p id="navP">Search for public photo</p>
-            <div class="form-group">
-                <input id="search" type="text" class="form-control" placeholder="Search">
-            </div>
+                <!-- User may search for a tag here  -->
+                <p id="navP">Search for public photo</p>
+                <div class="form-group">
+                    <input id="search" type="text" class="form-control" placeholder="Search">
+                </div>
 
-           <!--  <div style="color:white">
+                <!--  <div style="color:white">
                 <div style="clear:both;" id="userinfo"></div>
                 Radius (mi)&nbsp;
                 <input type="radio" name="radius" value="2 miles"> 2
@@ -327,97 +327,97 @@
 
             </div> -->
 
-       <!--  <p id="navP">Tags</p>
+                <!--  <p id="navP">Tags</p>
           <div class="form-group">
              <input id="tags" type="text" class="form-control" placeholder="Search by TAG">
         </div> -->
-     
-            <p id="navP">Min Upload Date</p>
-            <div class="form-group">
-                <input id="min_upload_date" type="text" class="form-control" placeholder="YYYY-MM-DD">
-            </div>
 
-            <p id="navP">Max Upload Date</p>
-             <div class="form-group">
-                <input id="max_upload_date" type="text" class="form-control" placeholder="YYYY-MM-DD">
-        </div>
-     
+                <p id="navP">Min Upload Date</p>
+                <div class="form-group">
+                    <input id="min_upload_date" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                </div>
 
-        <p id="navP">Display # of Photos</p>
-        <div class="form-group">
-            <input id="number" type="text" class="form-control" placeholder="# of photos" value="5">
-        </div>
-
-        <p id="navP">Sort: date-'posted/taken'-asc/desc</p>
-        <p id="navP">Sort: interestingness-asc/desc</p>
-        <p id="navP">Sort: revalance</p>
-        <div class="form-group">
-            <input id="sort" type="text" class="form-control" placeholder="" >
-        </div>
+                <p id="navP">Max Upload Date</p>
+                <div class="form-group">
+                    <input id="max_upload_date" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                </div>
 
 
-<!-- 
+                <p id="navP">Display # of Photos</p>
+                <div class="form-group">
+                    <input id="number" type="text" class="form-control" placeholder="# of photos" value="5">
+                </div>
+
+                <p id="navP">Sort: date-'posted/taken'-asc/desc</p>
+                <p id="navP">Sort: interestingness-asc/desc</p>
+                <p id="navP">Sort: revalance</p>
+                <div class="form-group">
+                    <input id="sort" type="text" class="form-control" placeholder="">
+                </div>
+
+
+                <!-- 
         <p id="navP">bbox - defines the range of photos </p>
         <div class="form-group">
             <input id="bbox" type="text" class="form-control" placeholder="Search by bbox">
         </div>
          -->
-        <!-- <p id="navP">place_id - add in a place</p>
+                <!-- <p id="navP">place_id - add in a place</p>
         <div class="form-group">
             <input id="place_id" type="text" class="form-control" placeholder="Search by place_id">
         </div> -->
 
-        <p id="navP">Indoor: 1, Outdoor: 2</p>
-        <div class="form-group">
-            <input id="geo_context" type="text" class="form-control" placeholder="Search by geo_context">
-        </div>
+                <p id="navP">Indoor: 1, Outdoor: 2</p>
+                <div class="form-group">
+                    <input id="geo_context" type="text" class="form-control" placeholder="Search by geo_context">
+                </div>
 
 
-        <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">Submit Search</button>
-        <!--  </form> -->
+                <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">Submit Search</button>
+                <!--  </form> -->
 
 
-        <br />
-        <br />
-        <br />
-        <p id="navP">Double-Click on photo to add to slide show. Button will appear once images have been created.</p>
+                <br />
+                <br />
+                <br />
+                <p id="navP">Double-Click on photo to add to slide show. Button will appear once images have been created.</p>
 
-        <button id="playSlide" class="navbar-toggle easy-sidebar-toggle" style="color:white; text-align:center; margin-right:50px;">
-            <div id="imgHere"></div>
-        </button>
-        <div id="play"></div>
-        <br />
-
-
-        </div>
-
-        <br />
-        <br />
-        <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
+                <button id="playSlide" class="navbar-toggle easy-sidebar-toggle" style="color:white; text-align:center; margin-right:50px;">
+                    <div id="imgHere"></div>
+                </button>
+                <div id="play"></div>
+                <br />
 
 
-        <!-- /.container-fluid -->
-    </nav>
+            </div>
+
+            <br />
+            <br />
+            <button type="button" class="navbar-toggle easy-sidebar-toggle" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
 
 
-</div>
+            <!-- /.container-fluid -->
+        </nav>
+
+
+    </div>
 
     <button class="btn easy-sidebar-toggle">
-      <!--   <i class="fa fa-bars"> -->
-<div id="toggleButton">PhotoWorld</div>
-        </i></button>
+        <!--   <i class="fa fa-bars"> -->
+        <div id="toggleButton">PhotoWorld</div>
+        </i>
+    </button>
 
 
-<input id="pac-input" class="controls" type="text"
-        placeholder="Enter a location">
+    <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
     <!-- Google Map canvas -->
 
-    <div id="map-canvas" style="width: 100%; height: 110%">
+    <div id="map-canvas" style="width: 100%; height: 100%">
 
         <!-- Toggle Icon -->
 
@@ -480,8 +480,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background: url(images/star1.jpg) repeat center center fixed; 
-
+            background: url(images/star1.jpg) repeat center center fixed;
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
@@ -493,14 +492,11 @@
     </script>
 
 
-    <!-- INFO BUBBLE -->
-    <script type="text/javascript" src="./js/infobubble.js"></script>
+   
 
 
-    <script type="text/javascript" src="./js/markercluster"></script>
-    <script type="text/javascript" src="./js/List.js"></script>
-    <script type="text/javascript" src="./js/Mapster.js"></script>
-    <script type="text/javascript" src="./js/map-options.js"></script>
+    <script type="text/javascript" src="./js/markercluster.js"></script>
+    
 
 
 
