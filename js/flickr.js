@@ -725,9 +725,9 @@ var tempSecret;
         var num = 0; 
          for(var count = 0; count < tempMarkerHolder.length-1; count++){
 
-                  //console.log(tempMarkerHolder[count].id + " Matches with: " ); 
+                  console.log(tempMarkerHolder[count].id + " Matches with: " ); 
 
-                for(var i  = 1; i < tempMarkerHolder.length-1; i++){
+                for(var i  = 0; i < tempMarkerHolder.length-1; i++){
 
                             // handles iterator matches 
                             if(count === i){
@@ -738,10 +738,10 @@ var tempSecret;
                             if((tempMarkerHolder[count].lat === tempMarkerHolder[i].lat) && (tempMarkerHolder[count].lng === tempMarkerHolder[i].lng)){
 
                                     // console.log(tempMarkerHolder[count].position.A + " , " + tempMarkerHolder[count].position.F + "(count): " + (count));
-                                    // console.log(tempMarkerHolder[i].position.A + " , " + tempMarkerHolder[i].position.F + "(i): " + (i));
+                                     console.log(tempMarkerHolder[i].position.A + " , " + tempMarkerHolder[i].position.F + "(i): " + (i));
 
 
-                                    console.log( tempMarkerHolder[count].id + " matches with -> " + tempMarkerHolder[i].id); 
+                                    //console.log( tempMarkerHolder[count].id + " matches with -> " + tempMarkerHolder[i].id); 
                                     
 
                                     // add the IDs to an array - access them through object: tempMarkerHolder[count/i].id
@@ -749,15 +749,22 @@ var tempSecret;
                                     sameImgArrayID[num + 1] = tempMarkerHolder[i].id; 
                                     num++; 
 
-               
                             }
 
-
-
                 }
-
-              
+    
          }
+
+        // var sameImgArrayClean = [];
+        // $.each(sameImgArrayID, function(i, el){
+        //     if($.inArray(el, sameImgArrayClean) === -1) 
+        //         sameImgArrayClean.push(el);
+        // });
+
+
+var sameImgArrayClean = sameImgArrayID.filter(function(elem, pos) {
+    return sameImgArrayID.indexOf(elem) == pos;
+  }); 
 
 //BACK
          /* Check if map has multiple photos in one location then
@@ -794,13 +801,13 @@ var tempSecret;
                 
          }
 
-             console.log("sameImgArrayID: " + sameImgArrayID.length);
+             console.log("sameImgArrayID: " + sameImgArrayClean.length);
 
                 //for loop the array to display all the IDs that have the same location
-                for (var j = 0; j < sameImgArrayID.length; j++){
+                for (var j = 0; j < sameImgArrayClean.length; j++){
 
 
-                    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key='+apiKey+'&photo_id='+sameImgArrayID[j]+'&format=json&nojsoncallback=1',
+                    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key='+apiKey+'&photo_id='+sameImgArrayClean[j]+'&format=json&nojsoncallback=1',
                         function(data){
 
                      var tempID = data.photo.id;
