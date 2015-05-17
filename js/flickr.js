@@ -180,6 +180,7 @@ $(document).ready(function() {
             publicPhotoIDs = [];
             tempMarkerHolder = [];
             markers = [];
+            photoArray = [];
 
             console.log("allMarkers: " + allMarkers.length + "\n" +
                         "allLatlng: " + allLatlng.length + "\n" +
@@ -502,20 +503,9 @@ $(document).ready(function() {
     //         allMarkers.setAnimation(null);
     //     }
     // }
-    // function addTab() {
-    //     var title = document.getElementById('tab-title').value;
-    //     var content = document.getElementById('tab-content').value;
+   
 
-    //     if (title != '' && content != '') {
-    //         infoBubble.addTab(title, content);
-    //     }
-    // }
-
-    /* clears out the array so that we can add in a new set */
-    clearPhoto = function() {
-        publicPhotos = [];
-
-    }
+  
 
 
     /* Allows a user to put in their own User ID and Photoset */
@@ -527,8 +517,10 @@ $(document).ready(function() {
             function(data){
                 //console.log(data);
                 userID = data.user.id;
-                console.log(userID); 
+                //console.log(userID); 
+                return userID;
             });
+        
     }
 
 
@@ -538,26 +530,35 @@ $(document).ready(function() {
 
 
 
-
     /*
     Return the images from the photoset - user has to know the ID of the photoset prior to using
     */
     $("#photosetSubmit").click(function() {
         $("#pics").empty();
         $("#imgHere").empty();
-        jQuery('#a-link').remove();
+        $("#links").empty(); 
+
+        userID = '';
+        photoset_id = '';
 
         // example userID and photosetID
-        var userID = '90085976%40N03';
-        var photosetID = '72157651980228016';
+        // var userID = '90085976%40N03';
+        // var photosetID = '72157651980228016';
 
-        //getPhotosetID();
-         getUserID();
+        var user_name = document.getElementById("userID").value;
 
-        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=' + apiKey + '&photoset_id=' + photosetID + '&user_id=' + userID + '&format=json&nojsoncallback=1',
+        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+user_name+'&format=json&nojsoncallback=1',
+            function(data){
+
+                userID = data.user.id;
+                photoset_id = document.getElementById("photosetID").value;
+
+
+                $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=' + apiKey + '&photoset_id=' + photoset_id + '&user_id=' + userID + '&format=json&nojsoncallback=1',
 
             /* iterates through the defined photoset and pulls all the images from account */
             function(data) {
+                console.log(data); 
                 var i = 0;
 
                 for (; i < data.photoset.photo.length; i++) {
@@ -567,17 +568,30 @@ $(document).ready(function() {
                     var tempServer = data.photoset.photo[i].server;
                     var tempSecret = data.photoset.photo[i].secret;
 
-                    aPhoto[i] = 'http://farm' + tempFarm + '.static.flickr.com/' + tempServer + '/' + tempID + '_' + tempSecret + '_m.jpg';
-                    jQuery('<a href = ' + aPhoto[i] + '/>').attr('rel', 'lightbox').attr('id', 'photoset').attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', aPhoto[i])).appendTo('#pics');
+                    // aPhoto[i] = 'http://farm' + tempFarm + '.static.flickr.com/' + tempServer + '/' + tempID + '_' + tempSecret + '_m.jpg';
+                    // jQuery('<a href = ' + aPhoto[i] + '/>').attr('rel', 'lightbox').attr('id', 'photoset').attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', aPhoto[i])).appendTo('#pics');
+                    
+                publicPhotos[i] = 'http://farm' + tempFarm + '.static.flickr.com/' + tempServer + '/' + tempID + '_' + tempSecret + '_m.jpg';
+                jQuery('<a href/>').attr('id', tempID).attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', publicPhotos[i])).appendTo('#pics');
+
+                    // console.log("tempID: " + tempID + " \n" +
+                    //     "tempFarm: " + tempFarm + " \n" +
+                    //     "tempServer: " + tempServer + " \n" +
+                    //     "tempSecret: " + tempSecret + " \n"
+                    //     );
+
+
                     populateSlideShow(tempID, tempFarm, tempServer, tempSecret);
 
                 }
 
-                playSlidePhotoset();
+                playSlide();
 
 
 
             });
+
+        });
 
     });
 
@@ -713,12 +727,20 @@ $(document).ready(function() {
 
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
                 function(data) {
-
-                    username = data.photo.owner.username;
-                    title = data.photo.title._content;
-                    description = data.photo.description._content;
-                    region = data.photo.location.country._content;
-                    locality = data.photo.location.region._content;
+                    try{
+                        username = data.photo.owner.username;
+                        title = data.photo.title._content;
+                        description = data.photo.description._content;
+                    }catch(err){
+                        console.log(err); 
+                    }
+                    try{
+                        region = data.photo.location.country._content;
+                        locality = data.photo.location.region._content;
+                    }catch(err){
+                        console.log(err); 
+                    }
+                    
 
                     var content =
                         'Username: ' + username + ' || ' +
@@ -727,12 +749,12 @@ $(document).ready(function() {
                         'Location: ' + locality + ', ' + region + ' || ' +
                         'Comment: ' + localStorage.getItem(photoID) + '';
 
+
                     jQuery('<a href=' + photoArray[count] + ' title="' + content + '" data-gallery/>').appendTo('#links');
 
                     count++;
-                    // localStorage.getItem(photoID) 
-                })
-            //console.log("photoArray: " + count); 
+                    
+                });
 
     }
 
@@ -745,7 +767,7 @@ $(document).ready(function() {
     playSlidePhotoset = function() {
             //$("#imgHere").empty();
 
-            jQuery('<a href=' + aPhoto[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
+            jQuery('<a href=' + photoArray[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
 
         }
         /* plays the slideshow of the searched tag - link is hidden */
