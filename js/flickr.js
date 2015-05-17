@@ -181,6 +181,7 @@ $(document).ready(function() {
             tempMarkerHolder = [];
             markers = [];
             photoArray = [];
+            aPhoto = [];
 
             console.log("allMarkers: " + allMarkers.length + "\n" +
                         "allLatlng: " + allLatlng.length + "\n" +
@@ -275,6 +276,7 @@ $(document).ready(function() {
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.places.find&api_key=' + apiKey + '&query=' + place + '&format=json&nojsoncallback=1',
             function(data) {
                 placeID = data.places.place[0].place_id;
+                console.log(placeID); 
             })
 
 
@@ -606,11 +608,12 @@ $(document).ready(function() {
         search = document.getElementById("search").value;
         min_upload_date = document.getElementById("min_upload_date").value;
         max_upload_date = document.getElementById("max_upload_date").value;
-        //tag = document.getElementById("tag").value;
-        //tags = document.getElementById("tags").value;
         //bbox = document.getElementById("bbox").value;
-        // place_id = placeID;
-        // console.log(place_id);
+        
+       if(place_id = 'undefined'){
+            placeID === '';
+        } 
+
         geo_context = document.getElementById("geo_context").value;
         number = document.getElementById("number").value;
         sort = document.getElementById("sort").value;
@@ -625,7 +628,7 @@ $(document).ready(function() {
     var max_upload_date = '';
     var tags = '';
     var bbox = null;
-    var place_id = '';
+    var place_id;
     var geo_context = '';
     var sort = '';
 
@@ -638,6 +641,11 @@ $(document).ready(function() {
         $("#pics").empty();
         $("#imgHere").empty();
         $("#links").empty();
+        
+        marker.setVisible(false);
+      
+            
+            
 
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + apiKey + '&has_geo=1&format=json&nojsoncallback=1', {
 
@@ -647,19 +655,13 @@ $(document).ready(function() {
             min_upload_date: '' + min_upload_date + '',
             max_upload_date: '' + max_upload_date + '',
 
-            //bbox: 2,
+            place_id: placeID,
             geo_context: '' + geo_context + '',
             sort: '' + sort + '',
             per_page: '' + number + ''
 
 
         }, function(data) {
-
-            // if(place_id === undefined){
-            //   place_id == null
-            //   } else {
-            //   place_id == placeID;
-            //   }
 
 
             var i;
@@ -695,7 +697,6 @@ $(document).ready(function() {
      *  telling the user that the saved photos are ready to be shown. With both populate methods, there is a hidden
      *  div tag that the photos links are populated in to allow the slide to play images from the DOM.
      */
-    //var saveCount = 0; 
     populateSavedSlides = function() {
 
 
@@ -753,7 +754,7 @@ $(document).ready(function() {
                     jQuery('<a href=' + photoArray[count] + ' title="' + content + '" data-gallery/>').appendTo('#links');
 
                     count++;
-                    
+
                 });
 
     }
@@ -807,9 +808,7 @@ $(document).ready(function() {
 
             console.log("URLS: " + URLS[i]);
 
-            // if (localStorage.getItem(photoID) === 'undefined') {
-            //     localStorage.getItem(photoID) === '';
-            // }
+    
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
                 function(data) {
 
@@ -829,16 +828,9 @@ $(document).ready(function() {
                     jQuery('<a href=' + photoArray[count] + ' title="' + content + '" data-gallery/>').appendTo('#links');
 
                     count++;
-                    // localStorage.getItem(photoID) 
                 })
 
-
-
-
-
-
             jQuery('<a href=' + URLS[i] + ' title="' + localStorage.getItem(photoID) + '" data-gallery/>').appendTo('#links');
-
 
         }
 
@@ -935,7 +927,6 @@ $(document).ready(function() {
                 aPhoto = [];
                 publicPhotoIDs = [];
 
-                //      console.log(aPhoto.length); 
 
             }
 
@@ -1050,7 +1041,7 @@ getNum = function(coords){
                     thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
 
 
-                    //console.log("# of tags: " + data.photo.tags.tag.length);
+                    // console.log("# of tags: " + data.photo.tags.tag.length);
                     // data.photo.tags.tag[k]._content
 
                     contentString =
@@ -1158,6 +1149,7 @@ getNum = function(coords){
     var map;
     var markers = [];
     var markerCluster;
+    var marker;
 
     function initialize() {
         // var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
@@ -1201,7 +1193,7 @@ getNum = function(coords){
 
         var infowindow = new google.maps.InfoWindow();
 
-        var marker = new google.maps.Marker({
+         marker = new google.maps.Marker({
             map: map
         });
 
@@ -1210,8 +1202,12 @@ getNum = function(coords){
         });
 
         google.maps.event.addListener(autocomplete, 'place_changed', function() {
+
             infowindow.close();
+
             var place = autocomplete.getPlace();
+
+            // I made this
             setPlace(place.formatted_address);
 
             if (!place.geometry) {
@@ -1219,7 +1215,9 @@ getNum = function(coords){
             }
 
             if (place.geometry.viewport) {
+
                 map.fitBounds(place.geometry.viewport);
+
             } else {
                 map.setCenter(place.geometry.location);
                 map.setZoom(17);
@@ -1230,12 +1228,15 @@ getNum = function(coords){
                 placeId: place.place_id,
                 location: place.geometry.location
             });
+
             marker.setVisible(true);
 
             infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
                 'Place ID: ' + place.place_id + '<br>' +
                 place.formatted_address);
             infowindow.open(map, marker);
+
+
         });
 
 
@@ -1267,8 +1268,10 @@ getNum = function(coords){
 
     /* Clears the local storage object*/
     function clearLocalStorage() {
+
         $("#imgHere").empty();
         $("#links").empty();
+
         localStorage.clear();
     }
 
