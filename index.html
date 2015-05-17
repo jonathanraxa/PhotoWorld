@@ -40,25 +40,8 @@
 
 
 
-    <script type="text/javascript">
-        var script = '<script type="text/javascript" src="http://google-maps-' +
-            'utility-library-v3.googlecode.com/svn/trunk/infobubble/src/infobubble';
-        if (document.location.search.indexOf('compiled') !== -1) {
-            script += '-compiled';
-        }
-        script += '.js"><' + '/script>';
-        document.write(script);
-    </script>
-
-    <!-- LIGHTBOX - Javascript -->
-    <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-    <script type="text/javascript" src="/fancybox/jquery.easing-1.4.pack.js"></script>
-    <script type="text/javascript" src="/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
-
-
-    <!-- LIGHTBOX - Javascript -->
-    <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
-
+  
+   
     <!-- MOST SLIDER -->
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/resources/scripts/modernizr-2.6.2.min.js"></script>
@@ -132,6 +115,8 @@
 
 
 <body>
+
+
     <!-- set up the modal to start hidden and fade in and out -->
     <div id="myModal" class="modal fade">
         <div class="modal-dialog">
@@ -220,78 +205,39 @@
 
                 <ul class="nav navbar-nav">
 
-
-                    <div class="accordion" id="accordion2">
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                                Collapsible Group Item #1
-                         </a>
-                            </div>
-
-                            <div id="collapseOne" class="accordion-body collapse in">
-                                <div class="accordion-inner">
-                                    Animp adslfajsdfadf alsdfja sdf
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
                     <div id="markerButtons">
                         <!-- User changes the marker settings -->
-
-                        <li>
+                       <!--  <li>
                             <input id="sign_in" type=button class="btn btn-default" value="Flickr Sign-In"> </li>
-                        <br>
+                        <br> -->
 
-                        <li>
-                            <input id="check" type=button class="btn btn-default" value="Check Same Location"> </li>
-                        <br>
-                        <!--   <li>
-                        <input id="add" class="btn btn-default" type=button value="Save Slideshow">
-                    </li>
-                    <br> -->
-                        <li>
-                            <input onClick="showMarkers();" class="btn btn-default" type=button value="Show All Markers">
-                        </li>
-                        <br>
+                   
 
-                        <li>
-                            <input id="deleteAll" class="btn btn-default" type=button value="Clear ALL"> </li>
-
-
-                        <br>
-                        <li>
-                            <input id="deleteComments" type=button class="btn btn-default" value="Clear Local Storage"> </li>
-                        <br>
-
-                        <li>
-                            <input id="playSaved" type=button class="btn btn-default" value="Get Selected Photos">
-                        </li>
                     </div>
+
+
                     <br />
                     <br />
+                    <h4><p id="navP"><b><u>Mode 1: Thumbnail Selection</u></b></p></h4>
 
 
                     <!-- User enters their own ID and photoset -->
-                    <p id="navP">Enter a specific user ID and photoset</p>
+                    <p id="navP">1) Enter User ID and Photoset</p>
 
                     <div class="titles">
-                        <p id="navP">User ID</p>
+                        <p id="navP">Username</p>
                         <p id="navP">Photoset ID</p>
                     </div>
 
 
                     <div class="ID">
-                        <input id="userID" type="text" class="form-control" placeholder="Enter Flickr ID">
-                        <input id="photosetID" type="text" class="form-control" placeholder="Enter Photoset ID">
+                        <input id="userID" type="text" class="form-control" placeholder="Flickr Username">
+                        <input id="photosetID" type="text" class="form-control" placeholder="Flickr Photoset ID">
                     </div>
                     <br>
                     <button id="photosetSubmit" type="submit" class="btn btn-default">Submit Photoset</button>
-
-
-
+<br>
+<br>
 
                     <!--         <input id="enterUser" type=button class="btn btn-info" value="User ID">
  -->
@@ -299,12 +245,9 @@
                     <!--         <input id="photoset" type=button class="btn btn-info" value="Enter Photoset">
  -->
 
-
-                    <!-- TEST FUNCTIONS - TO BE DELETED -->
-                    <!-- <input id="testUser" type=button class="btn btn-info" value="testUser"> 
-        <input id="getUser" type=button class="btn btn-info" value="Username">
-        <button onclick="hello( 'flickr' ).login()" class="btn btn-info" >flickr </button>
-        <br> -->
+<!--                 <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">SUBMIT</button>
+ -->
+                    
                 </ul>
 
                 <br />
@@ -312,25 +255,11 @@
 
 
                 <!-- User may search for a tag here  -->
-                <p id="navP">Search for public photo</p>
+                <p id="navP">2) Search for public photo</p>
                 <div class="form-group">
                     <input id="search" type="text" class="form-control" placeholder="Search">
                 </div>
 
-                <!--  <div style="color:white">
-                <div style="clear:both;" id="userinfo"></div>
-                Radius (mi)&nbsp;
-                <input type="radio" name="radius" value="2 miles"> 2
-                <input type="radio" name="radius" value="4 miles"> 4
-                <input type="radio" name="radius" value="6 miles"> 6
-                <input type="radio" name="radius" value="" checked="checked"> N/A
-
-            </div> -->
-
-                <!--  <p id="navP">Tags</p>
-          <div class="form-group">
-             <input id="tags" type="text" class="form-control" placeholder="Search by TAG">
-        </div> -->
 
                 <p id="navP">Min Upload Date</p>
                 <div class="form-group">
@@ -373,20 +302,53 @@
                 </div>
 
 
-                <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">Submit Search</button>
+                <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">SUBMIT</button>
+
+                        <br>
+                        <br>
+                    <p id="navP">__________________________________</p>
+                        <br>
+                        
+                    <h4><p id="navP"><b><u>Mode 2: Show All Photos</u></b></p></h4>
+
+                     <li>
+                            <input onClick="showMarkers();" class="btn btn-default" type=button value="Display All Photos">
+                        </li>
+
+                     <li>
+                        <input id="check" type=button class="btn btn-default" value="Check Same Location"> </li>
+                        
+                       
                 <!--  </form> -->
 
 
-                <br />
-                <br />
-                <br />
-                <p id="navP">Double-Click on photo to add to slide show. Button will appear once images have been created.</p>
+                <br>
+                <br>
+                    <p id="navP">__________________________________</p>
+
+                <br>
+                <h4><p id="navP"><b><u>Mode 3: Slideshow</u></b></p></h4>
+                <p id="navP">Button will appear once images have been retrieved.</p>
+
 
                 <button id="playSlide" class="navbar-toggle easy-sidebar-toggle" style="color:white; text-align:center; margin-right:50px;">
                     <div id="imgHere"></div>
                 </button>
                 <div id="play"></div>
-                <br />
+                    
+                    <br>
+                    <br>
+                    <p id="navP">__________________________________</p>
+                    <br>
+                  
+                    <h4><p id="navP">Settings</p></h4>
+                        <li>
+                            <input id="deleteAll" class="btn btn-default" type=button value="Clear ALL Map"> </li>
+                        <li>
+                            <input id="deleteComments" type=button class="btn btn-default" value="Clear Local Storage"> </li>
+                        <li>
+                            <input id="playSaved" type=button class="btn btn-default" value="Load Saved Photos">
+                        </li>
 
 
             </div>
@@ -409,7 +371,7 @@
 
     <button class="btn easy-sidebar-toggle">
         <!--   <i class="fa fa-bars"> -->
-        <div id="toggleButton">PhotoWorld</div>
+        <div id="toggleButton"><img src="./images/photo.png">PhotoWorld</div>
         </i>
     </button>
 
@@ -495,7 +457,7 @@
    
 
 
-    <script type="text/javascript" src="./js/markercluster.js"></script>
+    <script type="text/javascript" src="./js/markerclusterer.js"></script>
     
 
 

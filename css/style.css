@@ -50,6 +50,7 @@
 .easy-sidebar-toggle{
 position: absolute;
 z-index: 99999999;
+margin-left: 20px;
 }
 
       .controls {
