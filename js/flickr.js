@@ -632,16 +632,32 @@ $(document).ready(function() {
     var geo_context = '';
     var sort = '';
 
-    //  var tempID;
-    //  var tempFarm;
+    // var tempID;
+    // var tempFarm;
     // var tempServer;
     // var tempSecret;
 
     $("#submit").click(function() {
+
         $("#pics").empty();
         $("#imgHere").empty();
         $("#links").empty();
-        
+
+
+            clearMarkers();
+
+            allMarkers = [];
+            allLatlng = []; 
+            publicPhotoIDs = [];
+            tempMarkerHolder = [];
+            markers = [];
+            photoArray = [];
+            aPhoto = [];
+
+        map.setZoom(3);
+        map.setCenter(startLatLng);
+
+
         marker.setVisible(false);
       
             
@@ -983,7 +999,7 @@ getNum = function(coords){
      *  @return null
      */
 
-     var markers = []; 
+    var markers = []; 
     showMarkers = function() {
 
         // handles empty array of photos 
@@ -1010,13 +1026,6 @@ getNum = function(coords){
 
 
                     var myLatlng = new google.maps.LatLng(newLat, newLng);
-
-
-
-                    //  console.log("Some location not available");
-
-                    //console.log(data);
-
 
 
                     username = data.photo.owner.username;
@@ -1150,10 +1159,11 @@ getNum = function(coords){
     var markers = [];
     var markerCluster;
     var marker;
+    var startLatLng;
 
     function initialize() {
         // var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
-        var startLatLng = new google.maps.LatLng(0, 0);
+         startLatLng = new google.maps.LatLng(0, 0);
         var mapOptions = {
             zoom: 3,
             minZoom: 3,
@@ -1242,24 +1252,24 @@ getNum = function(coords){
 
 
         //Start geolocation
-        if (navigator.geolocation) {
+        // if (navigator.geolocation) {
 
-            function error(err) {
-                console.warn('ERROR(' + err.code + '): ' + err.message);
-            }
+        //     function error(err) {
+        //         console.warn('ERROR(' + err.code + '): ' + err.message);
+        //     }
 
-            function success(pos) {
-                userCords = pos.coords;
+        //     function success(pos) {
+        //         userCords = pos.coords;
 
-                //return userCords;
-            }
+        //         //return userCords;
+        //     }
 
-            // Get the user's current position
-            navigator.geolocation.getCurrentPosition(success, error);
-            //console.log(pos.latitude + " " + pos.longitude);
-        } else {
-            alert('Geolocation is not supported in your browser');
-        }
+        //     // Get the user's current position
+        //     navigator.geolocation.getCurrentPosition(success, error);
+        //     //console.log(pos.latitude + " " + pos.longitude);
+        // } else {
+        //     alert('Geolocation is not supported in your browser');
+        // }
 
     }
 
