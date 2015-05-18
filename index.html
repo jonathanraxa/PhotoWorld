@@ -66,36 +66,12 @@
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/prettyphoto/3.1.5/css/prettyPhoto.css" />
 
 
-    <script src="./dist/hello.all.js">
-        hello.on('auth.login', function(auth) {
 
-            // Call user information, for the given network
-            hello(auth.network).api('/me').then(function(r) {
-                // Inject it into the container
-                var label = document.getElementById('profile_' + auth.network);
-                if (!label) {
-                    label = document.createElement('div');
-                    label.id = 'profile_' + auth.network;
-                    document.getElementById('profile').appendChild(label);
-                }
-                label.innerHTML = '<img src="' + r.thumbnail + '" /> Hey ' + r.name;
-            });
-        });
-    </script>
-
-    <script type="text/javascript">
-        hello.init({
-            flickr: '0fd24d9d0411ede9c4d33d4c531bbc16',
-        }, {
-            redirect_uri: 'http://localhost:8888'
-        });
-    </script>
+   
 
     <!-- Start WOWSlider.com HEAD section -->
     <link rel="stylesheet" type="text/css" href="./engine1/style.css" />
     <script type="text/javascript" src="./engine1/jquery.js"></script>
-
-
 
 
 
@@ -287,7 +263,7 @@
      
                         <br>
                         <br>
-                    <p id="navP">__________________________________</p>
+                    <p id="navP">_________________________________</p>
                         <br>
                         
                     <h4><p id="navP"><b><u>Mode 2: Show All Photos</u></b></p></h4>
@@ -305,7 +281,7 @@
 
                 <br>
                 <br>
-                    <p id="navP">__________________________________</p>
+                    <p id="navP">_________________________________</p>
 
                 <br>
                 <h4><p id="navP"><b><u>Mode 3: Slideshow</u></b></p></h4>
@@ -319,14 +295,14 @@
                     
                     <br>
                     <br>
-                    <p id="navP">__________________________________</p>
+                    <p id="navP">_________________________________</p>
                     <br>
                   
                     <h4><p id="navP">Settings</p></h4>
                         <li>
                             <input id="deleteAll" class="btn btn-default" type=button value="Clear ALL Map"> </li>
                         <li>
-                            <input id="deleteComments" type=button class="btn btn-default" value="Clear Local Storage"> </li>
+                            <input id="deleteStorage" type=button class="btn btn-default" value="Clear Local Storage"> </li>
                         <li>
                             <input id="playSaved" type=button class="btn btn-default" value="Load Saved Photos">
                         </li>
@@ -360,7 +336,11 @@
     <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
     <!-- Google Map canvas -->
 
-    <div id="map-canvas" style="width: 100%; height: 100%">
+    <div id="map-canvas" 
+    style="height: 100%;
+    width: 100%;
+    margin-top: 0px;
+    margin-bottom: -100px;">
 
         <!-- Toggle Icon -->
 
