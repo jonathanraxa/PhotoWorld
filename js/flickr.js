@@ -88,8 +88,9 @@ $(document).ready(function() {
 
     var instructions = '<h3><b><u>Mode 1</u></b>: Search Photo </h3>'+
                         '<h4><b>User Photoset Search</b></h4>'+
-                        '<p>1) Find the Flickr user ID number (you can find it here: <i>http://idgettr.com/</i> )</p>'+
+                        '<p>1) Find the Flickr user name (make sure that it is not from Yahoo)</p>'+
                         '<p>2) Find the photoset ID and paste it into the search</p>'+
+                        '<p><img src="./images/id.png" style= "size=height:200px; width:450;"/></p>'+
                         '<h4><b>Public Photo Search</b></h4>'+
                         '<p>1) Enter a search keyword to find photos</p>'+
                         '<p>2) <i>Optional filters</i> </p>'+
@@ -106,7 +107,9 @@ $(document).ready(function() {
                         '<li> "date-posted-desc" </li>'+
                         '<li> "revalance" </li>'+
                         '</ul>'+
-    
+                        '<p>Indoor/Outdoor - input either (1) for indoor photos or (2) for outdoor photos.</p>'+
+
+
 
                         '<h3><b><u>Mode 2</u></b>: Show All Photos </h3>'+
                         '<p>Description: Displays all the markers of photos given search variables</p>'+
@@ -122,12 +125,12 @@ $(document).ready(function() {
 
 
     /* Gives the user instructions for the application */
-    var pop = open("","","top=200,left=100,width=450,height=500");
-    pop.document.write('<center><img src="./images/PhotoWorld.png" style= "size=height:200px; width:450;"/></center>');
-    pop.document.write('<center><b><h1>Welcome to PhotoWorld!</h1></b></center>');
-    pop.document.write("<h2>Instructions</h2>");
-    pop.document.write(instructions);
-    pop.document.close(); 
+    // var pop = open("","","top=200,left=100,width=550,height=500");
+    // pop.document.write('<center><img src="./images/PhotoWorld.png" style= "size=height:200px; width:450;"/></center>');
+    // pop.document.write('<center><b><h1>Welcome to PhotoWorld!</h1></b></center>');
+    // pop.document.write("<h2>Instructions</h2>");
+    // pop.document.write(instructions);
+    // pop.document.close(); 
 
 
 
@@ -153,39 +156,13 @@ $(document).ready(function() {
     });
 
 
- /* 
-     *Displays all the markers 
-     *  @param null 
-     *  @return null
-     */
-    showMarkers = function() {
+ /* display the geo coordinates when you click on a photo - the Start of displaying on map*/
+    createMarker = function(photoID) {
 
-        if(markers == null){
-            return;
-        }else {
-                for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(map);
-            }
-        }
-
-
-        // handles empty array of photos 
-        if (publicPhotoIDs.length === 0) {
-            alert("No photos to display");
-        }
-
-
-        console.log("Number of IDs: " + publicPhotoIDs.length);
-
-
-        for (var i = 0; i < publicPhotoIDs.length; i++) {
-
-
-
-            $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + publicPhotoIDs[i] + '&format=json&nojsoncallback=1',
-                function(data) {
-
-
+        //infoBubble.close(); 
+        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
+            function(data) {
+                try {
 
 
                     newLat = data.photo.location.latitude;
@@ -194,30 +171,38 @@ $(document).ready(function() {
 
                     var myLatlng = new google.maps.LatLng(newLat, newLng);
 
+                } catch (err) {
+
+                    console.log("Some location not available");
+                }
+
+                // console.log(data);
+
+                try {
 
                     username = data.photo.owner.username;
                     title = data.photo.title._content;
                     description = data.photo.description._content;
 
+                    try {
 
+                        region = data.photo.location.country._content;
+                        locality = data.photo.location.region._content;
 
-                    region = data.photo.location.country._content;
-                    locality = data.photo.location.region._content;
-
-                    // console.log("Region or Locality unavailable"); 
-
-
-                    if (description == '') {
-                        description === 'N/A';
+                    } catch (err) {
+                        console.log("Region or Locality unavailable");
                     }
 
+                    if (description == '') {
+                        description = 'N/A';
+                    }
                     dateTaken = data.photo.dates.taken;
                     url = data.photo.urls.url[0]._content;
 
                     thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
 
 
-                    // console.log("# of tags: " + data.photo.tags.tag.length);
+                    //console.log("# of tags: " + data.photo.tags.tag.length);
                     // data.photo.tags.tag[k]._content
 
                     contentString =
@@ -235,17 +220,16 @@ $(document).ready(function() {
                         '<p><b># Tags:</b> ' + data.photo.tags.tag.length + '</p>' +
                         '<p><b>Tags:</b><div id="theTags"></div>' +
                         '<br />' +
-                        //'<button id="showTags" onClick="showTags(' + data.photo.tags.tag.length + ',' + publicPhotoIDs[i] + ')">Show Tags</button>' +
+                        '<button id="showTags" onClick="showTags(' + data.photo.tags.tag.length + ',' + photoID + ')">Show Tags</button>' +
                         '<br />' +
                         '<br />' +
                         '<p><textarea id="textarea" placeholder="comment" style="width:200px;"></textarea></p>' +
-                        '<button id="addComment" onClick="addComment(' + publicPhotoIDs[i] + ')">Add Comment</button>' +
+                        '<button id="addComment" onClick="addComment(' + photoID + ')">Add Comment</button>' +
                         '<br />' +
-                        '<p><b>Comment:</b><div id="theComment"></div> "' + localStorage.getItem(publicPhotoIDs[i]) + '"</p>' +
-                        '<p><b>'+getNum(myLatlng)+'</b> photo(s) at this location</p>'+
+                        '<p><b>Comment:</b><div id="theComment"></div> "' + localStorage.getItem(photoID) + '"</p>' +
                         '<p>Photo URL: <a href="' + url + '">' +
                         '' + url + '</a></p> ' +
-                        '<button onClick="addToSlide(' + publicPhotoIDs[i] + ')">Add to slideshow</button>' +
+                        '<button onClick="addToSlide(' + photoID + ')">Add to slideshow</button>' +
                         '<br />'+
                         '<br />'+
                         '<br />'+
@@ -263,43 +247,252 @@ $(document).ready(function() {
                         map: map,
                         animation: google.maps.Animation.DROP,
                         icon: icon,
-                        html: contentString,
-                        id: data.photo.id,
-                        lat: newLat,
-                        lng: newLng
-
+                        title: title,
+                        html: contentString
                     });
 
 
 
                     //put all lat long in array
-                    //allLatlng.push(myLatlng);
-
-                    markers.push(allMarkers);
-                    
-                    var mcOptions = {gridSize: 90};
-
-                    markerCluster = new MarkerClusterer(map, markers, mcOptions);
+                    allLatlng.push(myLatlng);
 
                     //Put the marketrs in an array
                     tempMarkerHolder.push(allMarkers);
 
-                   // console.log("tempMarker: " +tempMarkerHolder.length);
+
+                    
+                    var mcOptions = {gridSize: 90};
+
+                    markerCluster = new MarkerClusterer(map, tempMarkerHolder, mcOptions);
+
+                    // console.log("tempMarker: " +tempMarkerHolder.length);
 
                     var infoWindow = new google.maps.InfoWindow({
                         content: contentString,
-                        maxWidth: 400,
+                        maxWidth: 500,
                         maxHeight: 150,
                         arrowStyle: 2,
                         borderRadius: 4,
+                        //disableAutoPan: true,
                         scrollwheel: true,
                         borderColor: '#2c2c2c'
                     });
 
+                    // google.maps.event.addListener(marker, 'click', function() {
 
+                    //     infoBubble = new google.maps.InfoWindow();
+
+                    // });
                     google.maps.event.addListener(allMarkers, 'click', function() {
+
+                        // if (infoBubble) {
+                        //     infoBubble.close();
+                        // }
+                        //  infowindow.setContent(contentString);
+                        //if (infoBubble) infoBubble.close();
+                        //infoBubble = new google.maps.InfoBubble({content: contentString});
+                        // infoBubble.close(map); 
+                        infoWindow.setContent(this.html);
                         infoWindow.open(map, this);
+                        map.panTo(myLatlng, this);
+
+
                     });
+
+
+                } catch (err) {
+                    console.log(err);
+                }
+
+                // setTimeout(function () { 
+                //     infoWindow.close(); 
+                // }, 5000);
+
+                //var markerCluster = new MarkerClusterer(map, markers);
+
+                //console.log(allLatlng);
+                //  Make an array of the LatLng's of the markers you want to show
+                //  Create a new viewpoint bound
+                var bounds = new google.maps.LatLngBounds();
+                //  Go through each...
+                for (var i = 0, LtLgLen = allLatlng.length; i < LtLgLen; i++) {
+                    //  And increase the bounds to take this point
+                    bounds.extend(allLatlng[i]);
+                }
+                //  Fit these bounds to the map
+                map.fitBounds(bounds);
+            });
+
+        google.maps.event.addListener(allMarkers, 'click', toggleBounce);
+
+
+    }
+
+
+ /* 
+     *Displays all the markers 
+     *  @param null 
+     *  @return null
+     */
+    showMarkers = function() {
+
+        // if(markers == null){
+        //     return;
+        // }else {
+        //         for (var i = 0; i < markers.length; i++) {
+        //         markers[i].setMap(map);
+        //     }
+        // }
+
+
+        // // handles empty array of photos 
+        // if (publicPhotoIDs.length === 0) {
+        //     alert("No photos to display");
+        // }
+
+
+                    for(var i = 0; i < allLatlng.length; i++){
+                      allLatlng.setMap(null);
+                    }
+
+                     for(var i = 0; i < allLatlng.length; i++){
+                       tempMarkerHolder.setMap(null);
+                    }
+
+
+                    //Put the marketrs in an array
+
+
+        console.log("Number of IDs: " + publicPhotoIDs.length);
+
+
+        for (var i = 0; i < publicPhotoIDs.length; i++) {
+
+            createMarker(publicPhotoIDs[i]);
+
+            // $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + publicPhotoIDs[i] + '&format=json&nojsoncallback=1',
+            //     function(data) {
+
+
+
+
+                   //  newLat = data.photo.location.latitude;
+                   //  newLng = data.photo.location.longitude;
+
+
+                   //  var myLatlng = new google.maps.LatLng(newLat, newLng);
+
+
+                   //  username = data.photo.owner.username;
+                   //  title = data.photo.title._content;
+                   //  description = data.photo.description._content;
+
+
+
+                   //  region = data.photo.location.country._content;
+                   //  locality = data.photo.location.region._content;
+
+                   //  // console.log("Region or Locality unavailable"); 
+
+
+                   //  if (description == '') {
+                   //      description === 'N/A';
+                   //  }
+
+                   //  dateTaken = data.photo.dates.taken;
+                   //  url = data.photo.urls.url[0]._content;
+
+                   //  thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
+
+
+                   //  // console.log("# of tags: " + data.photo.tags.tag.length);
+                   //  // data.photo.tags.tag[k]._content
+
+                   //  contentString =
+
+                   //      '<div id="content">' +
+                   //      '<h4 id="firstHeading" class="firstHeading">' + title + '</h4>' +
+                   //      '<div id="bodyContent">' +
+                   //      '<img src="' + thePhoto + '"style="height:17.0em; width:"100px; float:left; padding-right:10px;">' +
+                   //      '<br />' +
+                   //      '<div style="list-style: none; color:black; float:left;"> ' +
+                   //      '<p><b>User:</b> ' + username + '</p>' +
+                   //      '<p><b>Date/Time:</b> ' + dateTaken + '</p>' +
+                   //      '<p><b>Description:</b> ' + description + '</p>' +
+                   //      '<p><b>Location:</b> ' + locality + ', ' + region + '</p>' +
+                   //      '<p><b># Tags:</b> ' + data.photo.tags.tag.length + '</p>' +
+                   //      '<p><b>Tags:</b><div id="theTags"></div>' +
+                   //      '<br />' +
+                   //      //'<button id="showTags" onClick="showTags(' + data.photo.tags.tag.length + ',' + publicPhotoIDs[i] + ')">Show Tags</button>' +
+                   //      '<br />' +
+                   //      '<br />' +
+                   //      '<p><textarea id="textarea" placeholder="comment" style="width:200px;"></textarea></p>' +
+                   //      '<button id="addComment" onClick="addComment(' + publicPhotoIDs[i] + ')">Add Comment</button>' +
+                   //      '<br />' +
+                   //      '<p><b>Comment:</b><div id="theComment"></div> "' + localStorage.getItem(publicPhotoIDs[i]) + '"</p>' +
+                   //      '<p><b>'+getNum(myLatlng)+'</b> photo(s) at this location</p>'+
+                   //      '<p>Photo URL: <a href="' + url + '">' +
+                   //      '' + url + '</a></p> ' +
+                   //      '<button onClick="addToSlide(' + publicPhotoIDs[i] + ')">Add to slideshow</button>' +
+                   //      '<br />'+
+                   //      '<br />'+
+                   //      '<br />'+
+                   //      '<br />'+
+                   //      '<br />'+
+                   //      '<br />'+
+                   //      '<br />'+
+                   //      '</div>' +
+                   //      '</div>' +
+                   //      '</div>';
+
+
+                   //  allMarkers = new google.maps.Marker({
+                   //      position: myLatlng,
+                   //      map: map,
+                   //      animation: google.maps.Animation.DROP,
+                   //      icon: icon,
+                   //      html: contentString,
+                   //      id: data.photo.id,
+                   //      lat: newLat,
+                   //      lng: newLng
+
+                   //  });
+
+
+
+                   //  //put all lat long in array
+                   //  //allLatlng.push(myLatlng);
+
+                   //  markers.push(allMarkers);
+                    
+                   //  var mcOptions = {gridSize: 90};
+
+                   //  markerCluster = new MarkerClusterer(map, markers, mcOptions);
+
+                   //  //Put the marketrs in an array
+                   //  tempMarkerHolder.push(allMarkers);
+
+                   // // console.log("tempMarker: " +tempMarkerHolder.length);
+
+                   //  var infoWindow = new google.maps.InfoWindow({
+                   //      content: contentString,
+                   //      maxWidth: 400,
+                   //      maxHeight: 150,
+                   //      arrowStyle: 2,
+                   //      borderRadius: 4,
+                   //      scrollwheel: true,
+                   //      borderColor: '#2c2c2c'
+                   //  });
+
+
+                   //  google.maps.event.addListener(allMarkers, 'click', function() {
+                   //      infoWindow.open(map, this);
+                   //  });
+
+
+
+
+
 
                     // google.maps.event.addListener(allMarkers, 'projection_changed', function(){
                     //     markerCluster.redraw();
@@ -321,7 +514,7 @@ $(document).ready(function() {
 
 
 
-                });
+                // });
         }
 
     }
@@ -583,171 +776,17 @@ console.log("allMarkers: " + allMarkers.length + "\n" +
     }
 
 
-    /* display the geo coordinates when you click on a photo - the Start of displaying on map*/
-    createMarker = function(photoID) {
+   
 
-        //infoBubble.close(); 
-        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
-            function(data) {
-                try {
-
-
-                    newLat = data.photo.location.latitude;
-                    newLng = data.photo.location.longitude;
-
-
-                    var myLatlng = new google.maps.LatLng(newLat, newLng);
-
-                } catch (err) {
-
-                    console.log("Some location not available");
-                }
-
-                // console.log(data);
-
-                try {
-
-                    username = data.photo.owner.username;
-                    title = data.photo.title._content;
-                    description = data.photo.description._content;
-
-                    try {
-
-                        region = data.photo.location.country._content;
-                        locality = data.photo.location.region._content;
-
-                    } catch (err) {
-                        console.log("Region or Locality unavailable");
-                    }
-
-                    if (description == '') {
-                        description = 'N/A';
-                    }
-                    dateTaken = data.photo.dates.taken;
-                    url = data.photo.urls.url[0]._content;
-
-                    thePhoto = 'http://farm' + data.photo.farm + '.static.flickr.com/' + data.photo.server + '/' + data.photo.id + '_' + data.photo.secret + '_m.jpg';
-
-
-                    //console.log("# of tags: " + data.photo.tags.tag.length);
-                    // data.photo.tags.tag[k]._content
-
-                    contentString =
-
-                        '<div id="content">' +
-                        '<h4 id="firstHeading" class="firstHeading">' + title + '</h4>' +
-                        '<div id="bodyContent">' +
-                        '<img src="' + thePhoto + '"style="height:17.0em; width:"100px; float:left; padding-right:10px;">' +
-                        '<br />' +
-                        '<div style="list-style: none; color:black; float:left;"> ' +
-                        '<p><b>User:</b> ' + username + '</p>' +
-                        '<p><b>Date/Time:</b> ' + dateTaken + '</p>' +
-                        '<p><b>Description:</b> ' + description + '</p>' +
-                        '<p><b>Location:</b> ' + locality + ', ' + region + '</p>' +
-                        '<p><b># Tags:</b> ' + data.photo.tags.tag.length + '</p>' +
-                        '<p><b>Tags:</b><div id="theTags"></div>' +
-                        '<br />' +
-                        '<button id="showTags" onClick="showTags(' + data.photo.tags.tag.length + ',' + photoID + ')">Show Tags</button>' +
-                        '<br />' +
-                        '<br />' +
-                        '<p><textarea id="textarea" placeholder="comment" style="width:200px;"></textarea></p>' +
-                        '<button id="addComment" onClick="addComment(' + photoID + ')">Add Comment</button>' +
-                        '<br />' +
-                        '<p><b>Comment:</b><div id="theComment"></div> "' + localStorage.getItem(photoID) + '"</p>' +
-                        '<p>Photo URL: <a href="' + url + '">' +
-                        '' + url + '</a></p> ' +
-                        '<button onClick="addToSlide(' + photoID + ')">Add to slideshow</button>' +
-                        '<br />'+
-                        '<br />'+
-                        '<br />'+
-                        '<br />'+
-                        '<br />'+
-                        '<br />'+
-                        '<br />'+
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-
-
-                    allMarkers = new google.maps.Marker({
-                        position: myLatlng,
-                        map: map,
-                        animation: google.maps.Animation.DROP,
-                        icon: icon,
-                        title: title,
-                        html: contentString
-                    });
+   // IT WAS HERE
 
 
 
-                    //put all lat long in array
-                    allLatlng.push(myLatlng);
-
-                    //Put the marketrs in an array
-                    tempMarkerHolder.push(allMarkers);
-
-                    // console.log("tempMarker: " +tempMarkerHolder.length);
-
-                    var infoWindow = new google.maps.InfoWindow({
-                        content: contentString,
-                        maxWidth: 500,
-                        maxHeight: 150,
-                        arrowStyle: 2,
-                        borderRadius: 4,
-                        //disableAutoPan: true,
-                        scrollwheel: true,
-                        borderColor: '#2c2c2c'
-                    });
-
-                    // google.maps.event.addListener(marker, 'click', function() {
-
-                    //     infoBubble = new google.maps.InfoWindow();
-
-                    // });
-                    google.maps.event.addListener(allMarkers, 'click', function() {
-
-                        // if (infoBubble) {
-                        //     infoBubble.close();
-                        // }
-                        //  infowindow.setContent(contentString);
-                        //if (infoBubble) infoBubble.close();
-                        //infoBubble = new google.maps.InfoBubble({content: contentString});
-                        // infoBubble.close(map); 
-                        infoWindow.setContent(this.html);
-                        infoWindow.open(map, this);
-                        map.panTo(myLatlng, this);
 
 
-                    });
 
 
-                } catch (err) {
-                    console.log(err);
-                }
 
-                // setTimeout(function () { 
-                //     infoWindow.close(); 
-                // }, 5000);
-
-                //var markerCluster = new MarkerClusterer(map, markers);
-
-                console.log(allLatlng);
-                //  Make an array of the LatLng's of the markers you want to show
-                //  Create a new viewpoint bound
-                var bounds = new google.maps.LatLngBounds();
-                //  Go through each...
-                for (var i = 0, LtLgLen = allLatlng.length; i < LtLgLen; i++) {
-                    //  And increase the bounds to take this point
-                    bounds.extend(allLatlng[i]);
-                }
-                //  Fit these bounds to the map
-                map.fitBounds(bounds);
-            });
-
-        google.maps.event.addListener(allMarkers, 'click', toggleBounce);
-
-
-    }
 
 
     // toggleBounce = function() {
@@ -921,7 +960,7 @@ var getOut = false;
     // var tempSecret;
 
     $("#submit").click(function() {
-        debugger; 
+        
 
         clearMarkers();
 
@@ -949,7 +988,8 @@ var getOut = false;
             
             
 
-        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + apiKey + '&has_geo=1&format=json&nojsoncallback=1', {
+        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + apiKey + '&has_geo=1&format=json&nojsoncallback=1', 
+        {
 
 
             text: '' + search + '',
@@ -1020,6 +1060,8 @@ var getOut = false;
 
     /* Populates the slideshow with details of the photo on the top */
     var count = 0;
+    var ID;
+
     populateSlideShow = function(photoID, photoFarm, photoServer, photoSecret) {
 
         photo = 'http://farm' + photoFarm + '.static.flickr.com/' + photoServer + '/' + photoID + '_' + photoSecret + '_m.jpg';
@@ -1087,7 +1129,8 @@ var getOut = false;
         //     jQuery('<a href=' + savedPhoto[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
         // }
 
-
+var savedSlideIDs = [];
+var countSlide = 0;
     /* 
      * Plays the selected photos that were saved onto the local storage 
      * This is different than the other two because we want the photos that we had saved into
@@ -1127,24 +1170,30 @@ var getOut = false;
         }
 
         alert("Retrieving from local storage..." + "\n" +
-                "Please remember to Clear Local Storage when saved slideshow is no longer wanted");
+                "Please remember click 'Clear Local Storage' when saved slideshow is no longer wanted");
 
         
-        var count = 0;
+        
         for (var i = 0; i < URLS.length; i++) {
-
+            
             console.log("URLS: " + URLS[i]);
-            var photo_ID = URLS[i].substring(URLS[i].lastIndexOf("/")+1,URLS[i].indexOf("_"));
-            console.log(photo_ID);
+            
+            savedSlideIDs[i] = URLS[i].substring(URLS[i].lastIndexOf("/")+1,URLS[i].indexOf("_"));
 
+            console.log(savedSlideIDs[i]);
+
+
+            // var savedSlideComment = localStorage.getItem(ID);
+            // console.log(savedSlideComment); 
     
-        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photo_ID + '&format=json&nojsoncallback=1',
+        $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + savedSlideIDs[i] + '&format=json&nojsoncallback=1',
                 function(data) {
 
-                    
+                    //ID = URLS[count].substring(URLS[count].lastIndexOf("/")+1,URLS[count].indexOf("_"));
 
+                    //console.log(savedSlideIDs[i]);
+                    console.log(savedSlideIDs[countSlide]);
 
-                        //console.log(data); 
                     username = data.photo.owner.username;
                     title = data.photo.title._content;
                     description = data.photo.description._content;
@@ -1156,16 +1205,18 @@ var getOut = false;
                         'Title: ' + title + ' || ' +
                         'Description: ' + description + ' || ' +
                         'Location: ' + locality + ', ' + region + ' || ' +
-                        'Comment: ' + localStorage.getItem(photo_ID) + '';
+                        'Comment: ' + localStorage.getItem(savedSlideIDs[countSlide]) + '';
 
-                    jQuery('<a href=' + URLS[count] + ' title="' + content + '" data-gallery/>').appendTo('#links');
-
-                    count++;
+                    jQuery('<a href=' + URLS[countSlide] + ' title="' + content +'" data-gallery/>').appendTo('#links');
+                    
+                    console.log(countSlide); 
+                    countSlide++;
+                    
                     
                 })
 
            // jQuery('<a href=' + URLS[i] + ' title="' + localStorage.getItem(photoID) + '" data-gallery/>').appendTo('#links');
-}
+      }
         
 
         jQuery('<a href=' + URLS[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
