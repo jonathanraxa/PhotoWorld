@@ -92,7 +92,7 @@ $(document).ready(function() {
                         '<p>2) Find the photoset ID and paste it into the search</p>'+
                         '<h4><b>Public Photo Search</b></h4>'+
                         '<p>1) Enter a search keyword to find photos</p>'+
-                        '<p>2) <i>Optional filters</i>: </p>'+
+                        '<p>2) <i>Optional filters</i> </p>'+
                         '<p> Mininmum Upload Date: YYYY-MM-DD format - allows user to define the minimum'+
                         'upload date</p>'+
 
@@ -106,8 +106,6 @@ $(document).ready(function() {
                         '<li> "date-posted-desc" </li>'+
                         '<li> "revalance" </li>'+
                         '</ul>'+
-
-
     
 
                         '<h3><b><u>Mode 2</u></b>: Show All Photos </h3>'+
@@ -1032,6 +1030,10 @@ var getOut = false;
 
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
                 function(data) {
+
+                    var theComment = localStorage.getItem(photoID);
+                    console.log(theComment); 
+
                     try{
                         username = data.photo.owner.username;
                         title = data.photo.title._content;
@@ -1154,7 +1156,7 @@ var getOut = false;
                         'Title: ' + title + ' || ' +
                         'Description: ' + description + ' || ' +
                         'Location: ' + locality + ', ' + region + ' || ' +
-                        'Comment: ' + localStorage.getItem(photoID) + '';
+                        'Comment: ' + localStorage.getItem(photo_ID) + '';
 
                     jQuery('<a href=' + URLS[count] + ' title="' + content + '" data-gallery/>').appendTo('#links');
 
@@ -1250,7 +1252,7 @@ var getOut = false;
 
             if (x === "Loading images") {
                 // $("#pics").empty();
-                alert("Emptied Previous Array");
+               // alert("Emptied Previous Array");
 
                 $("#pics").empty();
                 $("#imgHere").empty();
@@ -1431,10 +1433,10 @@ getNum = function(coords){
 
 
     /* Clears the local storage object*/
-    function clearLocalStorage() {
+    // function clearLocalStorage() {
 
-        localStorage.clear();
-    }
+    //     localStorage.clear();
+    // }
 
 
     google.maps.event.addDomListener(window, 'load', initialize);
