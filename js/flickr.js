@@ -81,7 +81,6 @@ var lng;
     var markerCluster;
     var marker;
     var startLatLng;
-var markerCluster; 
 
 /* Document Ready */
 $(document).ready(function() {
@@ -154,6 +153,166 @@ $(document).ready(function() {
         $("#links").empty();
         alert("Local Storage cleared");
     });
+
+
+
+
+// Sets the map on all markers in the array.
+    function setAllMap(map) {
+        
+        
+
+        // var j = 0; 
+        // while(allMarkers.length > 0){
+        //     if(allMarkers.length == 0){
+        //         break; 
+        //     }
+        //      allMarkers[j].setMap(null);
+        //      j++;
+        // }
+
+       
+
+        for (var i = 0; i < allMarkers.length; i++) {
+            allMarkers[i].setMap(null);
+        }
+
+
+
+        if(tempMarkerHolder == null){
+            return;
+        }else {
+                for (var i = 0; i < tempMarkerHolder.length; i++) {
+                tempMarkerHolder[i].setMap(null);
+            }
+        }
+
+         //markerCluster.clearMarkers();
+
+        //  for (var i = 0; i < allLatlng.length; i++) {
+        //     allLatlng[i].setMap(null);
+        // }
+
+        // var k = 0; 
+        // while(markers.length > 0){
+        //     if(markers.length == 0){
+        //         break; 
+        //     }
+        //      markers[k].setMap(null);
+        //      k++;
+
+        // }
+
+       // if(markers == null){
+       //      return;
+       //  }else {
+       //          for (var i = 0; i < markers.length; i++) {
+       //          markers[i].setMap(map);
+       //      }
+       //  }
+
+       for(var j = 0; j < markers.length; j++){
+         markerCluster.removeMarker(markers[j]); 
+       }
+
+        tempMarkerHolder = [];
+        //markers = []; 
+        markerCluster = [];
+
+
+    }
+
+    
+
+
+    // Removes the markers from the map, but keeps them in the array.
+    function clearMarkers() {
+        setAllMap(null);
+    }
+
+    function checkMark(){
+        console.log(markerCluster); 
+    }
+
+    $("#deleteAll").click(function() {
+
+        checkMark(); 
+
+           var del;
+            if (confirm("WARNING: This will clear current searched photos and map markers. Do you want to continue?") == true) {
+                del = "images and markers deleted";
+            } else {
+                del = "Operation Canceled!";
+                return;
+            }
+
+        if(del === "images and markers deleted"){
+            
+            //clearOverlays();
+    //         markerCluster.clearMarkers();
+    //         markers = [];
+    //         markerCluster.setMap(null);  // remove's the previous added markerCluster
+
+    // // rebuild you markers here ...
+
+    //         markerCluster = new MarkerClusterer(map, tempMarkerHolder, mcOptions);
+            clearMarkers();
+            //markerCluster.clearMarkers();
+            
+
+
+            allLatlng = []; 
+            publicPhotoIDs = [];
+
+
+            tempMarkerHolder = [];
+            markers = [];
+            photoArray = [];
+            aPhoto = [];
+            publicPhotos = [];
+            slideshowPhotoID = [];
+            allLatlng = []; 
+            tagArray = [];
+            slideshowPhotoID = [];
+            photoInfo = [];
+
+ 
+
+
+            $("#pics").empty();
+            $("#imgHere").empty();
+            $("#links").empty();
+
+             alert("images and markers deleted");
+
+            map.setZoom(3);
+            map.setCenter(startLatLng);
+
+            checkMark(); 
+
+         }
+         
+
+       
+
+console.log("allMarkers: " + allMarkers.length + "\n" +
+            "allLatlng: " + allLatlng.length + "\n" +
+            //"publicPhotoIDs: " + publicPhotoIDs.length + "\n" +
+            "tempMarkerHolder: " + tempMarkerHolder.length + "\n" +
+            "markers: " + markers.length + "\n" +
+            "photoArray: " + photoArray.length + "\n" +
+            "slideshowPhotoID: " + slideshowPhotoID.length + "\n" +
+            "photoInfo: " + photoInfo.length + "\n"
+        
+
+            );
+
+
+    });
+
+
+
+
 
 
  /* display the geo coordinates when you click on a photo - the Start of displaying on map*/
@@ -247,8 +406,11 @@ $(document).ready(function() {
                         map: map,
                         animation: google.maps.Animation.DROP,
                         icon: icon,
-                        title: title,
-                        html: contentString
+                        html: contentString,
+                        id: data.photo.id,
+                        lat: newLat,
+                        lng: newLng
+
                     });
 
 
@@ -261,9 +423,9 @@ $(document).ready(function() {
 
 
                     
-                    var mcOptions = {gridSize: 90};
+                    // var mcOptions = {gridSize: 90};
 
-                    markerCluster = new MarkerClusterer(map, tempMarkerHolder, mcOptions);
+                    // markerCluster = new MarkerClusterer(map, tempMarkerHolder, mcOptions);
 
                     // console.log("tempMarker: " +tempMarkerHolder.length);
 
@@ -327,6 +489,10 @@ $(document).ready(function() {
 
 
     }
+
+
+
+ 
 
 
  /* 
@@ -521,159 +687,7 @@ $(document).ready(function() {
 
 
 
-    // Sets the map on all markers in the array.
-    function setAllMap(map) {
-        
-        
-
-        // var j = 0; 
-        // while(allMarkers.length > 0){
-        //     if(allMarkers.length == 0){
-        //         break; 
-        //     }
-        //      allMarkers[j].setMap(null);
-        //      j++;
-        // }
-
-       
-
-        for (var i = 0; i < allMarkers.length; i++) {
-            allMarkers[i].setMap(map);
-        }
-
-
-
-        if(tempMarkerHolder == null){
-            return;
-        }else {
-                for (var i = 0; i < tempMarkerHolder.length; i++) {
-                tempMarkerHolder[i].setMap(map);
-            }
-        }
-
-         //markerCluster.clearMarkers();
-
-        //  for (var i = 0; i < allLatlng.length; i++) {
-        //     allLatlng[i].setMap(null);
-        // }
-
-        // var k = 0; 
-        // while(markers.length > 0){
-        //     if(markers.length == 0){
-        //         break; 
-        //     }
-        //      markers[k].setMap(null);
-        //      k++;
-
-        // }
-
-       // if(markers == null){
-       //      return;
-       //  }else {
-       //          for (var i = 0; i < markers.length; i++) {
-       //          markers[i].setMap(map);
-       //      }
-       //  }
-
-       for(var j = 0; j < markers.length; j++){
-         markerCluster.removeMarker(markers[j]); 
-       }
-
-        tempMarkerHolder = [];
-        //markers = []; 
-        markerCluster = [];
-
-
-    }
-
-    
-
-
-    // Removes the markers from the map, but keeps them in the array.
-    function clearMarkers() {
-        setAllMap(null);
-    }
-
-    function checkMark(){
-        console.log(markerCluster); 
-    }
-
-    $("#deleteAll").click(function() {
-
-        checkMark(); 
-
-           var del;
-            if (confirm("WARNING: This will clear current searched photos and map markers. Do you want to continue?") == true) {
-                del = "images and markers deleted";
-            } else {
-                del = "Operation Canceled!";
-                return;
-            }
-
-        if(del === "images and markers deleted"){
-            
-            //clearOverlays();
-            markerCluster.removeMarkers(markers, false);
-            markerCluster.clearMarkers(); 
-
-            clearMarkers();
-            //markerCluster.clearMarkers();
-            
-console.log("allMarkers: " + allMarkers.length + "\n" +
-            "allLatlng: " + allLatlng.length + "\n" +
-            "publicPhotoIDs: " + publicPhotoIDs.length + "\n" +
-            "tempMarkerHolder: " + tempMarkerHolder.length + "\n" +
-            "markers: " + markers.length);
-
-
-            allLatlng = []; 
-            publicPhotoIDs = null;
-
-
-            tempMarkerHolder = [];
-            markers = [];
-            photoArray = [];
-            aPhoto = [];
-            publicPhotos = [];
-            slideshowPhotoID = [];
-            allLatlng = []; 
-            tagArray = [];
-            slideshowPhotoID = [];
-            photoInfo = [];
-
-            try{
-console.log("allMarkers: " + allMarkers.length + "\n" +
-            "allLatlng: " + allLatlng.length + "\n" +
-            //"publicPhotoIDs: " + publicPhotoIDs.length + "\n" +
-            "tempMarkerHolder: " + tempMarkerHolder.length + "\n" +
-            "markers: " + markers.length);
-} catch (err){
-    console.log(err); 
-}
-
- 
-
-            
-
-            $("#pics").empty();
-            $("#imgHere").empty();
-            $("#links").empty();
-
-             alert("images and markers deleted");
-
-            map.setZoom(3);
-            map.setCenter(startLatLng);
-         }
-         
-
-          // console.log("FORREAL: " +"\n" +
-          //           "allMarkers: " + allMarkers.length + " \n" +
-          //           "tempMarkerHolder: " + tempMarkerHolder.length + "\n" +
-          //           "markers: " + markers.length + "\n" +
-          //           "allLatlng: " + "\n");
-
-    });
-
+   
 
 
     var userComment;
@@ -971,13 +985,36 @@ var getOut = false;
 
            
 
-            allMarkers = [];
+            // allMarkers = [];
+            // allLatlng = []; 
+            // publicPhotoIDs = [];
+            // tempMarkerHolder = [];
+            // markers = [];
+            // photoArray = [];
+            // aPhoto = [];
+
             allLatlng = []; 
             publicPhotoIDs = [];
+
+
             tempMarkerHolder = [];
             markers = [];
             photoArray = [];
             aPhoto = [];
+            publicPhotos = [];
+            slideshowPhotoID = [];
+            allLatlng = []; 
+            tagArray = [];
+            slideshowPhotoID = [];
+            photoInfo = [];
+
+ 
+
+
+
+      
+
+
 
         map.setZoom(3);
         map.setCenter(startLatLng);
@@ -1021,6 +1058,12 @@ var getOut = false;
 
                 publicPhotos[i] = 'http://farm' + tempFarm + '.static.flickr.com/' + tempServer + '/' + tempID + '_' + tempSecret + '_m.jpg';
                 jQuery('<a href/>').attr('id', tempID).attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', publicPhotos[i])).appendTo('#pics');
+                  // console.log("tempID: " + tempID + " \n" +
+                  //       "tempFarm: " + tempFarm + " \n" +
+                  //       "tempServer: " + tempServer + " \n" +
+                  //       "tempSecret: " + tempSecret + " \n"
+                  //       );
+
                 populateSlideShow(tempID, tempFarm, tempServer, tempSecret);
 
 
@@ -1073,8 +1116,7 @@ var getOut = false;
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
                 function(data) {
 
-                    var theComment = localStorage.getItem(photoID);
-                    console.log(theComment); 
+                 
 
                     try{
                         username = data.photo.owner.username;
@@ -1237,7 +1279,8 @@ var countSlide = 0;
     $("#check").click(function() {
         $("#imgHere").empty();
         $("#links").empty();
-        // console.log(tempMarkerHolder);
+
+         console.log(tempMarkerHolder);
 
         var num = 0;
         for (var count = 0; count < tempMarkerHolder.length - 1; count++) {
