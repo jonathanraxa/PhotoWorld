@@ -5,13 +5,7 @@
 */
 
  
- var search = '';
-    var min_upload_date = '';
-    var max_upload_date = '';
-    var place_id;
-    var geo_context = '';
-    var sort = '';
-    var number; 
+ 
 /**
 * When the user clicks on the 'Submit' button, 
 * all the arrays reset and then makes a new API call to Flickr
@@ -24,7 +18,6 @@ $("#submit").click(function() {
         $("#pics").empty();
         $("#imgHere").empty();
         $("#links").empty();
-
 
 
             allLatlng = []; 
@@ -62,13 +55,7 @@ $("#submit").click(function() {
 
 
         }, function(data) {
-
-            console.log("text: " + search + "\n" +
-                "per_page: " + number + "\n" 
-                
-                );
-
-            //var i;
+ 
             for (var i = 0; i < data.photos.photo.length; i++) {
 
 
@@ -81,14 +68,12 @@ $("#submit").click(function() {
 
                 console.log("# of photos: " + data.photos.photo.length);
 
+                // create an array of IDs
                 publicPhotos[i] = 'http://farm' + tempFarm + '.static.flickr.com/' + tempServer + '/' + tempID + '_' + tempSecret + '_m.jpg';
-                jQuery('<a href/>').attr('id', tempID).attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', publicPhotos[i])).appendTo('#pics');
-                console.log("tempID: " + tempID + " \n" +
-                        "tempFarm: " + tempFarm + " \n" +
-                        "tempServer: " + tempServer + " \n" +
-                        "tempSecret: " + tempSecret + " \n"
-                        );
 
+                // create an <a href> link via DOM
+                jQuery('<a href/>').attr('id', tempID).attr('onClick', 'createMarker(' + tempID + ')').html($('<img/>').attr('src', publicPhotos[i])).appendTo('#pics');
+        
                 populateSlideShow(tempID, tempFarm, tempServer, tempSecret);
 
 
@@ -97,10 +82,6 @@ $("#submit").click(function() {
             playSlide();
 
         });
-
-
-    console.log("text: " + search + "\n" +
-                "per_page: " + number + "\n");
 
     });
 
@@ -274,7 +255,6 @@ $("#submit").click(function() {
         });
 
     });
-
 
 
 
