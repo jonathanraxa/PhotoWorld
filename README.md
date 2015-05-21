@@ -64,6 +64,7 @@ Indoor/Outdoor
 
 User Photoset Search
 1) Find the Flickr user name (make sure that it is NOT from Yahoo, but an actual Flickr username)
+
 2) Find the photoset ID and paste it into the search
 
 ------------------------------------------------------------------------------------
