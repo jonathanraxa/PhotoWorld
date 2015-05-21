@@ -14,9 +14,11 @@ EDITING SOURCE FILES
 ------------------------------------------------------------------------------------
 
 1) Download source files via git
-..*"git clone https://github.com/jonathanraxa/PhotoWorld.git"
+"git clone https://github.com/jonathanraxa/PhotoWorld.git"
+
 2) Run a local server with the files
-..*ie. "MAMP Server for OSX"
+ie. "MAMP Server for OSX"
+
 3) Run application by clicking index.html
 
 
