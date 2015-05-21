@@ -104,10 +104,15 @@ They may even comment on the photo within the info window if they do so desire
 to and the comment will be displayed on the slideshow.
 
 How to:
+
 1) Put in a search within the text boxes in mode 1.
+
 2) Click “SUBMIT"
+
 3) You will notice that below Mode 3: Slideshow, there will appear a link below the text that indicates that the slideshow is ready to be used upon clicking. BE SURE TO CLICK ON THE BLUE LINK. Due to bugs, only clicking on the words will cause the slideshow to appear. (see below)
+
 4) Upon viewing the slideshow, in order to view the description of the image, you must first click on the image.
+
 5) To play the slideshow, find the “play” icon on the bottom right-hand corner of the page
 
 ------------------------------------------------------------------------------------
