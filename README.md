@@ -1,5 +1,5 @@
 # PhotoWorld
-A web application that allows users to travel the world through images
+"A web application that allows users to travel the world through images"
 
 ------------------------------------------------------------------------------------
 LINK TO WEB APPLICATION 
@@ -14,10 +14,10 @@ EDITING SOURCE FILES
 ------------------------------------------------------------------------------------
 
 1) Download source files via git
-- "git clone https://github.com/jonathanraxa/PhotoWorld.git"
+..*"git clone https://github.com/jonathanraxa/PhotoWorld.git"
 2) Run a local server with the files
-- ie. "MAMP Server for OSX"
-4) Run application by clicking index.html
+..*ie. "MAMP Server for OSX"
+3) Run application by clicking index.html
 
 
 Files/Folders
@@ -39,25 +39,30 @@ HOW-TO-USE PHOTOWORLD
 Public Photo Search
 1) Enter a search keyword to find photos
 2) Optional filters
-Mininmum Upload Date: YYYY-MM-DD format - allows user to define the minimum upload date
 
-Max Upload Date: YYYY-MM-DD format - allows user to define maximum upload date </p>' +
-Display Defined Number of Photos: </p>' +
+Mininmum Upload Date: 
+"YYYY-MM-DD" format - defines minimum upload date
+
+Max Upload Date: 
+"YYYY-MM-DD" format - defines maximum upload date
+
+Display Defined Number of Photos
+
 Sort by:
 "date-taken-asc" 
 "date-taken-desc" 
 "date-posted-asc" 
 "date-posted-desc"
-"revalance"
+"relavance"
 
 Indoor/Outdoor 
-- Input (1) for indoor photos
-- Input (2) for outdoor photos
+- Input '1' for indoor photos
+- Input '2' for outdoor photos
 
 
 User Photoset Search
-1) Find the Flickr user name (make sure that it is not from Yahoo)
-2) Find the photoset ID and paste it into the search</p>' +
+1) Find the Flickr user name (make sure that it is NOT from Yahoo, but an actual Flickr username)
+2) Find the photoset ID and paste it into the search
 
 ------------------------------------------------------------------------------------
 
