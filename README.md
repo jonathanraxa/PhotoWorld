@@ -80,6 +80,7 @@ individually click on each image to display its marker, mode
 2 allows you to drop everything at once.
 
 How to:
+
 1) After filling in the search options and hitting “SUBMIT",
 press "Show ALL Photos”. This will cause the application to
 rain all the markers down from the sky and onto its location.
