@@ -39,6 +39,7 @@ HOW-TO-USE PHOTOWORLD
 ------------------------------------------------------------------------------------
 
 Public Photo Search
+
 1) Enter a search keyword to find photos
 2) Optional filters
 
@@ -63,6 +64,7 @@ Indoor/Outdoor
 
 
 User Photoset Search
+
 1) Find the Flickr user name (make sure that it is NOT from Yahoo, but an actual Flickr username)
 
 2) Find the photoset ID and paste it into the search
@@ -80,8 +82,10 @@ How to:
 1) After filling in the search options and hitting “SUBMIT",
 press "Show ALL Photos”. This will cause the application to
 rain all the markers down from the sky and onto its location.
+
 2) You can click on each marker individually and see
 all of its contents just like in mode 1.
+
 3) Sometimes however, there are multiple photos
 in one geo-coordinate that are not necessarily
 accessible due to the number of markers present at that one location.
