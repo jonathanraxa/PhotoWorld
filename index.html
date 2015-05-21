@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
@@ -15,74 +16,162 @@
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
-
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./font-awesome-4.3.0/css/font-awesome.min.css">
-
-
-
+    <link rel="shortcut icon" href="images/cloud.png">
     <link href="css/style.css" rel="stylesheet" />
-
-    <title>PhotoWorld</title>
-
-    <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
     <link href="./starter-template.css" rel="stylesheet">
     <link rel="script" href="bootstrap.min.js" />
     <link href="./css/style.css" rel="stylesheet">
-
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="./js/ie-emulation-modes-warning.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script type="text/javascript" src="./js/flickr.js"></script>
-    <script src="./js/oauth.js"></script>
-
-
-
-  
-   
-    <!-- MOST SLIDER -->
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/resources/scripts/modernizr-2.6.2.min.js"></script>
     <script src="mostslider.js" type="text/javascript"></script>
-
-
-    <!-- MOST SLIDER -->
     <link rel="stylesheet" type="text/css" href="themes/default/default.css" />
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" />
-
-
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
     <link rel="stylesheet" href="./Bootstrap-Image/css/bootstrap-image-gallery.min.css">
-
     <link rel="stylesheet" href="css/bootstrap-image-gallery.min.css">
     <script src="http://aslamise.googlecode.com/files/prettyPhoto.js"></script>
-
     <link rel="stylesheet" type="text/css" href="../../themes/default/default.css" />
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/prettyphoto/3.1.5/css/prettyPhoto.css" />
 
 
 
-   
-
     <!-- Start WOWSlider.com HEAD section -->
     <link rel="stylesheet" type="text/css" href="./engine1/style.css" />
-    <script type="text/javascript" src="./engine1/jquery.js"></script>
-
-
-
     <link rel="stylesheet" href="./side-menu/stylesheets/jquery.sidemenu.css">
+    <script type="text/javascript" src="./engine1/jquery.js"></script>
     <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="./side-menu/javascripts/jquery.sidemenu.js"></script>
-
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="./canvas-sidebar/detect_swipe/jquery.detect_swipe.js"></script>
 
+
+
+
+
+    <title>PhotoWorld</title>
+
+
+    <script type='text/javascript'> 
+/* Author: Jonathan Raxa */
+var displayPhoto;
+var getGeoLocation;
+
+var locality;
+var region;
+var getPhotoInfo;
+var contentString;
+var getTag;
+
+/* Photo information */
+var username;
+var title;
+var description;
+var dateTaken;
+
+/* Get the lat and lng */
+var newLat;
+var newLon;
+var myLatlng;
+var infoWindow;
+var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
+var icon = 'https://235f5b7ac525c874bac8fa55117f7ef50a90d2ff-www.googledrive.com/host/0BxKqQx16djZ6SGExVlloOEhqOVk';
+
+var publicPhotos = [];
+var aPhoto = [];
+var clearPhoto;
+var setAllMap;
+var showTags;
+var deleteMarkers;
+var i;
+var getNum; 
+var addToSlide;
+var photoNum;
+var showMarkers;
+var populateSlideShow;
+var photoArray = [];
+var playSlide;
+var getTitle;
+var setPlace;
+
+
+
+var allLatlng = []; //returned from the API
+var allMarkers = []; //returned from the API
+var infoWindow = null;
+var pos;
+var userCords;
+var tempMarkerHolder = [];
+var tagArray = [];
+var addComment;
+var playSlidePhotoset;
+var infoBubble;
+var slideshowPhotoID = [];
+var savedPhoto;
+var photoInfo = [];
+var publicPhotoIDs = [];
+var photoInfoCount = 0;
+var urlObj;
+var stored;
+
+
+/* USER DEFINED VARIABLES */
+// var search;
+// var min_upload_date;
+// var max_upload_date;
+//  var tags;
+// // var bbox;
+//  var place_id;
+//  var geo_context;
+// var number;
+var sort;
+var toggleBounce;
+var toggleBounceOff;
+var photoID;
+var lat;
+var lng;
+
+ var username;
+    var title;
+    var description;
+    var region;
+    var locality;
+    var count = 0;
+    var ID;
+
+  var map;
+    var markers = [];
+    var markerCluster;
+    var marker;
+    var startLatLng;
+    var userComment;
+     var placeID;
+     var getOut = false; 
+
+ 
+
+var savedSlideIDs = [];
+var countSlide = 0;
+
+ var tempID;
+    var tempFarm;
+    var tempServer;
+    var tempSecret;
+    var sameImgArrayID = [];
+
+
+    </script>
+
+   
+   
 
 </head>
 
@@ -224,7 +313,7 @@
                 </div>
 
 
-                <button id="submit" type="submit" onclick="getSearch()" class="btn btn-default">SUBMIT</button>
+                <button id="submit" type="submit" class="btn btn-default">SUBMIT</button>
 
 
 
@@ -411,16 +500,19 @@
         }
     </style>
 
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=">
-    </script>
 
-
+        <script type="text/javascript" src="./js/ThumbnailSelectionMode.js"></script>
+    <script type="text/javascript" src="./js/map.js"></script>
+     <script type="text/javascript" src="./js/ShowAllMode.js"></script>
+    <script type="text/javascript" src="./js/SlideshowMode.js"></script>
+    <script type="text/javascript" src="./js/settings.js"></script>
    
 
 
-    <script type="text/javascript" src="./js/markerclusterer.js"></script>
-    
 
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=">
+    </script>
 
 
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&signed_in=true"></script>
@@ -431,6 +523,11 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
     <script src="./js/bootstrap-image-gallery.min.js"></script>
+
+    <script type="text/javascript">
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
 </body>
 
 

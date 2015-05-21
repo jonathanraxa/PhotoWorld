@@ -1,4 +1,10 @@
 
+/**
+* Author: Jonathan Raxa
+* Description: The beginning of the document that excutes once the page document is ready.
+* This script handles the localStorage and other setting functionalities
+*/
+
 
 
 /* Document Ready */
@@ -207,6 +213,7 @@ console.log("allMarkers: " + allMarkers.length + "\n" +
         userComment = null;
         console.log(localStorage.getItem(photoID));
     }
+
 
 
 
