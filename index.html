@@ -57,10 +57,11 @@
 
 
 
-    <title>PhotoWorld</title>
+<title>PhotoWorld</title>
 
 
-    <script type='text/javascript'> 
+<script type='text/javascript'> 
+
 /* Author: Jonathan Raxa */
 var displayPhoto;
 var getGeoLocation;
@@ -85,8 +86,6 @@ var infoWindow;
 var apiKey = '0fd24d9d0411ede9c4d33d4c531bbc16';
 var icon = 'https://235f5b7ac525c874bac8fa55117f7ef50a90d2ff-www.googledrive.com/host/0BxKqQx16djZ6SGExVlloOEhqOVk';
 
-var publicPhotos = [];
-var aPhoto = [];
 var clearPhoto;
 var setAllMap;
 var showTags;
@@ -97,75 +96,76 @@ var addToSlide;
 var photoNum;
 var showMarkers;
 var populateSlideShow;
-var photoArray = [];
 var playSlide;
 var getTitle;
 var setPlace;
 
+/* Arrays for various stuff */
+var publicPhotos = [];
+var aPhoto = [];
+var allLatlng = []; 
+var allMarkers = []; 
+var markers = [];
+var tempMarkerHolder = [];
+var tagArray = [];
+var photoInfo = [];
+var slideshowPhotoID = [];
+var publicPhotoIDs = [];
+var sameImgArrayID = [];
+var photoArray = [];
+var savedSlideIDs = [];
 
-
-var allLatlng = []; //returned from the API
-var allMarkers = []; //returned from the API
 var infoWindow = null;
 var pos;
 var userCords;
-var tempMarkerHolder = [];
-var tagArray = [];
 var addComment;
 var playSlidePhotoset;
 var infoBubble;
-var slideshowPhotoID = [];
 var savedPhoto;
-var photoInfo = [];
-var publicPhotoIDs = [];
 var photoInfoCount = 0;
 var urlObj;
 var stored;
 
 
 /* USER DEFINED VARIABLES */
-// var search;
-// var min_upload_date;
-// var max_upload_date;
-//  var tags;
-// // var bbox;
-//  var place_id;
-//  var geo_context;
-// var number;
 var sort;
 var toggleBounce;
 var toggleBounceOff;
 var photoID;
 var lat;
 var lng;
+var username;
+var title;
+var description;
+var region;
+var locality;
+var count = 0;
+var ID;
+var map;
 
- var username;
-    var title;
-    var description;
-    var region;
-    var locality;
-    var count = 0;
-    var ID;
+var markerCluster;
+var marker;
+var startLatLng;
+var userComment;
+var placeID;
+var getOut = false; 
 
-  var map;
-    var markers = [];
-    var markerCluster;
-    var marker;
-    var startLatLng;
-    var userComment;
-     var placeID;
-     var getOut = false; 
+/* Filter Varibales */
+var search = '';
+var min_upload_date = '';
+var max_upload_date = '';
+var place_id;
+var geo_context = '';
+var sort = '';
+var number; 
 
- 
 
-var savedSlideIDs = [];
 var countSlide = 0;
 
  var tempID;
     var tempFarm;
     var tempServer;
     var tempSecret;
-    var sameImgArrayID = [];
 
 
     </script>
