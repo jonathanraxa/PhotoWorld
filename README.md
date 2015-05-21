@@ -41,6 +41,7 @@ HOW-TO-USE PHOTOWORLD
 Public Photo Search
 
 1) Enter a search keyword to find photos
+
 2) Optional filters
 
 Mininmum Upload Date: 
