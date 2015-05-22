@@ -195,7 +195,7 @@ a:hover, a:active { color:white; text-decoration: underline; }
 	color:rgba(255,255,255,.8);
 }
 .btn-link:hover, .btn-link:focus, .btn-link:active {
-	color:#fff
+	color:#fff;
 }
 .btn-default {
 	background: rgba(255,255,255,.5);
@@ -250,19 +250,6 @@ a:hover, a:active { color:white; text-decoration: underline; }
 	width:340px; 
 	margin:0 auto;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
