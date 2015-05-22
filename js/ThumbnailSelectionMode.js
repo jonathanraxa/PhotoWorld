@@ -2,6 +2,14 @@
 * Author: Jonathan Raxa
 * Description: Methods that pertain mainly to 
 * the thumbnail display on the bottom of the page
+* 
+* 1. onClick "submit": handles all the  
+* 2. getSearch: find searches after adding in filters
+* 3. setPlace: get Flickr place ID for a specific location 
+* 4. showTags: shows the tags on the infoWindow
+* 5. getUserID: gets the user's ID
+* 6. getPhotosetID: gets the photoset ID - public photos ONLY 
+* 7. onClick "photosetSubmit": handles the user's photoset ID and username
 */
 
  
@@ -13,6 +21,8 @@
 */
 $("#submit").click(function() {
         
+        // These calls allow the user to ensure that everything is deleted
+        // and we can make a new search without having to reload the page
         clearMarkers();
 
         $("#pics").empty();
@@ -40,8 +50,9 @@ $("#submit").click(function() {
 
         marker.setVisible(false);
       
-         getSearch(); 
+        getSearch(); 
 
+         // Make a search request to Flickr with the following arguments
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + apiKey + '&has_geo=1&format=json&nojsoncallback=1', 
         {
 
@@ -135,6 +146,7 @@ $("#submit").click(function() {
 */
   setPlace = function(place) {
 
+        // Make a request to Flickr to get the place ID, passing in from Google's place description 
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.places.find&api_key=' + apiKey + '&query=' + place + '&format=json&nojsoncallback=1',
             function(data) {
                 placeID = data.places.place[0].place_id;
@@ -149,6 +161,8 @@ $("#submit").click(function() {
 * @param numberOfTags, photoID
 */
     showTags = function(numberOfTags, photoID) {
+
+        // Making a request to get the information of a Flickr photo
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
             function(data) {
 
@@ -183,11 +197,12 @@ $("#submit").click(function() {
 
          var user_name = document.getElementById("userID").value;
 
+         // Find the user's ID through the username
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+user_name+'&format=json&nojsoncallback=1',
             function(data){
-                //console.log(data);
+
                 userID = data.user.id;
-                //console.log(userID); 
+                
                 return userID;
             });
     }
@@ -210,19 +225,20 @@ $("#submit").click(function() {
         $("#imgHere").empty();
         $("#links").empty(); 
 
-        // resets the userID and photoset_id
+        // resets the userID and photoset_id just in case there's a new input
         userID = '';
         photoset_id = '';
 
         var user_name = document.getElementById("userID").value;
 
+        // Find the user's ID through the username
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key='+apiKey+'&username='+user_name+'&format=json&nojsoncallback=1',
             function(data){
 
                 userID = data.user.id;
                 photoset_id = document.getElementById("photosetID").value;
 
-
+                // With the username, find the photoset ID as well of the specific user
                 $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=' + apiKey + '&photoset_id=' + photoset_id + '&user_id=' + userID + '&format=json&nojsoncallback=1',
 
             /* iterates through the defined photoset and pulls all the images from account */

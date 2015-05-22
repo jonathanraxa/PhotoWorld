@@ -2,7 +2,13 @@
  * Author: Jonathan Raxa
  * Description: The map.js methods are the functions that handle the map object and
  * marker objects for the user to interact with. 
+ * 
+ * 1. initialize(): sets up the map object and options
+ * 2. setAllMap(): destroys the array of markers created on the map
+ * 3. clearMarkers(): removes all the markers from the map by calling setAllMap() to destroy everything
+ * 4. createMarker(): creates a marker on the map upon clicking a thumbnail
  */
+
 /**
  * Inializes the map object onto the page on document start.
  * Sets up the map options that limit the user's interaction with 
@@ -10,7 +16,6 @@
  * Also handles the location finder
  */
 function initialize() {
-    // var startLatLng = new google.maps.LatLng(37.7699298, -122.4469157); // San Francisco
     startLatLng = new google.maps.LatLng(0, 0);
     var mapOptions = {
         zoom: 3,
@@ -146,7 +151,8 @@ function clearMarkers() {
  * @param photoID
  */
 createMarker = function(photoID) {
-
+    
+    // Make a request to flickr to get information of a photo
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
         function(data) {
             try {

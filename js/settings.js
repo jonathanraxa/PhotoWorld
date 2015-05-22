@@ -1,8 +1,16 @@
 /**
  * Author: Jonathan Raxa
- * Description: The beginning of the document that excutes once the page document is ready.
- * This script handles the localStorage and other setting functionalities
+ * Description: 
+ * The beginning of the document that excutes once the page document is ready.
+ * This script handles the localStorage and other setting functionalities including the following: 
+ * 
+ * 1. Popup window on start of the application that reveals the application's instructions on how to use
+ * 2. Delete Storage: deletes content of localStorage
+ * 3. Delete All: deletes all the photos and the markers within the application
+ * 4. Add Comment: adds text into storage for the application 
  */
+
+
 /* Document Ready */
 $(document).ready(function() {
 
@@ -136,8 +144,6 @@ $(document).ready(function() {
 
     $("#deleteAll").click(function() {
 
-        //checkMark(); 
-
         var del;
         if (confirm("WARNING: This will clear current searched photos and map markers. Do you want to continue?") == true) {
             del = "images and markers deleted";
@@ -176,20 +182,7 @@ $(document).ready(function() {
             map.setZoom(3);
             map.setCenter(startLatLng);
 
-            //checkMark(); 
-
         }
-
-
-
-
-        console.log("allMarkers: " + allMarkers.length + "\n" +
-            "allLatlng: " + allLatlng.length + "\n" +
-            "tempMarkerHolder: " + tempMarkerHolder.length + "\n" +
-            "markers: " + markers.length + "\n" +
-            "photoArray: " + photoArray.length + "\n" +
-            "slideshowPhotoID: " + slideshowPhotoID.length + "\n" +
-            "photoInfo: " + photoInfo.length + "\n"
 
 
         );

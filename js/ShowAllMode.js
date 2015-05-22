@@ -4,6 +4,7 @@
  * the photos are returned in array called publicPhotoIDs. Show all mode
  * will iterate through the entire array and create markers for each individual photo
  */
+
 /* 
  *Displays all the markers 
  *  @param null 
@@ -33,7 +34,10 @@ showMarkers = function() {
 
 }
 
-/* Algorithm to iterate and check entire image array and determine which have the same locations */
+/* 
+* Algorithm to iterate and check entire image 
+* array and determine which have the same locations 
+*/
 $("#check").click(function() {
     $("#imgHere").empty();
     $("#links").empty();
@@ -52,14 +56,9 @@ $("#check").click(function() {
                 i = i + 1;
             }
 
-            //  if((tempMarkerHolder[count].position.A === tempMarkerHolder[i].position.A) && (tempMarkerHolder[count].position.F === tempMarkerHolder[i].position.F)){
             if ((tempMarkerHolder[count].lat === tempMarkerHolder[i].lat) && (tempMarkerHolder[count].lng === tempMarkerHolder[i].lng)) {
 
-                // console.log(tempMarkerHolder[count].position.A + " , " + tempMarkerHolder[count].position.F + "(count): " + (count));
                 console.log(tempMarkerHolder[i].position.A + " , " + tempMarkerHolder[i].position.F + "(i): " + (i));
-
-
-                //console.log( tempMarkerHolder[count].id + " matches with -> " + tempMarkerHolder[i].id); 
 
 
                 // add the IDs to an array - access them through object: tempMarkerHolder[count/i].id
@@ -73,28 +72,16 @@ $("#check").click(function() {
 
     }
 
-    // var sameImgArrayClean = [];
-    // $.each(sameImgArrayID, function(i, el){
-    //     if($.inArray(el, sameImgArrayClean) === -1) 
-    //         sameImgArrayClean.push(el);
-    // });
 
-    // find and remove duplicates of the array
+    // find and remove duplicates within the array
     var sameImgArrayClean = sameImgArrayID.filter(function(elem, pos) {
         return sameImgArrayID.indexOf(elem) == pos;
     });
 
 
-    // Check if map has multiple photos in one location then
-    // *  adds them to the saved slideshows
-    // *  TODO: populate a slider that will allow us to put in a long description
-    // *          showing location, coordinates, title, tags, etc
-
     if (sameImgArrayID.length > 0) {
 
-        // var panel = document.getElementById("panel");
-        // panel.innerHTML = "Photos added to Slideshow: " + window.confirm("Some images have the same location, would you like to display them separately in a slideshow?"); 
-
+        
         var x;
         if (confirm("Some images have the same location, would you like to display them separately in a slideshow?") == true) {
             x = "Loading images";
@@ -103,9 +90,8 @@ $("#check").click(function() {
         }
 
         if (x === "Loading images") {
-            // $("#pics").empty();
-            // alert("Emptied Previous Array");
 
+            // we'll delete everything and only show the array with the same locations
             $("#pics").empty();
             $("#imgHere").empty();
             $("#links").empty();
@@ -126,7 +112,7 @@ $("#check").click(function() {
     //for loop the array to display all the IDs that have the same location
     for (var j = 0; j < sameImgArrayClean.length; j++) {
 
-
+        // Making a request to get the information of a Flickr photo
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + sameImgArrayClean[j] + '&format=json&nojsoncallback=1',
             function(data) {
 

@@ -2,9 +2,16 @@
  * Author: Jonathan Raxa
  * Description: Methods are called here once 
  * the user wants to display a slideshow on the webpage
+ * 
+ * 1. addToSlide(): allows user to add photos from info Window to slideshow
+ * 2. populateSavedSlides(): populates the slideshow with links and images
+ * 3. populateSlideShow(): 
  */
+
+
 /* 
- * Add selected photos to a slide show 
+ * Add selected photos to a slide show
+ * Making a request to get the information of a Flickr photo 
  * @param photoID
  */
 addToSlide = function(photoID) {
@@ -44,6 +51,15 @@ populateSavedSlides = function() {
 
 /* 
  * Populates the slideshow with details of the photo on the top 
+ * This is the MAIN function called to populate and create a slideshow of
+ * the photos because it builds a URL of the photo and adds it into the DOM
+ * to be hidden within the HTML file and played once the user clicks on the 
+ * SLIDESHOW link
+ * 
+ * @param photoID
+ * @param photoFarm
+ * @param photoServer
+ * @param photoSecret
  */
 populateSlideShow = function(photoID, photoFarm, photoServer, photoSecret) {
 
@@ -53,6 +69,8 @@ populateSlideShow = function(photoID, photoFarm, photoServer, photoSecret) {
         photoArray.push(photo);
     }
 
+
+    // Making a request to get the information of a Flickr photo
     $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + photoID + '&format=json&nojsoncallback=1',
         function(data) {
 
@@ -127,6 +145,7 @@ $('#playSaved').click(function() {
         alert("There are no saved photos to display as a slideshow");
         return;
 
+    // clear everything and play ONLY the saved photos from storage, nothing else
     } else {
 
         clearMarkers();
@@ -142,7 +161,6 @@ $('#playSaved').click(function() {
         map.setZoom(3);
         map.setCenter(startLatLng);
 
-
         marker.setVisible(false);
 
         $("#pics").empty();
@@ -155,7 +173,7 @@ $('#playSaved').click(function() {
         "Please remember click 'Clear Local Storage' when saved slideshow is no longer wanted");
 
 
-
+    // iterate through the array of URLS that were saved onto the localHost
     for (var i = 0; i < URLS.length; i++) {
 
         console.log("URLS: " + URLS[i]);
@@ -164,7 +182,7 @@ $('#playSaved').click(function() {
 
         console.log(savedSlideIDs[i]);
 
-
+        // Making a request to get the information of a Flickr photo
         $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' + apiKey + '&photo_id=' + savedSlideIDs[i] + '&format=json&nojsoncallback=1',
             function(data) {
 
@@ -192,7 +210,7 @@ $('#playSaved').click(function() {
             })
     }
 
-
+    // used to create a link to play all the slideshows
     jQuery('<a href=' + URLS[0] + ' data-gallery/>').html("PLAY SLIDESHOW").appendTo('#imgHere');
 
 
