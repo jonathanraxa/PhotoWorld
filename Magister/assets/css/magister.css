@@ -20,7 +20,9 @@ body {
 	font-weight: normal;
 }
 
-
+.row{
+	color:white;
+}
 /********************************************************/
 /*                    Navigation bar                    */
 /********************************************************/
@@ -28,6 +30,7 @@ body {
 @media (min-width: 768px) {
 	.mainmenu { position: fixed; }
 }
+
 
 .navbar-toggle {
 	position:relative;
